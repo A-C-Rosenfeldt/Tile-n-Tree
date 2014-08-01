@@ -45,7 +45,7 @@ public class Tiles {
 
 	public VolatileImage[] vImg; //=new VolatileImage();
 	private GraphicsConfiguration mgc;
-
+	private int seamWidht=1;
 	public Tiles(RectSize tileSize, Window w){
 		/*		super();
 
@@ -68,7 +68,7 @@ public class Tiles {
 
 		this.mgc=w.getGraphicsConfiguration();
 
-		this.vImg=new VolatileImage[16]; // ToDo make List?
+		this.vImg=new VolatileImage[6]; // ToDo explain 10 ->
 		for (int i = 0; i < vImg.length; i++) {
 
 			this.vImg[i]=this.mgc.createCompatibleVolatileImage(tileSize.s[0],tileSize.s[1]);
@@ -99,22 +99,21 @@ public class Tiles {
 						VolatileImage.IMAGE_INCOMPATIBLE)
 				{
 					// old vImg doesn't work with new GraphicsConfig; re-create it
-					vi = this.mgc.createCompatibleVolatileImage(rs.s[0], rs.s[1]);
+					vi = this.mgc.createCompatibleVolatileImage(rs.s[0]+seamWidht, rs.s[1]+seamWidht);
 				}
 				Graphics2D g = vi.createGraphics();
-				MakeTheBestOutOfSwing.configure2(g);
-				//
-				// miscellaneous rendering commands...
+				
+				g.drawRect(0,0, rs.s[0],rs.s[1]);
+				MakeTheBestOutOfSwing.configure2(g);				
+				
 				g.setColor(new Color(0.9f, 0.0f, 0.5f));
 
-
+				// The layout does not need all possible combinations. Ad hoc reduction. 
 				if ((i & 1 )!=0) g.drawLine(0, s[1]/2, s[0], s[1]/2);
+				if ((i & 2 )==0) g.drawArc(-s[0]/2, -s[1]/2, s[0], s[1], -90,90);
+				if ((i & 4 )!=0) g.drawArc(-s[0]/2, +s[1]/2, s[0], s[1], +90,360); // ToDo explain 10 ->
 
-				if ((i & 2 )!=0) g.drawArc(-s[0]/2, -s[1]/2, s[0], s[1], -90,90);
-
-				if ((i & 4 )!=0) g.drawArc(-s[0]/2, -s[1]/2, s[0], s[1], +90,90);
-
-				if ((i & 8 )!=0) g.drawLine( s[0]/2,0,  s[0]/2, s[1]);
+				// Ramp used instead: if ((i & 8 )!=0) g.drawLine( s[0]/2,0,  s[0]/2, s[1]);
 
 				// g.drawArc(0,0, 16, 16, -90,90);
 				//

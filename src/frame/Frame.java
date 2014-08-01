@@ -32,6 +32,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.ColorModel;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import rasterizer.MakeTheBestOutOfSwing;
 import tile.Tile;
 import tile.Tiles;
 import vector2.RectSize;
+import vector2.Vector;
 
 
 public class Frame  extends JFrame{
@@ -56,7 +58,7 @@ public class Frame  extends JFrame{
 	public Frame(String titel) {
 	        super(titel);
 	        setDefaultCloseOperation(EXIT_ON_CLOSE);
-	        setSize(600, 300);
+	        setSize(600, 600);
 	        // Premature optimization (or aero non portable look and feel)	        
 	        ///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 	        
@@ -94,7 +96,7 @@ public class Frame  extends JFrame{
 	public void paint(Graphics g) {
 		
 		//g.hint(antialias)
-		MakeTheBestOutOfSwing.configure2((Graphics2D) g);
+		// now inside tile. Interferes with seam. MakeTheBestOutOfSwing.configure2((Graphics2D) g);
 		 
 		// TODO Auto-generated method stub
 	//	super.paint(arg0);  changes background from grey to white. There is nothing to draw for super in the client area as I want a full tile-based display, do I?
@@ -144,34 +146,84 @@ public class Frame  extends JFrame{
 		    	  this.tiles=new Tiles(this.tileSize, this);
 		    	  tiles.updateCache( this, rs); // only affected tiles!! New parameter! ToDo
 		      }
+
+		      for(int j=0;j<8;j++){
+		    	  this.flip((Graphics2D) g,vi,new Vector((int)bounds.getMinX()+i*32,(int)bounds.getMinY()+j*32),j);
+		      }
+		      // seam ToDo only on Background. One px wide on legacy systems. Voids flip 
 		      
-		      g.drawImage(vi,  30+i*32,  60, 16,16, this);
-		      g.drawImage(vi, 130,  30, -16,16,this);
+		    //  g.drawImage(vi,  30+i*32,  200, 16,16, this);
+		      /*g.drawImage(vi, 130,  30, -16,16,this);
 		      g.drawImage(vi,  30, 130, 16,-16,this);
-		      g.drawImage(vi, 130, 130, -16,-16,this);
+		      g.drawImage(vi, 130, 130, -16,-16,this); */
 		 } while (vi.contentsLost());
 		 }
 		 
-		 // What did they smoke when defining these parameters?
-		 g.setColor(new Color(0.9f, 0.0f, 0.5f));
-		 g.drawArc((int)pos.x-8, pos.y-8, 16, 16, -90,90);
-		 
-		 g.drawArc((int)pos.x, pos.y, 100, 100, 270, 90);
-			
-		 g.setColor(new Color(0.1f,0.0f,0.0f));
-		// g.setColor(new Color(0.7, 0.8, 0.5,0));
-		g.drawLine(0, 0, 100, 120);
-		g.drawArc(40, 40, 100, 200, 0, 90);
-		g.drawRect(40, 40, 100, 120);
-		g.drawArc(150, 150, 100, 200, 0, 90);
+	
 
-		// todo try{} around resources
+		// ToDo try{} around resources
 		
 		// probably now the
 		// Compositing window manager
 		// renders my client area on the screen
 		// But mind fullscreen (eg on mobile or TV)!
 	}
+
+	// with the help of source, the seam can be taken or omitted
+	// straigth line on seam
+	// ToDo: remove dupes?
+	private void flip(Graphics2D g, VolatileImage vi, Vector v , int f){
+		int seamWidth=1; // ToDo dupe
+		/*
+		g.drawImage(vi,  v.s[0],v.s[1], 16,16, this);
+		g.drawImage(vi, v.s[0]+16,v.s[1], 32+v.s[0],v.s[1]+ 16, 0, 0, 16, 16, this);
+		  */
+		  
+		int[][] c={{0,0,tileSize.s[0],tileSize.s[1]},{0,0,0,0}};
+		for (int i = 0; i < c[0].length; i++) {
+			c[1][i]=c[0][i];
+		}
+		
+		int m=1;		
+		if ((f & m)!=0) {
+			c[1][0]=c[0][2];
+			c[1][2]=c[0][0];
+		}
+		
+		m<<=1;
+		if ((f & m)!=0) {
+			c[1][1]=c[0][3];
+			c[1][3]=c[0][1];
+		}
+		
+		m<<=1;
+		// swap the coordinates. ToDo: Works only for square tiles (square in px)
+		//AffineTransform trans;
+		if ((f & m)!=0) { 
+			g.setTransform( new AffineTransform(0,1,1,0,v.s[0],v.s[1]));
+		}else
+		{
+			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
+		}
+		
+	      g.drawImage(vi,0,0,tileSize.s[0],tileSize.s[1]
+		  ,c[1][0],c[1][1],c[1][2]-seamWidth,c[1][3]-seamWidth,           this); // remove double seam / allow for odd width
+		
+		
+//		trans.rotate( Math.toRadians(45) );
+//		g.drawImage(vi, trans, this);
+		
+	
+	// source needed for seam
+//	      System.out.printf("%d %d  %d %d   %d %d  %d %d ",v.s[0],v.s[1],v.s[0]+tileSize.s[0],v.s[1]+tileSize.s[1]
+//	     		 ,c[1][0],c[1][1],c[1][2]-seamWidth,c[1][3]-seamWidth); // remove double seam / allow for odd width
+//		System.out.println();
+//	      g.drawImage(vi,v.s[0],v.s[1],v.s[0]+tileSize.s[0],v.s[1]+tileSize.s[1]
+//	     		  ,c[1][0],c[1][1],c[1][2]-seamWidth,c[1][3]-seamWidth,           this); // remove double seam / allow for odd width
+//	     		  
+	}
+	
+	
 }
 
 
