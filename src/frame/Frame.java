@@ -123,7 +123,7 @@ public class Frame  extends JFrame{
 		}
 		
 		// ToDo: Does not work
-		tiles.updateCache( this, rs);
+		tiles.updateCache( this, tileSize);
 		 do {
 		      int returnCode = tiles.vImg.validate(getGraphicsConfiguration());
 		      if (returnCode == VolatileImage.IMAGE_RESTORED) {
@@ -135,7 +135,10 @@ public class Frame  extends JFrame{
 		    	  tiles.updateCache( this, rs); 
 		      }
 		      
-		      g.drawImage(tiles.vImg, 30, 30, this);
+		      g.drawImage(tiles.vImg,  30,  30, 16,16, this);
+		      g.drawImage(tiles.vImg, 130,  30, -16,16,this);
+		      g.drawImage(tiles.vImg,  30, 130, 16,-16,this);
+		      g.drawImage(tiles.vImg, 130, 130, -16,-16,this);
 		 } while (tiles.vImg.contentsLost());
 
 		 // What did they smoke when defining these parameters?

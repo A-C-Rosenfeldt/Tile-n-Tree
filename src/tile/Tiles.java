@@ -99,7 +99,8 @@ public class Tiles {
 			// miscellaneous rendering commands...
 			 g.setColor(new Color(0.9f, 0.0f, 0.5f));
 			 
-			 g.drawArc(0,0, 16, 16, -90,90);
+			 g.drawArc(-rs.s[0]/2, -rs.s[1]/2, rs.s[0], rs.s[1], -90,90);
+			// g.drawArc(0,0, 16, 16, -90,90);
 			//
 			g.dispose();
 		} while (vImg.contentsLost());
