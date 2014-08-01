@@ -56,7 +56,7 @@ public class Frame  extends JFrame{
 	public Frame(String titel) {
 	        super(titel);
 	        setDefaultCloseOperation(EXIT_ON_CLOSE);
-	        setSize(300, 300);
+	        setSize(600, 300);
 	        // Premature optimization (or aero non portable look and feel)	        
 	        ///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 	        
@@ -98,13 +98,19 @@ public class Frame  extends JFrame{
 		 
 		// TODO Auto-generated method stub
 	//	super.paint(arg0);  changes background from grey to white. There is nothing to draw for super in the client area as I want a full tile-based display, do I?
-		Rectangle bounds=this.getContentPane().getBounds();
-		RectSize rs=new RectSize(bounds);
+
 		
 		// What point?
 		Point pos = this.getContentPane().getLocationOnScreen();
-		Rectangle clientRect = this.getContentPane().getBounds(); 
-		clientRect.add(pos);
+		Rectangle bounds = this.getContentPane().getBounds();
+		
+		RectSize rs=new RectSize(bounds);
+		bounds.setLocation(pos);
+		
+		System.out.println("add next to second");
+		System.out.println(pos.y);
+		System.out.println(bounds.y);
+		
 		
 		///System.out.print( rs.s[0]/2); System.out.print(" ");System.out.print( rs.s[1]/2); System.out.print(" ");System.out.print( rs.s[0]); System.out.print(" ");System.out.print( rs.s[1]); System.out.print(" ");System.out.print( 0);System.out.print( 90);
 		g.drawArc(rs.s[0]/2, rs.s[1]/2, rs.s[0], rs.s[1], 0, 90);
@@ -124,23 +130,28 @@ public class Frame  extends JFrame{
 		
 		// ToDo: Does not work
 		tiles.updateCache( this, tileSize);
-		 do {
-		      int returnCode = tiles.vImg.validate(getGraphicsConfiguration());
+		
+			 for (int i = 0; i < tiles.vImg.length; i++) {
+				 VolatileImage vi = tiles.vImg[i];
+				 do {	
+			
+		      int returnCode = vi.validate(getGraphicsConfiguration());
 		      if (returnCode == VolatileImage.IMAGE_RESTORED) {
 		          // Contents need to be restored
 		    	  tiles.updateCache( this, rs);      // restore contents
 		      } else if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE) {
 		          // old vImg doesn't work with new GraphicsConfig; re-create it
 		    	  this.tiles=new Tiles(this.tileSize, this);
-		    	  tiles.updateCache( this, rs); 
+		    	  tiles.updateCache( this, rs); // only affected tiles!! New parameter! ToDo
 		      }
 		      
-		      g.drawImage(tiles.vImg,  30,  30, 16,16, this);
-		      g.drawImage(tiles.vImg, 130,  30, -16,16,this);
-		      g.drawImage(tiles.vImg,  30, 130, 16,-16,this);
-		      g.drawImage(tiles.vImg, 130, 130, -16,-16,this);
-		 } while (tiles.vImg.contentsLost());
-
+		      g.drawImage(vi,  30+i*32,  60, 16,16, this);
+		      g.drawImage(vi, 130,  30, -16,16,this);
+		      g.drawImage(vi,  30, 130, 16,-16,this);
+		      g.drawImage(vi, 130, 130, -16,-16,this);
+		 } while (vi.contentsLost());
+		 }
+		 
 		 // What did they smoke when defining these parameters?
 		 g.setColor(new Color(0.9f, 0.0f, 0.5f));
 		 g.drawArc((int)pos.x-8, pos.y-8, 16, 16, -90,90);

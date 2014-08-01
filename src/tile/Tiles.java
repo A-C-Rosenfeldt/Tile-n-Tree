@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package tile;
 
 import java.awt.Toolkit;
@@ -39,16 +39,16 @@ import rasterizer.MakeTheBestOutOfSwing;
 
 
 public class Tiles {
-	
+
 	private ColorModel cm=null;
 	//private List<VolatileImage> a = new ArrayList<VolatileImage>();
-	
-	public VolatileImage vImg; //=new VolatileImage();
+
+	public VolatileImage[] vImg; //=new VolatileImage();
 	private GraphicsConfiguration mgc;
-	
+
 	public Tiles(RectSize tileSize, Window w){
-/*		super();
-		
+		/*		super();
+
 	      Rectangle virtualBounds = new Rectangle();
 	      GraphicsEnvironment ge = GraphicsEnvironment.
 	              getLocalGraphicsEnvironment();
@@ -65,13 +65,16 @@ public class Tiles {
 	                  virtualBounds.union(gc[i].getBounds());
 	          }
 	      } */
-	      
-	      this.mgc=w.getGraphicsConfiguration();
-	      
-	      this.vImg=this.mgc.createCompatibleVolatileImage(tileSize.s[0],tileSize.s[1]);
-	      
+
+		this.mgc=w.getGraphicsConfiguration();
+
+		this.vImg=new VolatileImage[16]; // ToDo make List?
+		for (int i = 0; i < vImg.length; i++) {
+
+			this.vImg[i]=this.mgc.createCompatibleVolatileImage(tileSize.s[0],tileSize.s[1]);
+		}  
 	}
-	
+
 	public void updateCache(Window w, RectSize rs)
 	{
 
@@ -86,24 +89,38 @@ public class Tiles {
 		// rendering to the image
 		this.mgc=w.getGraphicsConfiguration();
 
-		do {
-			if (vImg.validate(w.getGraphicsConfiguration()) ==
-					VolatileImage.IMAGE_INCOMPATIBLE)
-			{
-				// old vImg doesn't work with new GraphicsConfig; re-create it
-				vImg = this.mgc.createCompatibleVolatileImage(rs.s[0], rs.s[1]);
-			}
-			Graphics2D g = vImg.createGraphics();
-			MakeTheBestOutOfSwing.configure2(g);
-			//
-			// miscellaneous rendering commands...
-			 g.setColor(new Color(0.9f, 0.0f, 0.5f));
-			 
-			 g.drawArc(-rs.s[0]/2, -rs.s[1]/2, rs.s[0], rs.s[1], -90,90);
-			// g.drawArc(0,0, 16, 16, -90,90);
-			//
-			g.dispose();
-		} while (vImg.contentsLost());
+
+		int[] s = rs.s;
+		for (int i = 0; i < vImg.length; i++) {
+	
+			VolatileImage vi=this.vImg[i];
+			do {
+				if (vi.validate(w.getGraphicsConfiguration()) ==
+						VolatileImage.IMAGE_INCOMPATIBLE)
+				{
+					// old vImg doesn't work with new GraphicsConfig; re-create it
+					vi = this.mgc.createCompatibleVolatileImage(rs.s[0], rs.s[1]);
+				}
+				Graphics2D g = vi.createGraphics();
+				MakeTheBestOutOfSwing.configure2(g);
+				//
+				// miscellaneous rendering commands...
+				g.setColor(new Color(0.9f, 0.0f, 0.5f));
+
+
+				if ((i & 1 )!=0) g.drawLine(0, s[1]/2, s[0], s[1]/2);
+
+				if ((i & 2 )!=0) g.drawArc(-s[0]/2, -s[1]/2, s[0], s[1], -90,90);
+
+				if ((i & 4 )!=0) g.drawArc(-s[0]/2, -s[1]/2, s[0], s[1], +90,90);
+
+				if ((i & 8 )!=0) g.drawLine( s[0]/2,0,  s[0]/2, s[1]);
+
+				// g.drawArc(0,0, 16, 16, -90,90);
+				//
+				g.dispose();
+			} while (vi.contentsLost());
+		}
 
 		//this.cm=cmS;
 	}
