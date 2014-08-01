@@ -1,0 +1,1 @@
+The program tries to combine the experiences on a 8-bit home computer BASIC with modern languages (XML, C#, Scala) and graphs. A web front-end is planned, but was deemed to clumsy for development in ecclipse.
