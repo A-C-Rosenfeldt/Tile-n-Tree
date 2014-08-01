@@ -58,7 +58,7 @@ public class Frame  extends JFrame{
 	public Frame(String titel) {
 	        super(titel);
 	        setDefaultCloseOperation(EXIT_ON_CLOSE);
-	        setSize(600, 600);
+	        setSize(600, 300);
 	        // Premature optimization (or aero non portable look and feel)	        
 	        ///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 	        
@@ -158,6 +158,21 @@ public class Frame  extends JFrame{
 		      g.drawImage(vi, 130, 130, -16,-16,this); */
 		 } while (vi.contentsLost());
 		 }
+			 
+		// Tree
+		/*
+			 i,j  
+		0,1
+		1,6
+		1,2
+		3,4
+		*/
+			 
+	
+		
+		// String
+			 ((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
+			 g.drawString("Hello World",  208+1, 64-3);
 		 
 	
 
@@ -173,7 +188,7 @@ public class Frame  extends JFrame{
 	// straigth line on seam
 	// ToDo: remove dupes?
 	private void flip(Graphics2D g, VolatileImage vi, Vector v , int f){
-		int seamWidth=this.tiles.getSeamWidht();
+		int seamWidth=this.tiles.getSeamWidht(); // ToDo: Change into flag to indicate odd seamWidth
 		
 	
 /*		g.drawImage(vi, v.s[0]+16,v.s[1], 32+v.s[0],v.s[1]+ 16, 0, 0, 16, 16, this);

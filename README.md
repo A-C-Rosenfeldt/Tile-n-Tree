@@ -3,16 +3,20 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 +tetris
 +trans
 +seam
++Glyphs on top
+cache parameter
 construct tree
 	top to bottom
 folding
-Glyphs on top
+
 references
 foreground layer
 	crossing (all alternatives look ugly)
 scrolling
 	open newest part
 	no scrollbar (game does not have such a thing)
+cursor
+	(selected) tile
 view
 	box model
 	isotrop
