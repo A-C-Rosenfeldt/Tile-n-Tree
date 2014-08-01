@@ -46,6 +46,13 @@ public class Tiles {
 	public VolatileImage[] vImg; //=new VolatileImage();
 	private GraphicsConfiguration mgc;
 	private int seamWidht=1;
+	/**
+	 * @return the seamWidht
+	 */
+	public int getSeamWidht() {
+		return seamWidht;
+	}
+
 	public Tiles(RectSize tileSize, Window w){
 		/*		super();
 
@@ -71,7 +78,7 @@ public class Tiles {
 		this.vImg=new VolatileImage[6]; // ToDo explain 10 ->
 		for (int i = 0; i < vImg.length; i++) {
 
-			this.vImg[i]=this.mgc.createCompatibleVolatileImage(tileSize.s[0],tileSize.s[1]);
+			this.vImg[i]=this.mgc.createCompatibleVolatileImage(tileSize.s[0]+seamWidht,tileSize.s[1]+seamWidht);
 		}  
 	}
 

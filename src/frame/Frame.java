@@ -173,10 +173,10 @@ public class Frame  extends JFrame{
 	// straigth line on seam
 	// ToDo: remove dupes?
 	private void flip(Graphics2D g, VolatileImage vi, Vector v , int f){
-		int seamWidth=1; // ToDo dupe
-		/*
-		g.drawImage(vi,  v.s[0],v.s[1], 16,16, this);
-		g.drawImage(vi, v.s[0]+16,v.s[1], 32+v.s[0],v.s[1]+ 16, 0, 0, 16, 16, this);
+		int seamWidth=this.tiles.getSeamWidht();
+		
+	
+/*		g.drawImage(vi, v.s[0]+16,v.s[1], 32+v.s[0],v.s[1]+ 16, 0, 0, 16, 16, this);
 		  */
 		  
 		int[][] c={{0,0,tileSize.s[0],tileSize.s[1]},{0,0,0,0}};
@@ -205,9 +205,10 @@ public class Frame  extends JFrame{
 		{
 			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
 		}
+		g.drawImage(vi,  16,16, this);
 		
 	      g.drawImage(vi,0,0,tileSize.s[0],tileSize.s[1]
-		  ,c[1][0],c[1][1],c[1][2]-seamWidth,c[1][3]-seamWidth,           this); // remove double seam / allow for odd width
+		  ,c[1][0],c[1][1],c[1][2],c[1][3],           this); // remove double seam / allow for odd width
 		
 		
 //		trans.rotate( Math.toRadians(45) );
