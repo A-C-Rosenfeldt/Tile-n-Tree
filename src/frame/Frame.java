@@ -208,7 +208,7 @@ public class Frame  extends JFrame{
 		g.drawImage(vi,  16,16, this);
 		
 	      g.drawImage(vi,0,0,tileSize.s[0],tileSize.s[1]
-		  ,c[1][0],c[1][1],c[1][2],c[1][3],           this); // remove double seam / allow for odd width
+		  ,c[1][0]+ ((f>>0) & 1),c[1][1]+ ((f>>1) & 1),c[1][2]+  ((f>>0) & 1),c[1][3]+ ((f>>1) & 1),           this); // remove double seam / allow for odd width
 		
 		
 //		trans.rotate( Math.toRadians(45) );
