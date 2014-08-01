@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-public class MakeTheBestOutOfSwing {
+public class MakeTheBestOfSwing {
 	
 	
 
