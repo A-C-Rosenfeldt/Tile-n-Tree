@@ -42,6 +42,8 @@ import javax.swing.JFrame;
 import rasterizer.MakeTheBestOutOfSwing;
 import tile.Tile;
 import tile.Tiles;
+import tree.Node;
+import tree.Util;
 import vector2.RectSize;
 import vector2.Vector;
 
@@ -158,21 +160,15 @@ public class Frame  extends JFrame{
 		      g.drawImage(vi, 130, 130, -16,-16,this); */
 		 } while (vi.contentsLost());
 		 }
-			 
-		// Tree
-		/*
-			 i,j  
-		0,1
-		1,6
-		1,2
-		3,4
-		*/
-			 
+			
 	
-		
 		// String
 			 ((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
-			 g.drawString("Hello World",  208+1, 64-3);
+			 
+			 this.gForRec=g;
+			 this.drawTree( pos.x+432,pos.y+48,Util.createSampleTree()); // root == frame window
+				
+			 g.drawString("Hello World",  320+1, 64-3);
 		 
 	
 
@@ -183,6 +179,30 @@ public class Frame  extends JFrame{
 		// renders my client area on the screen
 		// But mind fullscreen (eg on mobile or TV)!
 	}
+
+	private Graphics gForRec; // ToDo: Extra class?
+	private int drawTree(int x, Integer y, Node current) {
+		// Tree
+		/*
+			 i,j  
+		0,1
+		1,6
+		1,2
+		3,4
+		*/
+			 	 
+
+		
+		for (Node node : current.children) {
+			this.gForRec.drawString(node.title,  x+1, y-3);
+			y+=this.tileSize.s[1];
+			y=this.drawTree( x+this.tileSize.s[0],y, node);
+		}
+		
+		return y; // ToDo: Why does boxing not work?
+	}
+
+
 
 	// with the help of source, the seam can be taken or omitted
 	// straigth line on seam
