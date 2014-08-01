@@ -25,16 +25,20 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.ColorModel;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import rasterizer.MakeTheBestOutOfSwing;
 import tile.Tile;
 import tile.Tiles;
 import vector2.RectSize;
@@ -57,8 +61,28 @@ public class Frame  extends JFrame{
 	        ///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 	        
 	        setVisible(true);
-	        
+	        	        
 	        this.tiles=new Tiles(this.tileSize, this);
+	        
+	        // ToDo: Does not work 
+	        addKeyListener(new KeyListener() {
+	            public void keyPressed(KeyEvent e) { 
+	            	
+	            	new Configuration("Configuration"); }
+
+				@Override
+				public void keyReleased(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void keyTyped(KeyEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+	        }
+	        );
 	  }
 
 
@@ -70,19 +94,17 @@ public class Frame  extends JFrame{
 	public void paint(Graphics g) {
 		
 		//g.hint(antialias)
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
-		 g2.setStroke(new BasicStroke(3));
+		MakeTheBestOutOfSwing.configure2((Graphics2D) g);
 		 
 		// TODO Auto-generated method stub
 	//	super.paint(arg0);  changes background from grey to white. There is nothing to draw for super in the client area as I want a full tile-based display, do I?
-		Rectangle bounds=g.getClipBounds();
+		Rectangle bounds=this.getContentPane().getBounds();
 		RectSize rs=new RectSize(bounds);
+		
+		// What point?
+		Point pos = this.getContentPane().getLocationOnScreen();
+		Rectangle clientRect = this.getContentPane().getBounds(); 
+		clientRect.add(pos);
 		
 		///System.out.print( rs.s[0]/2); System.out.print(" ");System.out.print( rs.s[1]/2); System.out.print(" ");System.out.print( rs.s[0]); System.out.print(" ");System.out.print( rs.s[1]); System.out.print(" ");System.out.print( 0);System.out.print( 90);
 		g.drawArc(rs.s[0]/2, rs.s[1]/2, rs.s[0], rs.s[1], 0, 90);
@@ -100,7 +122,7 @@ public class Frame  extends JFrame{
 			}			
 		}
 		
-	
+		// ToDo: Does not work
 		tiles.updateCache( this, rs);
 		 do {
 		      int returnCode = tiles.vImg.validate(getGraphicsConfiguration());
@@ -113,12 +135,17 @@ public class Frame  extends JFrame{
 		    	  tiles.updateCache( this, rs); 
 		      }
 		      
-		      g.drawImage(tiles.vImg, 100, 0, this);
+		      g.drawImage(tiles.vImg, 30, 30, this);
 		 } while (tiles.vImg.contentsLost());
 
+		 // What did they smoke when defining these parameters?
+		 g.setColor(new Color(0.9f, 0.0f, 0.5f));
+		 g.drawArc((int)pos.x-8, pos.y-8, 16, 16, -90,90);
 		 
-		
-		
+		 g.drawArc((int)pos.x, pos.y, 100, 100, 270, 90);
+			
+		 g.setColor(new Color(0.1f,0.0f,0.0f));
+		// g.setColor(new Color(0.7, 0.8, 0.5,0));
 		g.drawLine(0, 0, 100, 120);
 		g.drawArc(40, 40, 100, 200, 0, 90);
 		g.drawRect(40, 40, 100, 120);

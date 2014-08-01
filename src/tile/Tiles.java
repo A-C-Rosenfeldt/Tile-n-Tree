@@ -22,6 +22,7 @@ import java.awt.image.ColorModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.image.VolatileImage;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Rectangle;
@@ -31,6 +32,8 @@ import java.awt.GraphicsDevice;
 import vector2.RectSize;
 
 import java.awt.Window;
+
+import rasterizer.MakeTheBestOutOfSwing;
 
 
 
@@ -91,9 +94,12 @@ public class Tiles {
 				vImg = this.mgc.createCompatibleVolatileImage(rs.s[0], rs.s[1]);
 			}
 			Graphics2D g = vImg.createGraphics();
+			MakeTheBestOutOfSwing.configure2(g);
 			//
 			// miscellaneous rendering commands...
-			g.drawArc(rs.s[0]/2, rs.s[1], rs.s[0], rs.s[1], 0, 90);
+			 g.setColor(new Color(0.9f, 0.0f, 0.5f));
+			 
+			 g.drawArc(0,0, 16, 16, -90,90);
 			//
 			g.dispose();
 		} while (vImg.contentsLost());
