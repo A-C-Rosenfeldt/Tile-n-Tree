@@ -28,7 +28,7 @@ public class Start {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new Frame("Tile'n'Tree");
+		new Frame("Tile'n'Tree   ---  please press cursor keys and ctrl, shift, alt");
 	}
 
 }

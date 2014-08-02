@@ -68,27 +68,30 @@ public class Frame  extends JFrame{
 
 		this.tiles=new Tiles(this.tileSize, this);
 
-		// ToDo: Does not work 
+		// ToDo: make it not work (basics only)
+		setFocusable(true);
+		setFocusTraversalKeysEnabled(false);
+
+		// I cannot use bindings since this code is supposed to be String free
 		addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) { 
-
-				new Configuration("Configuration"); }
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-
+				public void keyPressed(KeyEvent e) { 
+					System.out.println("pressed");
+				}
+	
+				@Override
+				public void keyReleased(KeyEvent arg0) {
+					System.out.println("released");
+				}
+	
+				@Override
+				public void keyTyped(KeyEvent arg0) {
+					System.out.println("typed");
+					//F1 => new Configuration("Configuration");
+				}
 			}
+		);
 
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-		}
-				);
-
-		tiles.generateTiles( this);
+		tiles.generate( this);
 	}
 
 
@@ -225,8 +228,9 @@ public class Frame  extends JFrame{
 
 	// This is a low priority candidate for speed optimization (remove multiplication)
 	private int shade; // ToDo: Use Setter to limit access to lower bits
+	private Vector cursor=new Vector(0,0);
 	private void drawVI(int x, int y, int i, int j) {
-		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<1 + (shade), j);
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<1 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j);
 	}
 
 	private void drawVolatileImage(Vector v, int i, int j) {

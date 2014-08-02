@@ -84,7 +84,7 @@ public class Tiles {
 		}  
 	}
 
-	public void generateTiles(Window w)
+	public void generate(Window w)
 	{
 
 		// ToDo. look for changes. Lots of changes!
@@ -138,7 +138,8 @@ public class Tiles {
 			}
 			Graphics2D g = vi.createGraphics();
 			
-			//g.Widht= this.seamWidht
+			// ToDo  g.Widht= this.seamWidht
+			g.setColor(new Color(0.4f, 0.4f, 0.4f));
 			g.drawRect(0,0, s[0],s[1]);
 			MakeTheBestOfSwing.configure2(g);				
 			
