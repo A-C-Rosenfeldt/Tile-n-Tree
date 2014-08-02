@@ -166,9 +166,9 @@ public class Frame  extends JFrame{
 
 		// String
 		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
-
+		this.topLevelx=pos.x+432;
 		this.gForRec=g;
-		this.drawTree( pos.x+432,pos.y+48,Util.createSampleTree()); // root == frame window
+		this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
 
 		g.drawString("Hello World",  320+1, 64-3);
 
@@ -181,8 +181,10 @@ public class Frame  extends JFrame{
 		// renders my client area on the screen
 		// But mind fullscreen (eg on mobile or TV)!
 	}
-
+	// Parameter from this.paint to this.drawTree
 	private Graphics gForRec; // ToDo: Extra class?
+	private int topLevelx;
+	private final int[][] tileSet={};
 	private int drawTree(int x, int y, Node current) {
 		// Tree
 		/*
@@ -193,35 +195,53 @@ public class Frame  extends JFrame{
 		3,4
 		 */
 
-
+		// ToDo: Here the coordinates are not eqally handeled. Stop using an Array s[2] ? 
 
 		for (Node node : current.children) {
 
-			int i=0;
-			int j=1;
-			// Copied from character set print
-			VolatileImage vi = tiles.vImg[i];
-			do {	
-
-				int returnCode = vi.validate(getGraphicsConfiguration());
-				if (returnCode == VolatileImage.IMAGE_RESTORED) {
-					// Contents need to be restored
-					tiles.updateTile( this,  i);      // restore contents
-				} else if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE) {
-					// old vImg doesn't work with new GraphicsConfig; re-create it
-					this.tiles=new Tiles(this.tileSize, this);
-					tiles.updateTile( this,  i);  // only affected tiles!! New parameter! ToDo
-				}
-				
-				this.flip((Graphics2D) this.gForRec,vi,new Vector(x,y),j);
-			} while (vi.contentsLost());
-
+			int xm=x-2*this.tileSize.s[0];
+			int xi;
+			for(xi=this.topLevelx;xi<xm;xi+=this.tileSize.s[0]){	
+				drawVolatileImage(y, xi, 6, 4);
+			}
+	
+	//		xm+=this.tileSize.s[0];
+		//	for(;xi<xm;xi+=this.tileSize.s[0]){	
+				drawVolatileImage(y, xm, 2, 6);
+	//		}
+			
+			xm+=this.tileSize.s[0];
+		//	for(;xi<=x;xi+=this.tileSize.s[0]){	
+			
+				drawVolatileImage(y, xm, 2, 2);
+	//		}
+			
+			drawVolatileImage(y, x, 4, 0);
+			
 			this.gForRec.drawString(node.title,  x+1, y-3+this.tileSize.s[1]);
 			y+=this.tileSize.s[1];
 			y=this.drawTree( x+this.tileSize.s[0],y, node);
 		}
 
 		return y; // ToDo: Why does boxing not work?
+	}
+
+
+
+	private void drawVolatileImage(int y, int xi, int i, int j) {
+		VolatileImage vi = tiles.vImg[i];
+		do {	
+
+			int returnCode = vi.validate(getGraphicsConfiguration());
+			if (returnCode == VolatileImage.IMAGE_RESTORED) {
+				tiles.updateTile( this,  i);      // restore contents
+			} else if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE) {
+				this.tiles=new Tiles(this.tileSize, this);
+				tiles.updateTile( this,  i);
+			}
+
+			this.flip((Graphics2D) this.gForRec,vi,new Vector(xi,y),j);
+		} while (vi.contentsLost());
 	}
 
 
