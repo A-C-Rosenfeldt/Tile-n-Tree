@@ -34,4 +34,12 @@ public class Vector extends Tupel {
 			y=x; // ToDo this hack does not generalize to nTupel
 		}
 	}
+
+	// I really miss  operator overloading  
+	public void add(Vector d) {
+		for(int i=this.s.length-1;i>=0;i--){
+			this.s[i]+=d.s[i];
+		}
+		
+	}
 }

@@ -22,13 +22,22 @@ public class Start {
 
 	/**
 	 * 
-	 I need a place for properties before I let someone else test this on their system
+	 I need a place for properties before I let someone else test this on
+	 * their system
 	 */
-	
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new Frame("Tile'n'Tree   ---  please press cursor keys and ctrl, shift, alt");
-	}
+		// In Swing you must execute all code that modifies the user interface
+		// in the event dispatching thread
+		// Maybe VolatileImage may be processed in another thread
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new Frame(
+						"Tile'n'Tree   ---  please press cursor keys and ctrl, shift, alt")
+						.setVisible(true);
 
+			}
+		});
+
+	}
 }

@@ -21,6 +21,10 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 package frame;
 
 
+import inputDevice.Keyboard;
+import inputDevice.Mapping;
+import inputDevice.Modifier;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -38,6 +42,7 @@ import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import rasterizer.MakeTheBestOfSwing;
 import tile.Tile;
@@ -48,7 +53,7 @@ import vector2.RectSize;
 import vector2.Vector;
 
 
-public class Frame  extends JFrame{
+public class Frame  extends JFrame implements Mapping{
 	/**
 	 * 
 	 */
@@ -64,7 +69,7 @@ public class Frame  extends JFrame{
 		// Premature optimization (or aero non portable look and feel)	        
 		///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 
-		setVisible(true);
+		//setVisible(true);
 
 		this.tiles=new Tiles(this.tileSize, this);
 
@@ -72,24 +77,10 @@ public class Frame  extends JFrame{
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
 
+		
+		
 		// I cannot use bindings since this code is supposed to be String free
-		addKeyListener(new KeyListener() {
-				public void keyPressed(KeyEvent e) { 
-					System.out.println("pressed");
-				}
-	
-				@Override
-				public void keyReleased(KeyEvent arg0) {
-					System.out.println("released");
-				}
-	
-				@Override
-				public void keyTyped(KeyEvent arg0) {
-					System.out.println("typed");
-					//F1 => new Configuration("Configuration");
-				}
-			}
-		);
+		addKeyListener(new Keyboard(this));
 
 		tiles.generate( this);
 	}
@@ -173,7 +164,7 @@ public class Frame  extends JFrame{
 		this.gForRec=g;
 		this.treepos=new Vector(pos.x+400, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree()); // root == frame window
+		this.drawTree( 2,3,Util.createSampleTree()); // root == frame window // Dupe (2,3)
 
 		g.drawString("Hello World",  320+1, 64-3);
 
@@ -228,7 +219,7 @@ public class Frame  extends JFrame{
 
 	// This is a low priority candidate for speed optimization (remove multiplication)
 	private int shade; // ToDo: Use Setter to limit access to lower bits
-	private Vector cursor=new Vector(0,0);
+	private Vector cursor=new Vector(2,3); // Dupe (2,3)
 	private void drawVI(int x, int y, int i, int j) {
 		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<1 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j);
 	}
@@ -253,7 +244,7 @@ public class Frame  extends JFrame{
 
 	// with the help of source, the seam can be taken or omitted
 	// straigth line on seam
-	// ToDo: remove dupes?
+	// ToDo: remove dupes? Extract and JUnitTest for dangling bounds
 	private void flip(Graphics2D g, VolatileImage vi, Vector v , int f){
 		
 		AffineTransform backup=g.getTransform(); // TextOut wants a different rotation
@@ -309,6 +300,38 @@ public class Frame  extends JFrame{
 		//	     		
 		
 		g.setTransform(backup); // TextOut wants a different rotation
+	}
+
+
+
+	@Override
+	public void move(Vector d, Modifier m) {
+		System.out.println("In move: "+this.cursor.s);
+		this.cursor.add(d);
+		this.repaint();
+	}
+
+	// ToDo: uh ugly  External file? C# ?
+	@Override
+	public void escape() {
+		JOptionPane.showMessageDialog(this,
+				"Copyright 2014   Arne Christian  Rosenfeldt "+System.lineSeparator()+
+				""+System.lineSeparator()+
+				 "This program is free software: you can redistribute it and/or modify"+System.lineSeparator()+
+				 "it under the terms of the GNU General Public License as published by"+System.lineSeparator()+
+				 "the Free Software Foundation, either version 3 of the License, or"+System.lineSeparator()+
+				 "(at your option) any later version."+System.lineSeparator()+
+				 ""+System.lineSeparator()+
+				 "This program is distributed in the hope that it will be useful,"+System.lineSeparator()+
+				 "but WITHOUT ANY WARRANTY; without even the implied warranty of"+System.lineSeparator()+
+				 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"+System.lineSeparator()+
+				 "GNU General Public License for more details."+System.lineSeparator()+
+				 ""+System.lineSeparator()+
+				 "You should have received a copy of the GNU General Public License"+System.lineSeparator()+
+				 "along with this program.  If not, see <http://www.gnu.org/licenses/>."+System.lineSeparator()
+,
+			    "about",
+			    JOptionPane.WARNING_MESSAGE);
 	}
 
 

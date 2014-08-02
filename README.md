@@ -8,15 +8,17 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 * construct tree
 	* top to bottom
 	* connector tiles
-	* ----
+	* ~clean up
 	* cursor
 		* (selected) tile
-	* folding
+	* ~testing
+	* ----
 
 * references
 * foreground layer
 	*	crossing (all alternatives look ugly)
 	*	nTupel
+* folding
 * scrolling
 	*	open newest part
 	*	no scrollbar (game does not have such a thing)

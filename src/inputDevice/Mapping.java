@@ -15,22 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 */
-package frame;
+package inputDevice;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import vector2.Vector;
 
-public class Configuration extends JFrame {
-	public Configuration(String title)
-{
-	super(title);
-	JPanel p=new JPanel();
-	this.rootPane.add(p);
-	//p.add(new JLabel("	"+
-//));
-}
-
-	private static final long serialVersionUID = -4231498755200978778L;
-
+public interface Mapping {
+	public void move(Vector d, Modifier m);
+	public void escape();
 }
