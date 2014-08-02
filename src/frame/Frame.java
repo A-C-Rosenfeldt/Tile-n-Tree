@@ -166,9 +166,11 @@ public class Frame  extends JFrame{
 
 		// String
 		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
-		this.topLevelx=pos.x+432;
+		//this.topLevelx=pos.x+432;
 		this.gForRec=g;
-		this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
+		this.treepos=new Vector(pos.x+400, pos.y);
+		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
+		this.drawTree( 2,3,Util.createSampleTree()); // root == frame window
 
 		g.drawString("Hello World",  320+1, 64-3);
 
@@ -183,8 +185,8 @@ public class Frame  extends JFrame{
 	}
 	// Parameter from this.paint to this.drawTree
 	private Graphics gForRec; // ToDo: Extra class?
-	private int topLevelx;
-	private final int[][] tileSet={};
+	//private int topLevelx;
+	private Vector treepos;
 	private int drawTree(int x, int y, Node current) {
 		// Tree
 		/*
@@ -195,40 +197,39 @@ public class Frame  extends JFrame{
 		3,4
 		 */
 
-		// ToDo: Here the coordinates are not eqally handeled. Stop using an Array s[2] ? 
+		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 
-		for (Node node : current.children) {
+		this.shade=0;
 
-			int xm=x-2*this.tileSize.s[0];
+		
+		for (int i=0;i< current.children.size();i++) {
+			Node node=current.children.get(i);
 			int xi;
-			for(xi=this.topLevelx;xi<xm;xi+=this.tileSize.s[0]){	
-				drawVolatileImage(y, xi, 6, 4);
+			for(xi=0;xi<x-2;xi++){	
+				drawVI(xi, y, 3, 4);
 			}
-	
-	//		xm+=this.tileSize.s[0];
-		//	for(;xi<xm;xi+=this.tileSize.s[0]){	
-				drawVolatileImage(y, xm, 2, 6);
-	//		}
-			
-			xm+=this.tileSize.s[0];
-		//	for(;xi<=x;xi+=this.tileSize.s[0]){	
-			
-				drawVolatileImage(y, xm, 2, 2);
-	//		}
-			
-			drawVolatileImage(y, x, 4, 0);
-			
-			this.gForRec.drawString(node.title,  x+1, y-3+this.tileSize.s[1]);
-			y+=this.tileSize.s[1];
-			y=this.drawTree( x+this.tileSize.s[0],y, node);
+
+			drawVI(xi, y, i+1==current.children.size()?0:1, 6);
+			xi++;
+			drawVI(xi, y, node.children.size()!=0?1:3, 2);
+			drawVI(x, y, 2, 0);
+
+			Vector v=new Vector(this.treepos, this.tileSize,x,y+1);
+			this.gForRec.drawString(node.title,  v.s[0]+1, v.s[1]-3);
+			y++;
+			y=this.drawTree( x+1,y, node);
 		}
 
 		return y; // ToDo: Why does boxing not work?
 	}
 
+	// This is a low priority candidate for speed optimization (remove multiplication)
+	private int shade; // ToDo: Use Setter to limit access to lower bits
+	private void drawVI(int x, int y, int i, int j) {
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<1 + (shade), j);
+	}
 
-
-	private void drawVolatileImage(int y, int xi, int i, int j) {
+	private void drawVolatileImage(Vector v, int i, int j) {
 		VolatileImage vi = tiles.vImg[i];
 		do {	
 
@@ -240,7 +241,7 @@ public class Frame  extends JFrame{
 				tiles.updateTile( this,  i);
 			}
 
-			this.flip((Graphics2D) this.gForRec,vi,new Vector(xi,y),j);
+			this.flip((Graphics2D) this.gForRec,vi,v,j);
 		} while (vi.contentsLost());
 	}
 

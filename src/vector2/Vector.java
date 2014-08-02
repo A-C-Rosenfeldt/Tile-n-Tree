@@ -27,4 +27,11 @@ public class Vector extends Tupel {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Vector(Vector a, RectSize b, int x, int y) {
+		super();
+		for(int i=this.s.length-1;i>=0;i--){
+			this.s[i]=a.s[i]+b.s[i]*y;
+			y=x; // ToDo this hack does not generalize to nTupel
+		}
+	}
 }

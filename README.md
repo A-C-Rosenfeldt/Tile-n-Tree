@@ -7,8 +7,8 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 * cache parameter
 * construct tree
 	* top to bottom
-	* ----
 	* connector tiles
+	* ----
 	* cursor
 		* (selected) tile
 	* folding
@@ -16,6 +16,7 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 * references
 * foreground layer
 	*	crossing (all alternatives look ugly)
+	*	nTupel
 * scrolling
 	*	open newest part
 	*	no scrollbar (game does not have such a thing)

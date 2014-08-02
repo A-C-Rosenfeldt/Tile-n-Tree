@@ -28,6 +28,10 @@ public class Tupel {
 		this.s[1]=l1;
 	}
 	
+	protected Tupel() {
+		// do not create initialized objects! But this is needed for constructors in derived classes
+	}
+
 	public void AddAt(int x, int i)
 	{
 		this.s[i]+=x;
