@@ -112,6 +112,9 @@ public class Frame  extends JFrame implements Mapping{
 		System.out.println(pos.y);
 		System.out.println(bounds.y);
 
+		/*
+		 depreciated
+		 
 
 		///System.out.print( rs.s[0]/2); System.out.print(" ");System.out.print( rs.s[1]/2); System.out.print(" ");System.out.print( rs.s[0]); System.out.print(" ");System.out.print( rs.s[1]); System.out.print(" ");System.out.print( 0);System.out.print( 90);
 		g.drawArc(rs.s[0]/2, rs.s[1]/2, rs.s[0], rs.s[1], 0, 90);
@@ -150,15 +153,21 @@ public class Frame  extends JFrame implements Mapping{
 				}
 			} while (vi.contentsLost());
 		}
-
+		*/
+		
 		// String
 		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
 		//this.topLevelx=pos.x+432;
 		this.gForRec=g;
 		this.treepos=new Vector(pos.x+400, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree(),false); // root == frame window // Dupe (2,3)
+		this.drawTree( 2,3,Util.createSampleTree(),false,0,0); // root == frame window // Dupe (2,3)
 
+		this.treepos=new Vector(pos.x, pos.y);
+		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
+		this.drawTree( 2,3,Util.createSampleTree(),false,0,4); // root == frame window // Dupe (2,3)
+		
+		
 		// ToDo try{} around resources
 
 		// probably now the
@@ -170,7 +179,7 @@ public class Frame  extends JFrame implements Mapping{
 	private Graphics gForRec; // ToDo: Extra class?
 	//private int topLevelx;
 	private Vector treepos;
-	private int drawTree(int x, int y, Node current, boolean linkPasses) {
+	private int drawTree(int x, int y, Node current, boolean linkPasses, int xMin, int trans) {
 		// Tree
 		/*
 			 i,j  
@@ -189,6 +198,7 @@ public class Frame  extends JFrame implements Mapping{
 			Node node=current.getChildren().get(i);
 			
 			this.shade=0;
+			this.transformation=trans;
 			int xi;
 		
 			{
@@ -240,19 +250,38 @@ public class Frame  extends JFrame implements Mapping{
 			drawVI(xi, y, 2, 0);			
 			xi--;
 			drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
-			Vector v=new Vector(this.treepos, this.tileSize,x,y+1);
+			
+			Vector v;
+			if ((transformation & 4) == 0) {
+				v = new Vector(this.treepos, this.tileSize, x, y + 1);
+			} else {
+				v = new Vector(this.treepos, this.tileSize, y, x + 1);
+			}
+			
 			this.gForRec.drawString(node.getTitle(),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
 			xi--;
-			drawVI(xi, y, i + 1 == current.getChildren().size() ? 0 : 1, 6);
+			if (i + 1 == current.getChildren().size()) {
+				drawVI(xi, y, 0, 6);
+				if (xi==xMin){
+					xMin++;
+				}
+			} else {
+				drawVI(xi, y, 1, 6);
+			}
 			xi--;
 			
-			while(xi>=0){	
+			while(xi>=xMin){	
 				drawVI(xi, y, 3, 4);
 				xi--;
 			}
+	
+			while(xi>=0){	
+				drawVI(xi, y, 2, 0);
+				xi--;
+			}			
 			
 			y++;
-			y=this.drawTree( x+1,y, node,linkPasses);
+			y=this.drawTree( x+1,y, node,linkPasses, xMin, trans);
 		}
 
 		return y; // ToDo: Why does boxing not work?
@@ -261,8 +290,14 @@ public class Frame  extends JFrame implements Mapping{
 	// This is a low priority candidate for speed optimization (remove multiplication)
 	private int shade; // ToDo: Use Setter to limit access to lower bits
 	private Vector cursor=new Vector(2,3); // Dupe (2,3)
+	private int transformation;
 	private void drawVI(int x, int y, int i, int j) {
-		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j);
+		
+		if ((this.transformation & 4)==0){
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j^this.transformation);
+		}else{
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,y,x),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j^this.transformation);
+		}
 	}
 
 	private void drawVolatileImage(Vector v, int i, int j) {

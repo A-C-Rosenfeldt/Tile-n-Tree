@@ -28,6 +28,17 @@ public class Util {
 		Node philip=new Node("Philip");
 		philip.setValue(harry);
 		node.getChildren().add(philip);	
+		Node location=new Node("Place");
+		Node time=new Node("Time");
+		
+		philip.getChildren().add(location);
+		philip.getChildren().add(time);
+		
+		location.getChildren().add(new Node("Buckigham"));
+		location.getChildren().add(new Node("in the country"));
+		
+		time.getChildren().add(new Node("during the week"));
+		time.getChildren().add(new Node("Weekend"));
 		
 		return node;
 	}
