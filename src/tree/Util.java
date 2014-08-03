@@ -42,8 +42,17 @@ public class Util {
 		location.getChildren().add(new Node("with friends"));
 		
 		ArrayList<Node> s=time.getChildren();
-		s.add(new Node("during the week"));
-		s.add(new Node("Weekend"));
+		Node unitOfTime;
+		unitOfTime=new Node("during the week");
+		unitOfTime.getChildren().add(new Node("0"));
+		unitOfTime.getChildren().add(new Node("1"));
+		unitOfTime.getChildren().add(new Node("2"));
+		s.add(unitOfTime);
+		unitOfTime=new Node("Weekend");
+		unitOfTime.getChildren().add(new Node("0"));
+		unitOfTime.getChildren().add(new Node("1"));
+		unitOfTime.getChildren().add(new Node("2"));
+		s.add(unitOfTime);
 		
 		
 		return node;

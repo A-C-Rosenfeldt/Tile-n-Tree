@@ -16,8 +16,8 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 	* more tiles
 	* route
 		* simple use case
-* ----
 * bend
+* ----
 * table
 * more references
 * foreground layer

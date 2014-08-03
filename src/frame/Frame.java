@@ -199,6 +199,11 @@ public class Frame  extends JFrame implements Mapping{
 			this.transformation=trans;
 			int x3=xi;
 			while (y < t.s[0]-1) {
+				
+				while (xi > x3) {
+					drawVI(xi, y, 2, 0);
+					xi--;
+				}
 				// dupe {
 				while (xi >= x_min) {
 					drawVI(xi, y, 3, 4);
@@ -210,7 +215,7 @@ public class Frame  extends JFrame implements Mapping{
 					xi--;
 				}
 				y++;
-				xi = x3;
+				xi = x3+3;
 			}
 			// dupe }			
 			
@@ -340,7 +345,7 @@ public class Frame  extends JFrame implements Mapping{
 		if ((this.transformation & 4)==0){
 		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j^this.transformation);
 		}else{
-		drawVolatileImage(new Vector(this.treepos, this.tileSize,y,x),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j^this.transformation);
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,y,x),  i<<2 | (shade) | ((y==this.cursor.s[0] && x==this.cursor.s[1])? 1:0), j^this.transformation);
 		}
 	}
 
@@ -402,7 +407,7 @@ public class Frame  extends JFrame implements Mapping{
 			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
 		}
 		//g.drawImage(vi,  16,16, this);
-		//g.setXORMode(new Color(1,1,1)); // ToDo: Make UnitTest to check that every screen tile is painted to exactly once
+		// g.setXORMode(new Color(1,1,1)); // ToDo: Make UnitTest to check that every screen tile is painted to exactly once
 		g.drawImage(vi,0,0,tileSize.s[0],tileSize.s[1]
 				,c[1][0]+ ((f>>0) & 1),c[1][1]+ ((f>>1) & 1),c[1][2]+  ((f>>0) & 1),c[1][3]+ ((f>>1) & 1),           this); // remove double seam / allow for odd width
 
