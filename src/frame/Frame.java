@@ -193,18 +193,26 @@ public class Frame  extends JFrame implements Mapping{
 			xi--;
 			drawVI(xi, y, 0, 6);
 			xi--;
-			// dupe {
-			while(xi>=x_min){	
-				drawVI(xi, y, 3, 4);
-				xi--;
-			}
-	
-			while(xi>=x_min2){	
-				drawVI(xi, y, 2, 0);
-				xi--;
-			}					
-			// dupe }
+
 			t=  drawTreeInner( y+2,x_anchor+1  ,  current.getChildren(),  linkPasses,  y+2,y+2,  trans^current.getSwapCoordinates());
+			
+			this.transformation=trans;
+			int x3=xi;
+			while (y < t.s[0]-1) {
+				// dupe {
+				while (xi >= x_min) {
+					drawVI(xi, y, 3, 4);
+					xi--;
+				}
+
+				while (xi >= x_min2) {
+					drawVI(xi, y, 2, 0);
+					xi--;
+				}
+				y++;
+				xi = x3;
+			}
+			// dupe }			
 			
 			return new Tupel(x_anchor,t.s[0]-1);
 		}else{
@@ -239,35 +247,9 @@ public class Frame  extends JFrame implements Mapping{
 				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
 									// tiles!
 				xi = 10;// x + 4;
-				if (node.getValueOf() != null) {
-
-					drawVI(xi, y, 0, 2);
-					xi--;
-					drawVI(xi, y, 3, 2);
-					xi--;
-
-					while (xi > x_anchor+1) {
-						drawVI(xi, y, 3, 2);
-						xi--;
-					}
-
-					drawVI(xi, y, 2, 0);
-					xi--;
-
-					linkPasses = true;
-				}
-
-				if (linkPasses) {
-					drawVI(xi, y, 3, 4);
-				}
 
 				if (node.getValue() != null) {
-
 					drawVI(xi, y, 0, 0);
-					xi--;
-					drawVI(xi, y, 3, 2);
-					xi--;
-					drawVI(xi, y, 3, 2);
 					xi--;
 					while (xi > x_anchor) {
 						drawVI(xi, y, 3, 2);
@@ -275,7 +257,29 @@ public class Frame  extends JFrame implements Mapping{
 					}
 
 					linkPasses = false;
+				}				
+				
+
+				if (linkPasses) {
+					drawVI(xi, y, 3, 4);
 				}
+
+				
+				if (node.getValueOf() != null) {
+					drawVI(xi, y, 0, 2);
+					xi--;
+					while (xi > x_anchor+1) {
+						drawVI(xi, y, 3, 2);
+						xi--;
+					}
+
+					drawVI(xi, y, 2,0);
+					xi--;
+					
+					linkPasses = true;
+				}				
+				
+				
 				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
 									// tiles!
 			}
@@ -398,7 +402,7 @@ public class Frame  extends JFrame implements Mapping{
 			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
 		}
 		//g.drawImage(vi,  16,16, this);
-
+		//g.setXORMode(new Color(1,1,1)); // ToDo: Make UnitTest to check that every screen tile is painted to exactly once
 		g.drawImage(vi,0,0,tileSize.s[0],tileSize.s[1]
 				,c[1][0]+ ((f>>0) & 1),c[1][1]+ ((f>>1) & 1),c[1][2]+  ((f>>0) & 1),c[1][3]+ ((f>>1) & 1),           this); // remove double seam / allow for odd width
 
