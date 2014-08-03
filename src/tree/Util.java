@@ -49,9 +49,11 @@ public class Util {
 		unitOfTime.getChildren().add(new Node("2"));
 		s.add(unitOfTime);
 		unitOfTime=new Node("Weekend");
-		unitOfTime.getChildren().add(new Node("0"));
-		unitOfTime.getChildren().add(new Node("1"));
-		unitOfTime.getChildren().add(new Node("2"));
+		unitOfTime.setSwapCoordinates(4);
+		unitOfTime.setChicane(true);
+		unitOfTime.getChildren().add(new Node("X"));
+		unitOfTime.getChildren().add(new Node("O"));
+		unitOfTime.getChildren().add(new Node("X"));
 		s.add(unitOfTime);
 		
 		

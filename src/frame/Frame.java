@@ -194,7 +194,7 @@ public class Frame  extends JFrame implements Mapping{
 			drawVI(xi, y, 0, 6);
 			xi--;
 
-			t=  drawTreeInner( y+2,x_anchor+1  ,  current.getChildren(),  linkPasses,  y+2,y+2,  trans^current.getSwapCoordinates());
+			t=  drawTreeInner( y+2,x_anchor+1  ,  current.getChildren(),  linkPasses,  y+0,y+0,  trans^current.getSwapCoordinates(), current.isChicane());
 			
 			this.transformation=trans;
 			int x3=xi;
@@ -221,12 +221,12 @@ public class Frame  extends JFrame implements Mapping{
 			
 			return new Tupel(x_anchor,t.s[0]-1);
 		}else{
-		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans);
+		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans, current.isChicane());
 		}
 		
 	}
 	
-	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans) {
+	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans, boolean chicane) {
 		// Tree
 		/*
 			 i,j  
@@ -238,9 +238,12 @@ public class Frame  extends JFrame implements Mapping{
 
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 
+		if (chicane){
+			x_anchor-=2;
+		}
+		
 		int x_max=x_anchor;;
 
-		
 		for (int i=0;i< nodes.size();i++) {
 			Node node=nodes.get(i);
 			
@@ -292,7 +295,9 @@ public class Frame  extends JFrame implements Mapping{
 			xi=x_anchor;
 			drawVI(xi, y, 2, 0);			
 			xi--;
-			drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
+			if (!chicane) {
+				drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
+			}
 			
 			Vector v;
 			if ((transformation & 4) == 0) {
@@ -303,15 +308,17 @@ public class Frame  extends JFrame implements Mapping{
 			
 			this.gForRec.drawString(node.getTitle(),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
 			xi--;
-			if (i + 1 == nodes.size()) {
-				drawVI(xi, y, 0, 6);
-				if (xi==x_min){
-					x_min++;
+			if (!chicane) {
+				if (i + 1 == nodes.size()) {
+					drawVI(xi, y, 0, 6);
+					if (xi == x_min) {
+						x_min++;
+					}
+				} else {
+					drawVI(xi, y, 1, 6);
 				}
-			} else {
-				drawVI(xi, y, 1, 6);
+				xi--;
 			}
-			xi--;
 			
 			while(xi>=x_min){	
 				drawVI(xi, y, 3, 4);

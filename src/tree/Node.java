@@ -29,7 +29,9 @@ public class Node {
 	private ArrayList<Node> children=new ArrayList<Node>();
 	// needed for tables. Useful for layout
 	//private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
-	private int swapCoordinates=0; // see  class Tiles  for definition (not yet fixed)  
+	private int swapCoordinates=0; // see  class Tiles  for definition (not yet fixed) 
+	private boolean chicane=false; //a special for tables
+	
 	// References
 	private Node link; // appears to the left 
 	private Node value; // appears  stores values
@@ -101,6 +103,14 @@ public class Node {
 
 	public Node getValueOf() {
 		return valueOf;
+	}
+
+	public boolean isChicane() {
+		return chicane;
+	}
+
+	public void setChicane(boolean chicane) {
+		this.chicane = chicane;
 	}
 
 }
