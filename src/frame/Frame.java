@@ -281,7 +281,11 @@ public class Frame  extends JFrame implements Mapping{
 			}			
 			
 			y++;
-			y=this.drawTree( x+1,y, node,linkPasses, xMin, trans);
+			if ((node.getSwapCoordinates()&4)==0){
+				y=this.drawTree( x+1,y, node,linkPasses, xMin, trans^node.getSwapCoordinates());
+			}else{
+				y=this.drawTree( y,x+1, node,linkPasses, y, trans^node.getSwapCoordinates());
+			}
 		}
 
 		return y; // ToDo: Why does boxing not work?

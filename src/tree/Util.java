@@ -17,6 +17,8 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
  */
 package tree;
 
+import java.util.ArrayList;
+
 public class Util {
 	public static Node createSampleTree(){
 		Node charles=new Node("Charles");
@@ -30,6 +32,7 @@ public class Util {
 		node.getChildren().add(philip);	
 		Node location=new Node("Place");
 		Node time=new Node("Time");
+		time.setSwapCoordinates(4);
 		
 		philip.getChildren().add(location);
 		philip.getChildren().add(time);
@@ -37,8 +40,10 @@ public class Util {
 		location.getChildren().add(new Node("Buckigham"));
 		location.getChildren().add(new Node("in the country"));
 		
-		time.getChildren().add(new Node("during the week"));
-		time.getChildren().add(new Node("Weekend"));
+		ArrayList<Node> s=time.getChildrenSwapCoordinates();
+		s.add(new Node("during the week"));
+		s.add(new Node("Weekend"));
+		
 		
 		return node;
 	}

@@ -29,7 +29,7 @@ public class Node {
 	private ArrayList<Node> children=new ArrayList<Node>();
 	// needed for tables. Useful for layout
 	private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
-	private int swapCoordinates; // see  class Tiles  for definition (not yet fixed)  
+	private int swapCoordinates=0; // see  class Tiles  for definition (not yet fixed)  
 	// References
 	private Node link; // appears to the left 
 	private Node value; // appears  stores values
