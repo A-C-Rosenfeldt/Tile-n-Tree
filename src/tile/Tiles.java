@@ -25,6 +25,7 @@ import java.awt.image.VolatileImage;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.GraphicsEnvironment;
 import java.awt.GraphicsDevice;
@@ -165,6 +166,18 @@ public class Tiles {
 			m<<=1;
 			if ((i & m )!=0) g.drawArc(-s[0]/2, +s[1]/2, s[0], s[1], +90,360); // ToDo explain 10 ->
 
+			// remove dupe and add arrow
+			if ((i >> 1)==5){
+				g.drawLine(0, s[1]/2, s[0], s[1]/2); // dupe
+				
+				Polygon p=new Polygon();
+				p.addPoint(0,s[1]/2); // Todo use trans here (but linewidth?)
+				p.addPoint(s[0]/2,0); // Todo use trans here
+				p.addPoint(s[0]/2,s[1]);
+			
+				g.fillPolygon(p);
+			}
+			
 			// Ramp used instead: if ((i & 8 )!=0) g.drawLine( s[0]/2,0,  s[0]/2, s[1]);
 
 			// g.drawArc(0,0, 16, 16, -90,90);

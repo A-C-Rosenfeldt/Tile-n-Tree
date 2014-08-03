@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.util.List;
 import java.awt.Rectangle;
@@ -156,11 +157,7 @@ public class Frame  extends JFrame implements Mapping{
 		this.gForRec=g;
 		this.treepos=new Vector(pos.x+400, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree()); // root == frame window // Dupe (2,3)
-
-		g.drawString("Hello World",  320+1, 64-3);
-
-
+		this.drawTree( 2,3,Util.createSampleTree(),false); // root == frame window // Dupe (2,3)
 
 		// ToDo try{} around resources
 
@@ -173,7 +170,7 @@ public class Frame  extends JFrame implements Mapping{
 	private Graphics gForRec; // ToDo: Extra class?
 	//private int topLevelx;
 	private Vector treepos;
-	private int drawTree(int x, int y, Node current) {
+	private int drawTree(int x, int y, Node current, boolean linkPasses) {
 		// Tree
 		/*
 			 i,j  
@@ -185,25 +182,77 @@ public class Frame  extends JFrame implements Mapping{
 
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 
-		this.shade=0;
+		
 
 		
-		for (int i=0;i< current.children.size();i++) {
-			Node node=current.children.get(i);
+		for (int i=0;i< current.getChildren().size();i++) {
+			Node node=current.getChildren().get(i);
+			
+			this.shade=0;
 			int xi;
-			for(xi=0;xi<x-2;xi++){	
-				drawVI(xi, y, 3, 4);
+		
+			{
+				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
+									// tiles!
+				xi = 10;// x + 4;
+				if (node.getValueOf() != null) {
+
+					drawVI(xi, y, 0, 2);
+					xi--;
+					drawVI(xi, y, 3, 2);
+					xi--;
+
+					while (xi > x+1) {
+						drawVI(xi, y, 3, 2);
+						xi--;
+					}
+
+					drawVI(xi, y, 2, 0);
+					xi--;
+
+					linkPasses = true;
+				}
+
+				if (linkPasses) {
+					drawVI(xi, y, 3, 4);
+				}
+
+				if (node.getValue() != null) {
+
+					drawVI(xi, y, 0, 0);
+					xi--;
+					drawVI(xi, y, 3, 2);
+					xi--;
+					drawVI(xi, y, 3, 2);
+					xi--;
+					while (xi > x) {
+						drawVI(xi, y, 3, 2);
+						xi--;
+					}
+
+					linkPasses = false;
+				}
+				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
+									// tiles!
 			}
 
-			drawVI(xi, y, i+1==current.children.size()?0:1, 6);
-			xi++;
-			drawVI(xi, y, node.children.size()!=0?1:3, 2);
-			drawVI(x, y, 2, 0);
-
+			xi=x;
+			drawVI(xi, y, 2, 0);			
+			xi--;
+			drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
 			Vector v=new Vector(this.treepos, this.tileSize,x,y+1);
-			this.gForRec.drawString(node.title,  v.s[0]+1, v.s[1]-3);
+			this.gForRec.drawString(node.getTitle(),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
+			xi--;
+			drawVI(xi, y, i + 1 == current.getChildren().size() ? 0 : 1, 6);
+			xi--;
+			
+			while(xi>=0){	
+				drawVI(xi, y, 3, 4);
+				xi--;
+			}
+			
 			y++;
-			y=this.drawTree( x+1,y, node);
+			y=this.drawTree( x+1,y, node,linkPasses);
 		}
 
 		return y; // ToDo: Why does boxing not work?

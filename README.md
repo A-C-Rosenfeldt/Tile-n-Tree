@@ -12,9 +12,10 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 	* cursor
 		* (selected) tile
 	* ~testing
-	* ----
-
 * references
+	* more tiles
+	* route
+		* simple use case
 * foreground layer
 	*	crossing (all alternatives look ugly)
 	*	nTupel
