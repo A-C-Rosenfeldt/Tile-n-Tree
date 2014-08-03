@@ -162,11 +162,11 @@ public class Frame  extends JFrame implements Mapping{
 		this.gForRec=g;
 		this.treepos=new Vector(pos.x+300, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree(),false,0,0); // root == frame window // Dupe (2,3)
+		this.drawTree( 2,3,Util.createSampleTree(),false,0,0,0); // root == frame window // Dupe (2,3)
 
 		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree(),false,0,4); // root == frame window // Dupe (2,3)
+		this.drawTree( 2,3,Util.createSampleTree(),false,0,0,4); // root == frame window // Dupe (2,3)
 		
 		
 		// ToDo try{} around resources
@@ -181,20 +181,35 @@ public class Frame  extends JFrame implements Mapping{
 	//private int topLevelx;
 	private Vector treepos;
 	
-	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, int x_min, int trans) {
+	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, int x_min, int x_min2, int trans) {
 		Tupel t=new Tupel(x_anchor,y);
-		if (current.getChildrenSwapCoordinates().size()>0){
+		if ((current.getSwapCoordinates()&4)>0){
 			this.shade=0;
 			this.transformation=trans;
-			int xi=x_anchor-1;
+			int xi=x_anchor;
+			drawVI(xi, y, 3, 2);
+			xi--;			
 			drawVI(xi, y, 3, 2);
 			xi--;
-			drawVI(xi, y, current.getChildren().size()>0?0:1, 6);
+			drawVI(xi, y, 0, 6);
 			xi--;
-			t=  drawTreeInner( y+2,x_anchor  ,  current.getChildrenSwapCoordinates(),  linkPasses,  y+2,y+2,  trans^current.getSwapCoordinates());
-			y+=2;
+			// dupe {
+			while(xi>=x_min){	
+				drawVI(xi, y, 3, 4);
+				xi--;
+			}
+	
+			while(xi>=x_min2){	
+				drawVI(xi, y, 2, 0);
+				xi--;
+			}					
+			// dupe }
+			t=  drawTreeInner( y+2,x_anchor+1  ,  current.getChildren(),  linkPasses,  y+2,y+2,  trans^current.getSwapCoordinates());
+			
+			return new Tupel(x_anchor,t.s[0]-1);
+		}else{
+		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans);
 		}
-		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min, trans);
 		
 	}
 	
@@ -268,7 +283,7 @@ public class Frame  extends JFrame implements Mapping{
 			xi=x_anchor;
 			drawVI(xi, y, 2, 0);			
 			xi--;
-			drawVI(xi, y, node.getChildren().size()+node.getChildrenSwapCoordinates().size() != 0 ? 1 : 3, 2);
+			drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
 			
 			Vector v;
 			if ((transformation & 4) == 0) {
@@ -302,7 +317,7 @@ public class Frame  extends JFrame implements Mapping{
 			y++;
 			Tupel t;
 		
-				t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, trans);
+				t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, x_min2, trans);
 		
 			
 			y=t.s[1];

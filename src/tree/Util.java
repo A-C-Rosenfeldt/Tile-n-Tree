@@ -37,11 +37,11 @@ public class Util {
 		philip.getChildren().add(time);
 		philip.getChildren().add(location);
 
-		
 		location.getChildren().add(new Node("Buckigham"));
 		location.getChildren().add(new Node("in the country"));
+		location.getChildren().add(new Node("with friends"));
 		
-		ArrayList<Node> s=time.getChildrenSwapCoordinates();
+		ArrayList<Node> s=time.getChildren();
 		s.add(new Node("during the week"));
 		s.add(new Node("Weekend"));
 		

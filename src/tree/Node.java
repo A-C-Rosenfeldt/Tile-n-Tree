@@ -28,7 +28,7 @@ public class Node {
 	// Aggregation	
 	private ArrayList<Node> children=new ArrayList<Node>();
 	// needed for tables. Useful for layout
-	private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
+	//private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
 	private int swapCoordinates=0; // see  class Tiles  for definition (not yet fixed)  
 	// References
 	private Node link; // appears to the left 
@@ -58,13 +58,13 @@ public class Node {
 		this.children = children;
 	}
 
-	public ArrayList<Node> getChildrenSwapCoordinates() {
-		return childrenSwapCoordinates;
-	}
-
-	public void setChildrenSwapCoordinates(ArrayList<Node> childrenSwapCoordinates) {
-		this.childrenSwapCoordinates = childrenSwapCoordinates;
-	}
+//	public ArrayList<Node> getChildrenSwapCoordinates() {
+//		return childrenSwapCoordinates;
+//	}
+//
+//	public void setChildrenSwapCoordinates(ArrayList<Node> childrenSwapCoordinates) {
+//		this.childrenSwapCoordinates = childrenSwapCoordinates;
+//	}
 
 	public int getSwapCoordinates() {
 		return swapCoordinates;
