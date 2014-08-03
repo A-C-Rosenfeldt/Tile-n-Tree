@@ -37,24 +37,36 @@ public class Util {
 		philip.getChildren().add(time);
 		philip.getChildren().add(location);
 
-		location.getChildren().add(new Node("Buckigham"));
-		location.getChildren().add(new Node("in the country"));
-		location.getChildren().add(new Node("with friends"));
+		location.getChildren().add(new Node("Bu"));
+		location.getChildren().add(new Node("co"));
+		location.getChildren().add(new Node("at"));
 		
 		ArrayList<Node> s=time.getChildren();
 		Node unitOfTime;
-		unitOfTime=new Node("during the week");
-		unitOfTime.getChildren().add(new Node("0"));
-		unitOfTime.getChildren().add(new Node("1"));
-		unitOfTime.getChildren().add(new Node("2"));
-		s.add(unitOfTime);
-		unitOfTime=new Node("Weekend");
+		
+		unitOfTime=new Node("Mo");
 		unitOfTime.setSwapCoordinates(4);
 		unitOfTime.setChicane(true);
 		unitOfTime.getChildren().add(new Node("X"));
 		unitOfTime.getChildren().add(new Node("O"));
 		unitOfTime.getChildren().add(new Node("X"));
+		s.add(unitOfTime);		
+		
+		unitOfTime=new Node("Sa");
+		unitOfTime.getChildren().add(new Node("0"));
+		unitOfTime.getChildren().add(new Node("1"));
+		
+		Node u=new Node("2");
+		u.setSwapCoordinates(4);
+		u.setChicane(true);
+		u.getChildren().add(new Node("x"));
+		u.getChildren().add(new Node("F"));
+		u.getChildren().add(new Node("L"));
+		
+		
+		unitOfTime.getChildren().add(u);
 		s.add(unitOfTime);
+
 		
 		
 		return node;

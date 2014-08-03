@@ -61,7 +61,7 @@ public class Frame  extends JFrame implements Mapping{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private RectSize tileSize=new RectSize(16,16); // technically this is a property of each tile (it the ImageBuffer). But since it is so important for the map, we have a master here.
+	private RectSize tileSize=new RectSize(20,20); // technically this is a property of each tile (it the ImageBuffer). But since it is so important for the map, we have a master here.
 	private Tiles tiles;
 
 	public Frame(String titel) {
@@ -160,13 +160,13 @@ public class Frame  extends JFrame implements Mapping{
 		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
 		//this.topLevelx=pos.x+432;
 		this.gForRec=g;
-		this.treepos=new Vector(pos.x+300, pos.y);
+		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree(),false,0,0,0); // root == frame window // Dupe (2,3)
+		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0); // root == frame window // Dupe (2,3)
 
 		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,3,Util.createSampleTree(),false,0,0,4); // root == frame window // Dupe (2,3)
+		//this.drawTree( 2,3,Util.createSampleTree(),false,0,0,4); // root == frame window // Dupe (2,3)
 		
 		
 		// ToDo try{} around resources
@@ -187,14 +187,18 @@ public class Frame  extends JFrame implements Mapping{
 			this.shade=0;
 			this.transformation=trans;
 			int xi=x_anchor;
+			if ( !current.isChicane()){
 			drawVI(xi, y, 3, 2);
 			xi--;			
 			drawVI(xi, y, 3, 2);
 			xi--;
 			drawVI(xi, y, 0, 6);
 			xi--;
+			}
+			
+			xi=x_anchor-3;
 
-			t=  drawTreeInner( y+2,x_anchor+1  ,  current.getChildren(),  linkPasses,  y+0,y+0,  trans^current.getSwapCoordinates(), current.isChicane());
+			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildren(),  linkPasses,  y+0,y+0,  trans^current.getSwapCoordinates(), current.isChicane());
 			
 			this.transformation=trans;
 			int x3=xi;
@@ -214,12 +218,14 @@ public class Frame  extends JFrame implements Mapping{
 					drawVI(xi, y, 2, 0);
 					xi--;
 				}
+				
 				y++;
+				
 				xi = x3+3;
 			}
 			// dupe }			
 			
-			return new Tupel(x_anchor,t.s[0]-1);
+			return new Tupel(x_anchor,t.s[0]-1+(current.isChicane()?1:0));
 		}else{
 		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans, current.isChicane());
 		}
@@ -239,7 +245,7 @@ public class Frame  extends JFrame implements Mapping{
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 
 		if (chicane){
-			x_anchor-=2;
+			//x_anchor-=2;
 		}
 		
 		int x_max=x_anchor;;
@@ -296,7 +302,7 @@ public class Frame  extends JFrame implements Mapping{
 			drawVI(xi, y, 2, 0);			
 			xi--;
 			if (!chicane) {
-				drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
+				drawVI(xi, y, node.getChildren().size() != 0 && !node.isChicane() ? 1 : 3, 2);
 			}
 			
 			Vector v;
@@ -318,7 +324,7 @@ public class Frame  extends JFrame implements Mapping{
 					drawVI(xi, y, 1, 6);
 				}
 				xi--;
-			}
+			
 			
 			while(xi>=x_min){	
 				drawVI(xi, y, 3, 4);
@@ -329,6 +335,7 @@ public class Frame  extends JFrame implements Mapping{
 				drawVI(xi, y, 2, 0);
 				xi--;
 			}			
+			}
 			
 			y++;
 			Tupel t;
