@@ -51,6 +51,7 @@ import tile.Tiles;
 import tree.Node;
 import tree.Util;
 import vector2.RectSize;
+import vector2.Tupel;
 import vector2.Vector;
 
 
@@ -159,7 +160,7 @@ public class Frame  extends JFrame implements Mapping{
 		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
 		//this.topLevelx=pos.x+432;
 		this.gForRec=g;
-		this.treepos=new Vector(pos.x+400, pos.y);
+		this.treepos=new Vector(pos.x+300, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
 		this.drawTree( 2,3,Util.createSampleTree(),false,0,0); // root == frame window // Dupe (2,3)
 
@@ -179,7 +180,25 @@ public class Frame  extends JFrame implements Mapping{
 	private Graphics gForRec; // ToDo: Extra class?
 	//private int topLevelx;
 	private Vector treepos;
-	private int drawTree(int x, int y, Node current, boolean linkPasses, int xMin, int trans) {
+	
+	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, int x_min, int trans) {
+		Tupel t=new Tupel(x_anchor,y);
+		if (current.getChildrenSwapCoordinates().size()>0){
+			this.shade=0;
+			this.transformation=trans;
+			int xi=x_anchor-1;
+			drawVI(xi, y, 3, 2);
+			xi--;
+			drawVI(xi, y, current.getChildren().size()>0?0:1, 6);
+			xi--;
+			t=  drawTreeInner( y+2,x_anchor  ,  current.getChildrenSwapCoordinates(),  linkPasses,  y+2,y+2,  trans^current.getSwapCoordinates());
+			y+=2;
+		}
+		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min, trans);
+		
+	}
+	
+	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans) {
 		// Tree
 		/*
 			 i,j  
@@ -191,11 +210,11 @@ public class Frame  extends JFrame implements Mapping{
 
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 
-		
+		int x_max=x_anchor;;
 
 		
-		for (int i=0;i< current.getChildren().size();i++) {
-			Node node=current.getChildren().get(i);
+		for (int i=0;i< nodes.size();i++) {
+			Node node=nodes.get(i);
 			
 			this.shade=0;
 			this.transformation=trans;
@@ -212,7 +231,7 @@ public class Frame  extends JFrame implements Mapping{
 					drawVI(xi, y, 3, 2);
 					xi--;
 
-					while (xi > x+1) {
+					while (xi > x_anchor+1) {
 						drawVI(xi, y, 3, 2);
 						xi--;
 					}
@@ -235,7 +254,7 @@ public class Frame  extends JFrame implements Mapping{
 					xi--;
 					drawVI(xi, y, 3, 2);
 					xi--;
-					while (xi > x) {
+					while (xi > x_anchor) {
 						drawVI(xi, y, 3, 2);
 						xi--;
 					}
@@ -246,49 +265,51 @@ public class Frame  extends JFrame implements Mapping{
 									// tiles!
 			}
 
-			xi=x;
+			xi=x_anchor;
 			drawVI(xi, y, 2, 0);			
 			xi--;
-			drawVI(xi, y, node.getChildren().size() != 0 ? 1 : 3, 2);
+			drawVI(xi, y, node.getChildren().size()+node.getChildrenSwapCoordinates().size() != 0 ? 1 : 3, 2);
 			
 			Vector v;
 			if ((transformation & 4) == 0) {
-				v = new Vector(this.treepos, this.tileSize, x, y + 1);
+				v = new Vector(this.treepos, this.tileSize, x_anchor, y + 1);
 			} else {
-				v = new Vector(this.treepos, this.tileSize, y, x + 1);
+				v = new Vector(this.treepos, this.tileSize, y, x_anchor + 1);
 			}
 			
 			this.gForRec.drawString(node.getTitle(),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
 			xi--;
-			if (i + 1 == current.getChildren().size()) {
+			if (i + 1 == nodes.size()) {
 				drawVI(xi, y, 0, 6);
-				if (xi==xMin){
-					xMin++;
+				if (xi==x_min){
+					x_min++;
 				}
 			} else {
 				drawVI(xi, y, 1, 6);
 			}
 			xi--;
 			
-			while(xi>=xMin){	
+			while(xi>=x_min){	
 				drawVI(xi, y, 3, 4);
 				xi--;
 			}
 	
-			while(xi>=0){	
+			while(xi>=x_min2){	
 				drawVI(xi, y, 2, 0);
 				xi--;
 			}			
 			
 			y++;
-			if ((node.getSwapCoordinates()&4)==0){
-				y=this.drawTree( x+1,y, node,linkPasses, xMin, trans^node.getSwapCoordinates());
-			}else{
-				y=this.drawTree( y,x+1, node,linkPasses, y, trans^node.getSwapCoordinates());
-			}
+			Tupel t;
+		
+				t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, trans);
+		
+			
+			y=t.s[1];
+			x_max=Math.max(x_max, t.s[0]);
 		}
 
-		return y; // ToDo: Why does boxing not work?
+		return new Tupel(x_max,y); // ToDo: Why does boxing not work?
 	}
 
 	// This is a low priority candidate for speed optimization (remove multiplication)

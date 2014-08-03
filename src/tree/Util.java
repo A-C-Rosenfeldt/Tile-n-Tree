@@ -33,9 +33,10 @@ public class Util {
 		Node location=new Node("Place");
 		Node time=new Node("Time");
 		time.setSwapCoordinates(4);
-		
-		philip.getChildren().add(location);
+
 		philip.getChildren().add(time);
+		philip.getChildren().add(location);
+
 		
 		location.getChildren().add(new Node("Buckigham"));
 		location.getChildren().add(new Node("in the country"));
