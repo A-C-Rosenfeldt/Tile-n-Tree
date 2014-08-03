@@ -128,9 +128,6 @@ public class Frame  extends JFrame implements Mapping{
 			}			
 		}
 
-
-
-
 		for (int i = 0; i < tiles.vImg.length; i++) {
 			VolatileImage vi = tiles.vImg[i];
 			do {	
@@ -145,18 +142,13 @@ public class Frame  extends JFrame implements Mapping{
 					tiles.updateTile( this, i);  // only affected tiles!! New parameter! ToDo
 				}
 
-				for(int j=0;j<8;j++){
-					this.flip((Graphics2D) g,vi,new Vector((int)bounds.getMinX()+i*32,(int)bounds.getMinY()+j*32),j);
+					for (int j = 0; j < 8; j++) {
+						this.flip((Graphics2D) g, vi,
+								new Vector((int) bounds.getMinX() + i * 16 ,
+										(int) bounds.getMinY() + j * 32), j);
 				}
-				// seam ToDo only on Background. One px wide on legacy systems. Voids flip 
-
-				//  g.drawImage(vi,  30+i*32,  200, 16,16, this);
-				/*g.drawImage(vi, 130,  30, -16,16,this);
-		      g.drawImage(vi,  30, 130, 16,-16,this);
-		      g.drawImage(vi, 130, 130, -16,-16,this); */
 			} while (vi.contentsLost());
 		}
-
 
 		// String
 		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
@@ -221,7 +213,7 @@ public class Frame  extends JFrame implements Mapping{
 	private int shade; // ToDo: Use Setter to limit access to lower bits
 	private Vector cursor=new Vector(2,3); // Dupe (2,3)
 	private void drawVI(int x, int y, int i, int j) {
-		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<1 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j);
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j);
 	}
 
 	private void drawVolatileImage(Vector v, int i, int j) {
@@ -286,19 +278,6 @@ public class Frame  extends JFrame implements Mapping{
 		g.drawImage(vi,0,0,tileSize.s[0],tileSize.s[1]
 				,c[1][0]+ ((f>>0) & 1),c[1][1]+ ((f>>1) & 1),c[1][2]+  ((f>>0) & 1),c[1][3]+ ((f>>1) & 1),           this); // remove double seam / allow for odd width
 
-
-		//		trans.rotate( Math.toRadians(45) );
-		//		g.drawImage(vi, trans, this);
-
-
-		// source needed for seam
-		//	      System.out.printf("%d %d  %d %d   %d %d  %d %d ",v.s[0],v.s[1],v.s[0]+tileSize.s[0],v.s[1]+tileSize.s[1]
-		//	     		 ,c[1][0],c[1][1],c[1][2]-seamWidth,c[1][3]-seamWidth); // remove double seam / allow for odd width
-		//		System.out.println();
-		//	      g.drawImage(vi,v.s[0],v.s[1],v.s[0]+tileSize.s[0],v.s[1]+tileSize.s[1]
-		//	     		  ,c[1][0],c[1][1],c[1][2]-seamWidth,c[1][3]-seamWidth,           this); // remove double seam / allow for odd width
-		//	     		
-		
 		g.setTransform(backup); // TextOut wants a different rotation
 	}
 

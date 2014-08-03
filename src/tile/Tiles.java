@@ -77,7 +77,7 @@ public class Tiles {
 
 		this.mgc=w.getGraphicsConfiguration();
 
-		this.vImg=new VolatileImage[12]; // ToDo explain 10 ->
+		this.vImg=new VolatileImage[6*4]; // ToDo explain 10 ->
 		for (int i = 0; i < vImg.length; i++) {
 
 			this.vImg[i]=this.mgc.createCompatibleVolatileImage(tileSize.s[0]+seamWidht,tileSize.s[1]+seamWidht);
@@ -151,7 +151,13 @@ public class Tiles {
 				g.setColor(new Color(0.9f, 0.9f, 0.9f));
 				g.fillRect(this.seamWidht, this.seamWidht, s[0]-this.seamWidht, s[1]-this.seamWidht);
 			}
-			g.setColor(new Color(0.0f, 0.4f, 0.9f));
+			m<<=1;			
+			if ((i & m )!=0){
+				g.setColor(new Color(0.9f, 0.4f, 0.0f));
+			}else{
+				g.setColor(new Color(0.0f, 0.4f, 0.9f));
+			}
+						
 			m<<=1;
 			if ((i & m )!=0) g.drawLine(0, s[1]/2, s[0], s[1]/2);
 			m<<=1;
