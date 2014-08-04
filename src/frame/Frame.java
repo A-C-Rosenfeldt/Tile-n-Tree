@@ -233,20 +233,7 @@ public class Frame  extends JFrame implements Mapping{
 	}
 	
 	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans, boolean chicane) {
-		// Tree
-		/*
-			 i,j  
-		0,1
-		1,6
-		1,2
-		3,4
-		 */
-
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
-
-		if (chicane){
-			//x_anchor-=2;
-		}
 		
 		int x_max=x_anchor;;
 
@@ -257,6 +244,7 @@ public class Frame  extends JFrame implements Mapping{
 			this.transformation=trans;
 			int xi;
 		
+			// references
 			{
 				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
 									// tiles!
@@ -292,10 +280,13 @@ public class Frame  extends JFrame implements Mapping{
 					
 					linkPasses = true;
 				}				
-				
-				
-				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
-									// tiles!
+								
+				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
+			}
+			
+			// table
+			if (node.isChicane()){
+				drawVI(x_anchor+1, y, 3,2);
 			}
 
 			xi=x_anchor;

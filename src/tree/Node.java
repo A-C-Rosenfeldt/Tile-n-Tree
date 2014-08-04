@@ -110,6 +110,7 @@ public class Node {
 	}
 
 	public void setChicane(boolean chicane) {
+		// ToDo: Check trans and parents and siblings
 		this.chicane = chicane;
 	}
 

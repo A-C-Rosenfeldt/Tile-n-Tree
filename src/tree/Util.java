@@ -39,30 +39,45 @@ public class Util {
 
 		location.getChildren().add(new Node("Bu"));
 		location.getChildren().add(new Node("co"));
-		location.getChildren().add(new Node("at"));
+		
+		Node secondBranch=new Node("at");
+		secondBranch.setSwapCoordinates(4);
+		secondBranch.setChicane(true);
+		secondBranch.getChildren().add(new Node("foo"));
+		secondBranch.getChildren().add(new Node("bar"));
+		secondBranch.getChildren().add(new Node("baz"));		
+		location.getChildren().add(secondBranch);
 		
 		ArrayList<Node> s=time.getChildren();
 		Node unitOfTime;
 		
+		s.add(new Node("Sa"));
+		s.add(new Node("So"));
+		
 		unitOfTime=new Node("Mo");
+		/*
+		 // table body in second branch, which knows the size of the other header
 		unitOfTime.setSwapCoordinates(4);
 		unitOfTime.setChicane(true);
 		unitOfTime.getChildren().add(new Node("X"));
 		unitOfTime.getChildren().add(new Node("O"));
-		unitOfTime.getChildren().add(new Node("X"));
+		unitOfTime.getChildren().add(new Node("*")); */
 		s.add(unitOfTime);		
 		
-		unitOfTime=new Node("Sa");
+		unitOfTime=new Node("Di");
 		unitOfTime.getChildren().add(new Node("0"));
 		unitOfTime.getChildren().add(new Node("1"));
 		
+		
 		Node u=new Node("2");
+		/*
+		 // shows that gaps in column title list need to be respected
 		u.setSwapCoordinates(4);
 		u.setChicane(true);
 		u.getChildren().add(new Node("x"));
 		u.getChildren().add(new Node("F"));
 		u.getChildren().add(new Node("L"));
-		
+		*/
 		
 		unitOfTime.getChildren().add(u);
 		s.add(unitOfTime);
