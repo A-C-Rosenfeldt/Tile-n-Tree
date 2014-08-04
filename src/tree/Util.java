@@ -83,6 +83,27 @@ public class Util {
 //		s.add(unitOfTime);
 
 		
+		Node inline=new Node("Inline inside");
+		node.getChildren().add(inline);
+
+		Node proto=new Node("struct definition of a complex number");
+		inline.getChildren().add(proto);
+		Node re=new Node("real part");
+		proto.getChildren().add(re);
+		Node im=new Node("imaginary part");
+		proto.getChildren().add(im);
+
+		
+		Node a=new Node("instance a");
+		a.setValue(proto);
+		inline.getChildren().add(a);		
+
+		Node b=new Node("instance b");
+		b.setValue(proto);
+		
+		inline.getChildren().add(b);
+
+		b.setInlineReferenced(true); // ToDo: getChildren stops working after this
 		
 		return node;
 	}

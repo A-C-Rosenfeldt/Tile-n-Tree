@@ -67,7 +67,7 @@ public class Frame  extends JFrame implements Mapping{
 	public Frame(String titel) {
 		super(titel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(600, 300);
+		setSize(600, 600);
 		// Premature optimization (or aero non portable look and feel)	        
 		///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 
@@ -286,6 +286,7 @@ public class Frame  extends JFrame implements Mapping{
 			
 			// table
 			if (node.isChicane()){
+				// ToDo: Use loop and use max(x) of this header (info flowing backwards) as the start value
 				drawVI(x_anchor+1, y, 3,2);
 			}
 
@@ -328,6 +329,7 @@ public class Frame  extends JFrame implements Mapping{
 			}			
 			}
 			
+			// ToDo: Jump over gaps due to "group names" in other header. Reuse chicane marker and rename to "has children inside table body"!??
 			y++;
 			Tupel t;
 		

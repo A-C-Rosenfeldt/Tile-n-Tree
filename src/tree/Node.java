@@ -33,9 +33,11 @@ public class Node {
 	private boolean chicane=false; //a special for tables
 	
 	// References
-	private Node link; // appears to the left 
-	private Node value; // appears  stores values
-	private Node classObject; // appears below as  T-junction
+	private Node link; // unused! appears to the left 
+	private Node value; // used! appears  stores values
+	private Node classObject; //unused! appears below as  T-junction
+	
+	private boolean inlineReferenced;
 	
 	// Not normalized. ToDo: Put into class Cache
 	private Node valueOf; // 
@@ -52,8 +54,12 @@ public class Node {
 		this.title = title;
 	}
 
+	// ToDo: getChildren with out inlining makes no sense in context, but is needed for Getter Setter behaviour
 	public ArrayList<Node> getChildren() {
-		return children;
+		// Merge not possible as it would duplicate a lot and would hinder debugging
+		return this.inlineReferenced?this.value.children:children;
+		// ToDo: Inform children about this indirection => write protection.
+		// I will have to leak some info for the  rasterizer  to  count levels on  and to pass to node
 	}
 
 	public void setChildren(ArrayList<Node> children) {
@@ -112,6 +118,14 @@ public class Node {
 	public void setChicane(boolean chicane) {
 		// ToDo: Check trans and parents and siblings
 		this.chicane = chicane;
+	}
+
+	public boolean isInlineReferenced() {
+		return inlineReferenced;
+	}
+
+	public void setInlineReferenced(boolean inlineReferenced) {
+		this.inlineReferenced = inlineReferenced;
 	}
 
 }
