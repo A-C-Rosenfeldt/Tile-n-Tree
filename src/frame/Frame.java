@@ -202,7 +202,7 @@ public class Frame  extends JFrame implements Mapping{
 			
 			this.transformation=trans;
 			int x3=xi;
-			while (y < t.s[0]-1) {
+			while (y < t.s[0]-0) {
 				
 				while (xi > x3) {
 					drawVI(xi, y, 2, 0);
@@ -225,7 +225,7 @@ public class Frame  extends JFrame implements Mapping{
 			}
 			// dupe }			
 			
-			return new Tupel(x_anchor,t.s[0]-1+(current.isChicane()?1:0));
+			return new Tupel(x_anchor,t.s[0]-0+(current.isChicane()?1:0));
 		}else{
 		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans, current.isChicane());
 		}

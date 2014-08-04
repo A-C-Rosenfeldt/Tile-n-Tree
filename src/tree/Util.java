@@ -65,8 +65,8 @@ public class Util {
 		s.add(unitOfTime);		
 		
 		unitOfTime=new Node("Di");
-		unitOfTime.getChildren().add(new Node("0"));
-		unitOfTime.getChildren().add(new Node("1"));
+	//	unitOfTime.getChildren().add(new Node("0"));
+		//unitOfTime.getChildren().add(new Node("1"));
 		
 		
 		Node u=new Node("2");
@@ -80,7 +80,7 @@ public class Util {
 		*/
 		
 		unitOfTime.getChildren().add(u);
-		s.add(unitOfTime);
+//		s.add(unitOfTime);
 
 		
 		
