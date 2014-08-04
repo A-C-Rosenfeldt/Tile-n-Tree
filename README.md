@@ -21,7 +21,9 @@ https://plus.google.com/photos/+ArneChristianRosenfeldt/albums/60424865781430063
 		* simple use case
 * bend
 * table
+* inline reference
 * ---- the following features are not yet implemented
+* instantiate first level children to second level children
 * more references
 * foreground layer
 	*	crossing (all alternatives look ugly)

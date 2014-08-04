@@ -224,9 +224,9 @@ public class Frame  extends JFrame implements Mapping{
 				xi = x3+3;
 			}
 			// dupe }			
-			
-			return new Tupel(x_anchor,t.s[0]-0+(current.isChicane()?1:0));
+			return new Tupel(x_anchor,t.s[0]);
 		}else{
+			System.out.println("Y is: "+y);
 		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans, current.isChicane());
 		}
 		
@@ -336,10 +336,11 @@ public class Frame  extends JFrame implements Mapping{
 				t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, x_min2, trans);
 		
 			
-			y=t.s[1];
+			y=t.s[1];System.out.println("Y is. "+y); // Bug: y is to large sometimes
 			x_max=Math.max(x_max, t.s[0]);
 		}
 
+		
 		return new Tupel(x_max,y); // ToDo: Why does boxing not work?
 	}
 
