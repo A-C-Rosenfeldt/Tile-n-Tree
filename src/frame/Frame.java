@@ -304,7 +304,7 @@ public class Frame  extends JFrame implements Mapping{
 				v = new Vector(this.treepos, this.tileSize, y, x_anchor + 1);
 			}
 			
-			this.gForRec.drawString(node.getTitle(),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
+			this.gForRec.drawString(node.getTitle()+(node.getReferenceHistory()!=0?node.getReferenceHistory():""),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
 				if (i + 1 == nodes.size()) {

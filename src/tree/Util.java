@@ -89,6 +89,11 @@ public class Util {
 		Node proto=new Node("struct definition of a complex number");
 		inline.getChildren().add(proto);
 		Node re=new Node("real part");
+		re.getChildren().add(new Node("0"));
+		re.getChildren().add(new Node("0.5"));
+		Node v=new Node("1");
+		re.getChildren().add(v);
+
 		proto.getChildren().add(re);
 		Node im=new Node("imaginary part");
 		proto.getChildren().add(im);
@@ -96,14 +101,16 @@ public class Util {
 		
 		Node a=new Node("instance a");
 		a.setValue(proto);
+		a.setInlineReferenced(true);
 		inline.getChildren().add(a);		
 
 		Node b=new Node("instance b");
 		b.setValue(proto);
 		
 		inline.getChildren().add(b);
-
-		b.setInlineReferenced(true); // ToDo: getChildren stops working after this
+		//b.re.setValue(v); // ToDo
+		
+		b.setInlineReferenced(true);
 		
 		return node;
 	}
