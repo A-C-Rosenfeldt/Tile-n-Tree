@@ -1,6 +1,6 @@
 The program tries to combine the experiences on a 8-bit home computer BASIC with modern languages (XML, C#, Scala) and graphs. A web front-end is planned, but was deemed to clumsy for every-day development in eclipse.
 
-https://plus.google.com/photos/+ArneChristianRosenfeldt/albums/6042486578143006305/6043434580258012258?pid=6043434580258012258&oid=101260750722957758932
+![Screenshot](https://plus.google.com/photos/+ArneChristianRosenfeldt/albums/6042486578143006305/6043434580258012258?pid=6043434580258012258&oid=101260750722957758932]
 
 
 * tetris

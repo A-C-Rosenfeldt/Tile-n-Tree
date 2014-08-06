@@ -67,7 +67,7 @@ public class Frame  extends JFrame implements Mapping{
 	public Frame(String titel) {
 		super(titel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(600, 600);
+		setSize(600, 800);
 		// Premature optimization (or aero non portable look and feel)	        
 		///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 
@@ -94,7 +94,8 @@ public class Frame  extends JFrame implements Mapping{
 	 */
 	@Override
 	public void paint(Graphics g) {
-
+		// ToDo: On startup there seems to be a double paint
+		
 		//g.hint(antialias)
 		// now inside tile. Interferes with seam. MakeTheBestOutOfSwing.configure2((Graphics2D) g);
 
@@ -109,9 +110,9 @@ public class Frame  extends JFrame implements Mapping{
 		RectSize rs=new RectSize(bounds);
 		bounds.setLocation(pos);
 
-		System.out.println("add next to second");
-		System.out.println(pos.y);
-		System.out.println(bounds.y);
+//		System.out.println("add next to second");
+//		System.out.println(pos.y);
+//		System.out.println(bounds.y);
 
 		/*
 		 depreciated
@@ -225,11 +226,11 @@ public class Frame  extends JFrame implements Mapping{
 			}
 			// dupe }			
 			return new Tupel(x_anchor,t.s[0]);
-		}else{
+		} else {
 			System.out.println("Y is: "+y);
-		return  drawTreeInner( x_anchor,  y,  current.getChildren(),  linkPasses,  x_min, x_min2, trans, current.isChicane());
+			return drawTreeInner(x_anchor, y, current.getChildren(),
+					linkPasses, x_min, x_min2, trans, current.isChicane());
 		}
-		
 	}
 	
 	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans, boolean chicane) {
@@ -294,6 +295,7 @@ public class Frame  extends JFrame implements Mapping{
 			drawVI(xi, y, 2, 0);			
 			xi--;
 			if (!chicane) {
+				// ToDo: Cache children view
 				drawVI(xi, y, node.getChildren().size() != 0 && !node.isChicane() ? 1 : 3, 2);
 			}
 			
@@ -304,7 +306,7 @@ public class Frame  extends JFrame implements Mapping{
 				v = new Vector(this.treepos, this.tileSize, y, x_anchor + 1);
 			}
 			
-			this.gForRec.drawString(node.getTitle()+(node.getReferenceHistory()!=0?node.getReferenceHistory():""),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
+			this.gForRec.drawString(node.getTitle()+" "+(node.getReferenceHistory()!=0?node.getReferenceHistory():""),  v.s[0]+1, v.s[1]-3); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
 				if (i + 1 == nodes.size()) {
@@ -336,7 +338,7 @@ public class Frame  extends JFrame implements Mapping{
 				t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, x_min2, trans);
 		
 			
-			y=t.s[1];System.out.println("Y is. "+y); // Bug: y is to large sometimes
+			y=t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
 			x_max=Math.max(x_max, t.s[0]);
 		}
 

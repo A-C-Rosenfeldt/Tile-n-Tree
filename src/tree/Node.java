@@ -77,25 +77,55 @@ public class Node {
 
 	// ToDo: getChildren with out inlining makes no sense in context, but is needed for Getter Setter behaviour
 	public ArrayList<Node> getChildren() {
-		// Merge duplicates a lot and would hinders debugging
-		// Daisy chain
+		// Concat duplicates a lot and would hinders debugging
+		// Merge needed to fill in values into the form
 		
-		if (this.value==null){
+		
+		if (this.value==null || !this.InlineReferenced){
 			return this.children;
 		}
 		
-		ArrayList<Node> c=new ArrayList<Node>( this.value.getChildren().size()+this.children.size() ); // I would like to have a temporary array to avoid bugs to increase the lenght uncontrolled
+		// in C++ this would be size_t (64 bit on my dev system). But Java.int
+		// is 32 bit !? Strange function signature. Need generic (ie
+		// naturalNumber* )
+		int sa = this.value.getChildren().size();
+		int sb = this.children.size();
+		// ToDo: may need to throw exception if sa != sb		or  switch case
+		
+		System.out.println("sa: "+sa+" sb: "+sb);
+		
+		ArrayList<Node> c=new ArrayList<Node>( Math.max(sa, sb) ); // I would like to have a temporary array to avoid bugs to increase the lenght uncontrolled
 		// Some map, zip function needed here, but hey it is java, so
 		// Incompatible with write:  Iterator<Node> ic=c.iterator();
-		Iterator<Node> ia=this.value.getChildren().iterator();
+		Iterator<Node> ia=this.value.getChildren().iterator(); // Daisy chain needed for inheritance (test later! Is an advanced feature!)
+		Iterator<Node> ib=this.children.iterator(); // No endless loop
 		
-		while(ia.hasNext()){
-			Node ia_next=new Node(ia.next(),1);
-			c.add(ia_next);			
-		}
+		while (ia.hasNext() || ib.hasNext()) {
+			Node ia_next;
+			if (ia.hasNext()) {
+				ia_next = new Node(ia.next(), 1);
+				ia_next.children=new ArrayList<Node>(); // ToDo: Ugly .  But according to design. Copy should appear a deep at first sight. Just save mem internally, but do not leak. Here choosing a value means actively deciding against other values
 
-		c.addAll(this.children);
-	//	return this.inlineReferenced?this.value.children:children;
+				// null pointer or not null pointer? Since enums are supposed to
+				// have entry "none", I guess null=none is okay.
+				if (ib.hasNext()) {
+					// ia_next.
+					Node t=ib.next();
+					Node mirror=new Node(t.getValue(),2); // internally the instance points to the global address of the value
+					mirror.title=t.title+" / "+mirror.title;
+					ia_next.children.add(mirror); // Bug: Has side-effect!  ToDo: Allow multi-select ?
+					ia_next.setValue(mirror); // for the UI this would lead to link spaghetti. Thus: a mirror. And valueOf works!
+					System.out.println("set mirror on "+this.title+" / "+t.getTitle());
+				}
+				
+				c.add(ia_next);
+			} else {
+				c.add(ib.next()); // feed through custom fields
+			}
+
+		}
+		
+		// return this.inlineReferenced?this.value.children:children;
 		// Merge needed for inheritance
 		// So: record path? Nodes with instance-aggregate in their path would have their value limited to their children (children in type def)
 		return c;

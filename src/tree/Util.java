@@ -88,10 +88,10 @@ public class Util {
 
 		Node proto=new Node("struct definition of a complex number");
 		inline.getChildren().add(proto);
-		Node re=new Node("real part");
-		re.getChildren().add(new Node("0"));
+		Node re=new Node("real part"); // to avoid too fat class node (all those link types are to be removed), content is put a layer below type. => optical clue!
+		re.getChildren().add(new Node("0.0"));
 		re.getChildren().add(new Node("0.5"));
-		Node v=new Node("1");
+		Node v=new Node("1.0");
 		re.getChildren().add(v);
 
 		proto.getChildren().add(re);
@@ -105,6 +105,10 @@ public class Util {
 		inline.getChildren().add(a);		
 
 		Node b=new Node("instance b");
+
+		Node selector=new Node("instance real part");
+		selector.setValue(v);
+		b.getChildren().add(selector); // ToDo: separate method  getchildren.edit  from   getchildren.view
 		b.setValue(proto);
 		
 		inline.getChildren().add(b);
