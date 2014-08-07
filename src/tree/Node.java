@@ -76,7 +76,7 @@ public class Node {
 	}
 
 	// ToDo: getChildren with out inlining makes no sense in context, but is needed for Getter Setter behaviour
-	public ArrayList<Node> getChildren() {
+	public ArrayList<Node> getChildrenWithInline() {
 		// Concat duplicates a lot and would hinders debugging
 		// Merge needed to fill in values into the form
 		
@@ -88,7 +88,7 @@ public class Node {
 		// in C++ this would be size_t (64 bit on my dev system). But Java.int
 		// is 32 bit !? Strange function signature. Need generic (ie
 		// naturalNumber* )
-		int sa = this.value.getChildren().size();
+		int sa = this.value.getChildrenWithInline().size();
 		int sb = this.children.size();
 		// ToDo: may need to throw exception if sa != sb		or  switch case
 		
@@ -97,7 +97,7 @@ public class Node {
 		ArrayList<Node> c=new ArrayList<Node>( Math.max(sa, sb) ); // I would like to have a temporary array to avoid bugs to increase the lenght uncontrolled
 		// Some map, zip function needed here, but hey it is java, so
 		// Incompatible with write:  Iterator<Node> ic=c.iterator();
-		Iterator<Node> ia=this.value.getChildren().iterator(); // Daisy chain needed for inheritance (test later! Is an advanced feature!)
+		Iterator<Node> ia=this.value.getChildrenWithInline().iterator(); // Daisy chain needed for inheritance (test later! Is an advanced feature!)
 		Iterator<Node> ib=this.children.iterator(); // No endless loop
 		
 		while (ia.hasNext() || ib.hasNext()) {
@@ -203,5 +203,9 @@ public class Node {
 
 	public void setInlineReferenced(boolean inlineReferenced) {
 		InlineReferenced = inlineReferenced;
+	}
+
+	public ArrayList<Node> getChildren() {
+		return children;
 	}
 }

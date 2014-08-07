@@ -45,6 +45,9 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import adHocRouter.Link;
+import adHocRouter.LinksWith2Bends;
+import adHocRouter.Table;
 import rasterizer.MakeTheBestOfSwing;
 import tile.Tile;
 import tile.Tiles;
@@ -162,8 +165,9 @@ public class Frame  extends JFrame implements Mapping{
 		//this.topLevelx=pos.x+432;
 		this.gForRec=g;
 		this.treepos=new Vector(pos.x, pos.y);
+		this.link=new LinksWith2Bends();
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0); // root == frame window // Dupe (2,3)
+		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0,new Table()); // root == frame window // Dupe (2,3)
 
 		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
@@ -182,7 +186,9 @@ public class Frame  extends JFrame implements Mapping{
 	//private int topLevelx;
 	private Vector treepos;
 	
-	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, int x_min, int x_min2, int trans) {
+	private Link link; // links are less local than table-headers
+	// Todo: less parameters!
+	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, int x_min, int x_min2, int trans, Table table) {
 		Tupel t=new Tupel(x_anchor,y);
 		if ((current.getSwapCoordinates()&4)>0){
 			this.shade=0;
@@ -199,7 +205,9 @@ public class Frame  extends JFrame implements Mapping{
 			
 			xi=x_anchor-3;
 
-			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildren(),  linkPasses,  y+0,y+0,  trans^current.getSwapCoordinates(), current.isChicane());
+			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
+			
+			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildrenWithInline(),  linkPasses,  y+0,y+0,  trans^current.getSwapCoordinates(), current.isChicane(), table);
 			
 			this.transformation=trans;
 			int x3=xi;
@@ -228,12 +236,13 @@ public class Frame  extends JFrame implements Mapping{
 			return new Tupel(x_anchor,t.s[0]);
 		} else {
 			System.out.println("Y is: "+y);
-			return drawTreeInner(x_anchor, y, current.getChildren(),
-					linkPasses, x_min, x_min2, trans, current.isChicane());
+			return drawTreeInner(x_anchor, y, current.getChildrenWithInline(),
+					linkPasses, x_min, x_min2, trans, current.isChicane(), table);
 		}
 	}
 	
-	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans, boolean chicane) {
+	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans, boolean chicane, Table table) {
+		
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 		
 		int x_max=x_anchor;;
@@ -296,7 +305,7 @@ public class Frame  extends JFrame implements Mapping{
 			xi--;
 			if (!chicane) {
 				// ToDo: Cache children view
-				drawVI(xi, y, node.getChildren().size() != 0 && !node.isChicane() ? 1 : 3, 2);
+				drawVI(xi, y, node.getChildrenWithInline().size() != 0 && !node.isChicane() ? 1 : 3, 2);
 			}
 			
 			Vector v;
@@ -335,8 +344,9 @@ public class Frame  extends JFrame implements Mapping{
 			y++;
 			Tupel t;
 		
-				t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, x_min2, trans);
-		
+			// store gaps  due to "group names" for other header
+			table.add();
+			t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, x_min2, trans, table);
 			
 			y=t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
 			x_max=Math.max(x_max, t.s[0]);
