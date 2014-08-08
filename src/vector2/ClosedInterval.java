@@ -14,33 +14,20 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package vector2;
+
+/**
+ * @author Arne Rosenfeldt
+ *
  */
-
-// Todo
-// 
-
-package adHocRouter;
-
-import tree.Node;
-import vector2.ClosedInterval;
-import vector2.Tupel;
-
-public class LinkWith2Bends {
-	// x and y are supposed to behave differently
-	public ClosedInterval y;
-	public Tupel x;
-	public Integer xLeft;
-	public Node node;
-
-	public LinkWith2Bends(Tupel x, ClosedInterval y2, Node node) {
-		this.x=x;
-		this.y=y2;
-		this.node=node;
+public class ClosedInterval extends Tupel{
+	public ClosedInterval(int y, int i) {
+		super(y, i);
 	}
-	
-	public void setDestination(int x_anchor, int y){
-		this.x.s[1]=x_anchor;
-		this.y.s[1]=y;
+
+	public boolean isOverlapingWith(ClosedInterval i)
+	{
+		return !(this.s[1]<i.s[0] || i.s[1]<this.s[0]);
 	}
-	
 }

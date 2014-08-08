@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
+import tree.Node;
+import vector2.ClosedInterval;
 import vector2.Tupel;
 import vector2.Vector;
 
@@ -37,13 +39,13 @@ public class LinksWith2Bends implements Link {
 		bedrock.add(x);
 	}
 	
-	private ArrayList<LinkWith2Bends> y;
+	private ArrayList<LinkWith2Bends> y=new ArrayList<LinkWith2Bends>();
 	
 	private LinkWith2Bends[] ya;
 
 	@Override
-	public void addLink(Tupel x, Tupel y) {
-		this.y.add(new LinkWith2Bends(x,y));
+	public void addLink(Tupel x, ClosedInterval y, Node node) {
+		this.y.add(new LinkWith2Bends(x, y, node));
 	}
 
 	@Override
@@ -55,8 +57,8 @@ public class LinksWith2Bends implements Link {
 
 			@Override
 			public int compare(LinkWith2Bends l0, LinkWith2Bends l1) {		
-				Tupel a0=l0.;
-				Tupel a1;
+				Tupel a0=l0.y;
+				Tupel a1=l1.y;
 				return Math.abs(a0.s[1]-a0.s[0])-Math.abs(a1.s[1]-a1.s[0]);
 			}
 			
@@ -75,22 +77,45 @@ public class LinksWith2Bends implements Link {
 	private int s;
 
 	// Just need to tell the starting point. End is known to node
+	// This implementation is meant as reference and documentation and thus abstains from recursive code and optimized interfaces
 	@Override
-	public Vector getNext() {
-		// route around bedrock
-		int b=0;
-		for (int y = this.ya[this.s].y.s[0]; y <= this.ya[this.s].y.s[1]; y++) {
-			if (this.bedrock.get(y)>b){
-				b=this.bedrock.get(y);
+	public LinkWith2Bends getNext() {
+		// route around bedrock // ToDo: Use data that bubbles up in the tree
+		int[] this_ya_this_s__y_s=this.ya[this.s].y.s;
+		int this_ya_this_s__xLeft=0;
+		for (int y = this_ya_this_s__y_s[0]; y <= this_ya_this_s__y_s[1]; y++) {
+			this_ya_this_s__xLeft=Math.max(this_ya_this_s__xLeft,this.bedrock.get(y));
+			
+		}
+	
+	
+	
+		// route around other links
+		for (int other=0;other < this.s;other++){// for over all routed links (smaller index) in this collection
+				if (this.ya[this.s].y.isOverlapingWith(this.ya[other].y)){
+					this_ya_this_s__xLeft=this.ya[other].xLeft+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
+				}			
+		}
+	
+		this.ya[this.s].xLeft=this_ya_this_s__xLeft;
+			
+		// ToDo implement enumerator interface
+		// now paint it (ToDo: May need to make a copy to write protect the original)
+		return this.ya[this.s];
+	}
+
+	// ToDo: Optimize  Tree  or  if really necessary: hash
+	@Override
+	public LinkWith2Bends get(Node node) {
+		if (this.ya!=null)
+		for (LinkWith2Bends linkWith2Bends : this.ya) {
+			if (linkWith2Bends.node==node){
+				return linkWith2Bends;
 			}
 		}
-		
-		// route around other links
-		for (int i)// for over all routed links (smaller index) in this collection
-		
-		// return
-		return new Vector(b,this.ya[this.s++].s[0]);
+		return null;
 	}
+
 
 
 }

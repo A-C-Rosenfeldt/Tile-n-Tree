@@ -46,6 +46,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import adHocRouter.Link;
+import adHocRouter.LinkWith2Bends;
 import adHocRouter.LinksWith2Bends;
 import adHocRouter.Table;
 import rasterizer.MakeTheBestOfSwing;
@@ -53,6 +54,7 @@ import tile.Tile;
 import tile.Tiles;
 import tree.Node;
 import tree.Util;
+import vector2.ClosedInterval;
 import vector2.RectSize;
 import vector2.Tupel;
 import vector2.Vector;
@@ -254,45 +256,15 @@ public class Frame  extends JFrame implements Mapping{
 			this.transformation=trans;
 			int xi;
 		
-			// references
-			{
-				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
-									// tiles!
-				xi = 10;// x + 4;
 
-				if (node.getValue() != null) {
-					drawVI(xi, y, 0, 0);
-					xi--;
-					while (xi > x_anchor) {
-						drawVI(xi, y, 3, 2);
-						xi--;
-					}
-
-					linkPasses = false;
-				}				
-				
-
-				if (linkPasses) {
-					drawVI(xi, y, 3, 4);
-				}
-
-				
-				if (node.getValueOf() != null) {
-					drawVI(xi, y, 0, 2);
-					xi--;
-					while (xi > x_anchor+1) {
-						drawVI(xi, y, 3, 2);
-						xi--;
-					}
-
-					drawVI(xi, y, 2,0);
-					xi--;
-					
-					linkPasses = true;
-				}				
-								
-				this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
-			}
+			// Deferred to routing. ToDo: Change constructor for partial construction
+			//this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0));
+			// get link positions in second pass
+			this.link.get(node); // ToDo: put the burden of y ordering into Interface Links
+			// loop over all links passing this y
+			// taken live rendering
+			linkPasses = drawReference(x_anchor, y, linkPasses, node,10);
+			
 			
 			// table
 			if (node.isChicane()){
@@ -307,6 +279,33 @@ public class Frame  extends JFrame implements Mapping{
 				// ToDo: Cache children view
 				drawVI(xi, y, node.getChildrenWithInline().size() != 0 && !node.isChicane() ? 1 : 3, 2);
 			}
+
+			// concept code {
+			// live rendering
+			//linkPasses = drawReference(x_anchor, y, linkPasses, node);
+			// Deferred to routing. 
+			// ToDo:
+			//   Change constructor for partial construction
+			//   extract method to reflect top down?
+			if (node.getValue() != null) {
+				this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0), node);
+			}
+
+			if (node.getValueOf() != null) {
+				LinkWith2Bends this_link_get_node_getValueOf___ = this.link
+						.get(node.getValueOf());
+				// ToDo upwards links
+				if (this_link_get_node_getValueOf___ != null) {
+					this_link_get_node_getValueOf___
+							.setDestination(x_anchor, y);
+				}
+				// this.link.addLink(new Tupel(x_anchor, 0),new
+				// ClosedInterval(y,0));
+			}
+			
+			this.link.addBedrock(x_anchor);
+
+			// } concept code
 			
 			Vector v;
 			if ((transformation & 4) == 0) {
@@ -354,6 +353,53 @@ public class Frame  extends JFrame implements Mapping{
 
 		
 		return new Tupel(x_max,y); // ToDo: Why does boxing not work?
+	}
+
+
+
+	private boolean drawReference(int x_anchor, int y, boolean linkPasses,
+			Node node, int xLeft) {
+		int xi;
+		// references. ToDo: Call adHocRouter
+		
+			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
+								// tiles!
+			xi = xLeft;
+
+			if (node.getValue() != null) {
+				drawVI(xi, y, 0, 0);
+				xi--;
+				while (xi > x_anchor) {
+					drawVI(xi, y, 3, 2);
+					xi--;
+				}
+
+				linkPasses = false;
+			}				
+			
+
+			if (linkPasses) {
+				drawVI(xi, y, 3, 4);
+			}
+
+			
+			if (node.getValueOf() != null) {
+				drawVI(xi, y, 0, 2);
+				xi--;
+				while (xi > x_anchor+1) {
+					drawVI(xi, y, 3, 2);
+					xi--;
+				}
+
+				drawVI(xi, y, 2,0);
+				xi--;
+				
+				linkPasses = true;
+			}				
+							
+			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
+		
+		return linkPasses;
 	}
 
 	// This is a low priority candidate for speed optimization (remove multiplication)

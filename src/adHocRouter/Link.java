@@ -21,6 +21,8 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 package adHocRouter;
 
+import tree.Node;
+import vector2.ClosedInterval;
 import vector2.Tupel;
 import vector2.Vector;
 
@@ -28,6 +30,10 @@ public interface Link {
 	public void addBedrock(int x);
 	
 	public void sort();
-	public Vector getNext();
-	void addLink(Tupel x, Tupel y);
+	public LinkWith2Bends getNext();
+	void addLink(Tupel x, ClosedInterval y, Node node);
+	// node is used to match these two calls
+	public  LinkWith2Bends get(Node node);
+
+
 }
