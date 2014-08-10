@@ -31,8 +31,9 @@ import vector2.ClosedInterval;
 import vector2.Tupel;
 import vector2.Vector;
 
-public class LinksWith2Bends implements Link {
-	private ArrayList<Integer> bedrock= new ArrayList<Integer>();
+public class LinksWith2Bends implements Link, LinkDebug {
+	// public for debug. I certainly do not want a global "DEBUG" option. ToDo: set to private
+	public ArrayList<Integer> bedrock= new ArrayList<Integer>();
 
 	@Override
 	public void addBedrock(int x) {
@@ -85,23 +86,20 @@ public class LinksWith2Bends implements Link {
 		int this_ya_this_s__xLeft=0;
 		for (int y = this_ya_this_s__y_s[0]; y <= this_ya_this_s__y_s[1]; y++) {
 			this_ya_this_s__xLeft=Math.max(this_ya_this_s__xLeft,this.bedrock.get(y));
-			
 		}
-	
-	
 	
 		// route around other links
 		for (int other=0;other < this.s;other++){// for over all routed links (smaller index) in this collection
 				if (this.ya[this.s].y.isOverlapingWith(this.ya[other].y)){
-					this_ya_this_s__xLeft=this.ya[other].xLeft+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
+					this_ya_this_s__xLeft=this.ya[other].xRight+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
 				}			
 		}
 	
-		this.ya[this.s].xLeft=this_ya_this_s__xLeft;
+		this.ya[this.s].xRight=this_ya_this_s__xLeft;
 			
 		// ToDo implement enumerator interface
 		// now paint it (ToDo: May need to make a copy to write protect the original)
-		return this.ya[this.s];
+		return this.ya[this.s++];
 	}
 
 	// ToDo: Optimize  Tree  or  if really necessary: hash
@@ -114,6 +112,16 @@ public class LinksWith2Bends implements Link {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public ArrayList<Integer> getBedrock() {
+		return this.bedrock;
+	}
+
+	@Override
+	public boolean hasNext() {
+		return this.ya.length>this.s++;
 	}
 
 

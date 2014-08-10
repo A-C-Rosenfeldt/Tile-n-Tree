@@ -29,7 +29,7 @@ public class LinkWith2Bends {
 	// x and y are supposed to behave differently
 	public ClosedInterval y;
 	public Tupel x;
-	public Integer xLeft;
+	public Integer xRight;
 	public Node node;
 
 	public LinkWith2Bends(Tupel x, ClosedInterval y2, Node node) {

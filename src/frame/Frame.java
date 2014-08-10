@@ -18,8 +18,8 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 // Todo
 // Use F1 to open configuration.java
-package frame;
 
+package frame;
 
 import inputDevice.Keyboard;
 import inputDevice.Mapping;
@@ -46,6 +46,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import adHocRouter.Link;
+import adHocRouter.LinkDebug;
 import adHocRouter.LinkWith2Bends;
 import adHocRouter.LinksWith2Bends;
 import adHocRouter.Table;
@@ -170,12 +171,12 @@ public class Frame  extends JFrame implements Mapping{
 		this.link=new LinksWith2Bends();
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
 		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0,new Table()); // root == frame window // Dupe (2,3)
-
+		this.drawRoutes( 20,0); // debug-info: draw bedrock and routes to the left 
+		///this.drawTree second pass. Now really drawing using the routing from pass one.
 		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
 		//this.drawTree( 2,3,Util.createSampleTree(),false,0,0,4); // root == frame window // Dupe (2,3)
-		
-		
+				
 		// ToDo try{} around resources
 
 		// probably now the
@@ -183,6 +184,29 @@ public class Frame  extends JFrame implements Mapping{
 		// renders my client area on the screen
 		// But mind fullscreen (eg on mobile or TV)!
 	}
+	
+	// i j ?
+	private void drawRoutes(int i, int j) {
+		ArrayList<Integer> b=((LinkDebug)this.link).getBedrock();
+		for (int y = 0; y < b.size(); y++) {
+			this.drawVI(b.get(y)+i, y+j, 0, 0);
+		}
+		
+		this.link.sort();
+		
+		while(this.link.hasNext()){
+			LinkWith2Bends l=this.link.getNext();
+			 drawReference(l.x.s[0] , l.y.s[0], false,
+						l.node, l.xRight);			
+			for(int y=l.y.s[0]+1;y<l.y.s[1];y++){
+				drawVI(l.xRight, y, 3, 4); // 3,4 is a dupe from this.draw reference
+			}
+			 drawReference(l.x.s[1] , l.y.s[1], false,
+						l.node, l.xRight);			
+			int xi;			
+		}
+	}
+	
 	// Parameter from this.paint to this.drawTree
 	private Graphics gForRec; // ToDo: Extra class?
 	//private int topLevelx;
@@ -260,7 +284,7 @@ public class Frame  extends JFrame implements Mapping{
 			// Deferred to routing. ToDo: Change constructor for partial construction
 			//this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0));
 			// get link positions in second pass
-			this.link.get(node); // ToDo: put the burden of y ordering into Interface Links
+			///this.link.get(node); // ToDo: put the burden of y ordering into Interface Links
 			// loop over all links passing this y
 			// taken live rendering
 			linkPasses = drawReference(x_anchor, y, linkPasses, node,10);

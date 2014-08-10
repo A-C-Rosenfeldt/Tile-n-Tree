@@ -35,5 +35,7 @@ public interface Link {
 	// node is used to match these two calls
 	public  LinkWith2Bends get(Node node);
 
+	public boolean hasNext();
+
 
 }
