@@ -171,7 +171,7 @@ public class Frame  extends JFrame implements Mapping{
 		this.link=new LinksWith2Bends();
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
 		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0,new Table()); // root == frame window // Dupe (2,3)
-		this.drawRoutes( 20,0); // debug-info: draw bedrock and routes to the left 
+		this.drawRoutes( 15,0); // debug-info: draw bedrock and routes to the left 
 		///this.drawTree second pass. Now really drawing using the routing from pass one.
 		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
@@ -186,24 +186,24 @@ public class Frame  extends JFrame implements Mapping{
 	}
 	
 	// i j ?
-	private void drawRoutes(int i, int j) {
+	private void drawRoutes(int x, int j) {
 		ArrayList<Integer> b=((LinkDebug)this.link).getBedrock();
 		for (int y = 0; y < b.size(); y++) {
-			this.drawVI(b.get(y)+i, y+j, 0, 0);
+			this.drawVI(b.get(y)+x, y+j, 0, 0);
 		}
 		
 		this.link.sort();
 		
 		while(this.link.hasNext()){
 			LinkWith2Bends l=this.link.getNext();
-			 drawReference(l.x.s[0] , l.y.s[0], false,
-						l.node, l.xRight);			
+			System.out.println("Link at y: "+l.y.s[0]);
+			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
+						l.node, x+l.xRight+10);			
 			for(int y=l.y.s[0]+1;y<l.y.s[1];y++){
-				drawVI(l.xRight, y, 3, 4); // 3,4 is a dupe from this.draw reference
+				drawVI(x+l.xRight, j+y, 3, 4); // 3,4 is a dupe from this.draw reference
 			}
-			 drawReference(l.x.s[1] , l.y.s[1], false,
-						l.node, l.xRight);			
-			int xi;			
+			 drawReference(j+ l.x.s[1] , x+ l.y.s[1], false,
+						l.node,x+ l.xRight+10);			
 		}
 	}
 	
@@ -261,7 +261,7 @@ public class Frame  extends JFrame implements Mapping{
 			// dupe }			
 			return new Tupel(x_anchor,t.s[0]);
 		} else {
-			System.out.println("Y is: "+y);
+			//System.out.println("Y is: "+y);
 			return drawTreeInner(x_anchor, y, current.getChildrenWithInline(),
 					linkPasses, x_min, x_min2, trans, current.isChicane(), table);
 		}
@@ -315,17 +315,18 @@ public class Frame  extends JFrame implements Mapping{
 				this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0), node);
 			}
 
-			if (node.getValueOf() != null) {
-				LinkWith2Bends this_link_get_node_getValueOf___ = this.link
-						.get(node.getValueOf());
-				// ToDo upwards links
-				if (this_link_get_node_getValueOf___ != null) {
-					this_link_get_node_getValueOf___
-							.setDestination(x_anchor, y);
-				}
-				// this.link.addLink(new Tupel(x_anchor, 0),new
-				// ClosedInterval(y,0));
-			}
+			// Paint uses Y right now. It is supposed that tree is fixed before routing
+//			if (node.getValueOf() != null) {
+//				LinkWith2Bends this_link_get_node_getValueOf___ = this.link
+//						.get(node.getValueOf());
+//				// ToDo upwards links
+//				if (this_link_get_node_getValueOf___ != null) {
+//					this_link_get_node_getValueOf___
+//							.setDestination(x_anchor, y);
+//				}
+//				// this.link.addLink(new Tupel(x_anchor, 0),new
+//				// ClosedInterval(y,0));
+//			}
 			
 			this.link.addBedrock(x_anchor);
 
@@ -382,13 +383,13 @@ public class Frame  extends JFrame implements Mapping{
 
 
 	private boolean drawReference(int x_anchor, int y, boolean linkPasses,
-			Node node, int xLeft) {
+			Node node, int xRight) {
 		int xi;
 		// references. ToDo: Call adHocRouter
 		
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
 								// tiles!
-			xi = xLeft;
+			xi = xRight;
 
 			if (node.getValue() != null) {
 				drawVI(xi, y, 0, 0);
@@ -508,7 +509,7 @@ public class Frame  extends JFrame implements Mapping{
 
 	@Override
 	public void move(Vector d, Modifier m) {
-		System.out.println("In move: "+this.cursor.s);
+		//System.out.println("In move: "+this.cursor.s);
 		this.cursor.add(d);
 		this.repaint();
 	}
