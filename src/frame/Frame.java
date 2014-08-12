@@ -194,17 +194,31 @@ public class Frame  extends JFrame implements Mapping{
 		
 		this.link.sort();
 		
+		
 		while(this.link.hasNext()){
 			LinkWith2Bends l=this.link.getNext();
 			System.out.println("Link at y: "+l.y.s[0]);
 			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
-						l.node, x+l.xRight+10);			
-			for(int y=l.y.s[0]+1;y<l.y.s[1];y++){
+						l.node, x+l.xRight+10);	
+			
+			int[] ySorted=l.y.s.clone(); // should work for value type
+			// sort for top-down left-right drawing. Could have changed y++ to y-- otherwise.
+			if (ySorted[0]>ySorted[1]){
+				int t=ySorted[0];
+				ySorted[0]=ySorted[1];
+				ySorted[1]=t;				
+			}
+			
+			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
+			for(int y=ySorted[0]+1;y<ySorted[1];y++){
 				drawVI(x+l.xRight, j+y, 3, 4); // 3,4 is a dupe from this.draw reference
 			}
+			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
+			
 			 drawReference(j+ l.x.s[1] , x+ l.y.s[1], false,
-						l.node,x+ l.xRight+10);			
+						l.node.getValue(),x+ l.xRight+10);			
 		}
+		
 	}
 	
 	// Parameter from this.paint to this.drawTree
