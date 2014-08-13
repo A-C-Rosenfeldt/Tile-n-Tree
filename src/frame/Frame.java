@@ -73,7 +73,7 @@ public class Frame  extends JFrame implements Mapping{
 	public Frame(String titel) {
 		super(titel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(600, 800);
+		setSize(800, 800);
 		// Premature optimization (or aero non portable look and feel)	        
 		///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 
@@ -185,29 +185,33 @@ public class Frame  extends JFrame implements Mapping{
 		// But mind fullscreen (eg on mobile or TV)!
 	}
 	
-	// i j ?
+	// ToDo: Transformation (as default in Swing, OpenGl ..)
 	private void drawRoutes(int x, int j) {
 		ArrayList<Integer> b=((LinkDebug)this.link).getBedrock();
 		for (int y = 0; y < b.size(); y++) {
-			this.drawVI(b.get(y)+x, y+j, 0, 0);
+			this.drawVI(b.get(y)+x-3, y+j, 0, 0);
 		}
 		
 		this.link.sort();
 		
 		
 		while(this.link.hasNext()){
+			int upsideDown=2;
 			LinkWith2Bends l=this.link.getNext();
-			System.out.println("Link at y: "+l.y.s[0]);
-			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
-						l.node, x+l.xRight+10);	
-			
 			int[] ySorted=l.y.s.clone(); // should work for value type
 			// sort for top-down left-right drawing. Could have changed y++ to y-- otherwise.
 			if (ySorted[0]>ySorted[1]){
 				int t=ySorted[0];
 				ySorted[0]=ySorted[1];
-				ySorted[1]=t;				
+				ySorted[1]=t;
+				upsideDown=0;
 			}
+
+			System.out.println("Link at y: "+l.y.s[0]);
+			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
+						l.node, x+l.xRight+10,upsideDown);	
+			
+
 			
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
 			for(int y=ySorted[0]+1;y<ySorted[1];y++){
@@ -215,8 +219,8 @@ public class Frame  extends JFrame implements Mapping{
 			}
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
 			
-			 drawReference(j+ l.x.s[1] , x+ l.y.s[1], false,
-						l.node.getValue(),x+ l.xRight+10);			
+			drawReference(x+l.x.s[1] , j+ l.y.s[1], false,
+						l.node.getValue(), x+ l.xRight+10, upsideDown);
 		}		
 	}
 	
@@ -300,7 +304,7 @@ public class Frame  extends JFrame implements Mapping{
 			///this.link.get(node); // ToDo: put the burden of y ordering into Interface Links
 			// loop over all links passing this y
 			// taken live rendering
-			linkPasses = drawReference(x_anchor, y, linkPasses, node,10);
+			linkPasses = drawReference(x_anchor, y, linkPasses, node,10,0);
 			
 			
 			// table
@@ -417,9 +421,9 @@ public class Frame  extends JFrame implements Mapping{
 	}
 
 
-
+	// ToDo: UnitTest that there are no dangling bounds!
 	private boolean drawReference(int x_anchor, int y, boolean linkPasses,
-			Node node, int xRight) {
+			Node node, int xRight, int upsideDown) {
 		int xi;
 		// references. ToDo: Call adHocRouter
 		
@@ -428,7 +432,7 @@ public class Frame  extends JFrame implements Mapping{
 			xi = xRight;
 
 			if (node.getValue() != null) {
-				drawVI(xi, y, 0, 0);
+				drawVI(xi, y, 0, 0^upsideDown);
 				xi--;
 				while (xi > x_anchor) {
 					drawVI(xi, y, 3, 2);
@@ -445,7 +449,7 @@ public class Frame  extends JFrame implements Mapping{
 
 			
 			if (node.getValueOf() != null) {
-				drawVI(xi, y, 0, 2);
+				drawVI(xi, y, 0, 2^upsideDown);
 				xi--;
 				while (xi > x_anchor+1) {
 					drawVI(xi, y, 3, 2);

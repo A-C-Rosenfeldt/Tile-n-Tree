@@ -96,15 +96,27 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		System.out.println("s is "+this.s+" von "+this.ya.length);
 		int[] this_ya_this_s__y_s=this.getYa(this.s).y.s;
 		int this_ya_this_s__xLeft=0;
-		for (int y = this_ya_this_s__y_s[0]; y <= this_ya_this_s__y_s[1]; y++) {
+		
+		// Do not merge with render code because: ToDo: Walk the tree
+		int[] ySorted=this_ya_this_s__y_s.clone();
+		if (ySorted[0]>ySorted[1]){
+			int t=ySorted[0];
+			ySorted[0]=ySorted[1];
+			ySorted[1]=t;				
+		}
+		
+		for (int y = ySorted[0]; y <= ySorted[1]; y++) {
 			this_ya_this_s__xLeft=Math.max(this_ya_this_s__xLeft,this.bedrock.get(y));
 		}
+		
+		System.out.println("Bedrock says"+this_ya_this_s__xLeft);
 	
 		// route around other links
 		for (int other=0;other < this.s;other++){// for over all routed links (smaller index) in this collection
 				if (this.getYa(this.s).y.isOverlapingWith(this.getYa(other).y)){
 					this_ya_this_s__xLeft=this.getYa(other).xRight+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
-				}			
+					System.out.println( "["+other+"] = "+ this_ya_this_s__xLeft);					
+				}
 		}
 	
 		this.getYa(this.s).xRight=this_ya_this_s__xLeft;

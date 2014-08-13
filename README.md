@@ -2,6 +2,10 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 
 ![Screenshot](https://plus.google.com/photos/+ArneChristianRosenfeldt/albums/6042486578143006305/6043434580258012258?pid=6043434580258012258&oid=101260750722957758932]
 
+Code Style
+No bloated files => Tabs, LF only (no CR (ToDo)), ASCII (en.us only)
+
+Features
 
 * tetris
 * trans
@@ -22,9 +26,10 @@ The program tries to combine the experiences on a 8-bit home computer BASIC with
 * bend
 * table
 * inline reference
-* ---- the following features are not yet implemented
+* the following features are not yet implemented
 * instantiate first level children to second level children
 * more references
+----
 * foreground layer
 	*	crossing (all alternatives look ugly)
 	*	nTupel
