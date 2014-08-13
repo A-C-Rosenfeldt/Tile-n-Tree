@@ -89,6 +89,9 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	// This implementation is meant as reference and documentation and thus abstains from recursive code and optimized interfaces
 	@Override
 	public LinkWith2Bends getNext() {
+		// Strange: Link( y:{23, 0}, x: {4, 0} xRight: 0)
+
+		
 		// route around bedrock // ToDo: Use data that bubbles up in the tree
 		System.out.println("s is "+this.s+" von "+this.ya.length);
 		int[] this_ya_this_s__y_s=this.getYa(this.s).y.s;
@@ -105,23 +108,25 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		}
 	
 		this.getYa(this.s).xRight=this_ya_this_s__xLeft;
+		
+		System.out.println( this.getYa(this.s));
 			
 		// ToDo implement enumerator interface
 		// now paint it (ToDo: May need to make a copy to write protect the original)
 		return this.getYa(this.s++);
 	}
 
-//	// ToDo: Optimize  Tree  or  if really necessary: hash
-//	@Override
-//	public LinkWith2Bends get(Node node) {
-//		if (this.ya!=null)
-//		for (LinkWith2Bends linkWith2Bends : this.ya) {
-//			if (linkWith2Bends.node==node){
-//				return linkWith2Bends;
-//			}
-//		}
-//		return null;
-//	}
+	// ToDo: Optimize  Tree  or  if really necessary: hash
+	@Override
+	public LinkWith2Bends get(Node node) {
+		if (this.y!=null)
+		for (Object linkWith2Bends : this.y) {
+			if (((LinkWith2Bends)linkWith2Bends).node==node){
+				return (LinkWith2Bends)linkWith2Bends;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public ArrayList<Integer> getBedrock() {

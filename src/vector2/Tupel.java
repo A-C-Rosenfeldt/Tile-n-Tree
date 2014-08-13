@@ -29,11 +29,16 @@ public class Tupel {
 	}
 	
 	protected Tupel() {
-		// do not create initialized objects! But this is needed for constructors in derived classes
+		// Generally do not create uninitialized objects! But this is needed for constructors in derived classes
 	}
 
 	public void AddAt(int x, int i)
 	{
 		this.s[i]+=x;
 	}
+	
+	@Override
+	public String toString() {
+		return "{"+this.s[0]+", "+this.s[1]+"}";
+	}	
 }

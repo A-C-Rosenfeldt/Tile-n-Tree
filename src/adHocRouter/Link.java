@@ -33,7 +33,9 @@ public interface Link {
 	public LinkWith2Bends getNext();
 	void addLink(Tupel x, ClosedInterval y, Node node);
 	// node is used to match these two calls
-	// indexed via y right now (more paint - centric) public  LinkWith2Bends get(Node node);
+	// indexed via y right now (more paint - centric)
+	
+	public  LinkWith2Bends get(Node node); // Needed for completion of y
 
 	public boolean hasNext();
 

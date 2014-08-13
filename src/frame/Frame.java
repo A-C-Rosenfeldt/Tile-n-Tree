@@ -217,8 +217,7 @@ public class Frame  extends JFrame implements Mapping{
 			
 			 drawReference(j+ l.x.s[1] , x+ l.y.s[1], false,
 						l.node.getValue(),x+ l.xRight+10);			
-		}
-		
+		}		
 	}
 	
 	// Parameter from this.paint to this.drawTree
@@ -326,9 +325,32 @@ public class Frame  extends JFrame implements Mapping{
 			//   Change constructor for partial construction
 			//   extract method to reflect top down?
 			if (node.getValue() != null) {
-				this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0), node);
+				LinkWith2Bends l=this.link.get(node);
+				if (l==null){
+					this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0), node);
+					l=this.link.get(node);
+				}
+				else{
+					l.x.s[0]=x_anchor;
+					l.y.s[0]=y;
+				}
+					
+				
+				// ToDo: Must be able to initialize from both ends
 			}
 
+			if (node.getValueOf() != null) {
+				LinkWith2Bends l = this.link.get(node.getValueOf());
+				if (l == null) {
+					this.link.addLink(new Tupel(0, x_anchor),
+							new ClosedInterval(0, y), node.getValueOf());
+					l = this.link.get(node.getValueOf());
+				} else {
+					l.x.s[1] = x_anchor;
+					l.y.s[1] = y;
+				}
+			}
+			
 			// Paint uses Y right now. It is supposed that tree is fixed before routing
 //			if (node.getValueOf() != null) {
 //				LinkWith2Bends this_link_get_node_getValueOf___ = this.link

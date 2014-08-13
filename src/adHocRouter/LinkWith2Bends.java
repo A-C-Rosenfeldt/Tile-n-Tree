@@ -43,4 +43,8 @@ public class LinkWith2Bends {
 		this.y.s[1]=y;
 	}
 	
+	@Override
+	public String toString(){
+		return "Link( y:"+y.toString()+", x: "+x.toString()+" xRight: "+xRight+")";
+	}
 }
