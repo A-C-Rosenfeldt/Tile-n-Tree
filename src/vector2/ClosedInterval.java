@@ -26,8 +26,14 @@ public class ClosedInterval extends Tupel{
 		super(y, i);
 	}
 
+	public int getLimitsSorted(int i){
+		if (this.s[0]>this.s[1]) {i^=1;} 
+		return this.s[i];
+	}
+	
+	// ToDo: UnitTest
 	public boolean isOverlapingWith(ClosedInterval i)
 	{
-		return !(this.s[1]<i.s[0] || i.s[1]<this.s[0]);
+		return !(this.getLimitsSorted(1)<i.getLimitsSorted(0) || i.getLimitsSorted(1)<this.getLimitsSorted(0));
 	}
 }

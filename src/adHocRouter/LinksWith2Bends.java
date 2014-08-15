@@ -72,8 +72,25 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		this.y.add(new LinkWith2Bends(x, y, node));
 	}
 
+	// ToDo: Make more efficient!
+	private void connectDanglingBounds(){
+		for (LinkWith2Bends l : this.y) {
+			// ToDo: -1
+			if (l.y.s[1]==0){
+				Node v=l.node.getValue();
+				for (LinkWith2Bends m : this.y){
+					if (m.node.getValue()==v && m.y.s[1]!=0){
+						l.y.s[1]=m.y.s[1]; // ToDo: this code looks better with Point. Maybe add point getter to interface
+						l.x.s[1]=m.x.s[1];
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void sort() {
+		this.connectDanglingBounds();
 		this.ya=y.toArray(); // as docu tells us, Collections.sort would do this anyway. May be useful
 		
 		// not obviously a natural comparator
@@ -135,8 +152,9 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	
 		// route around other links
 		for (int other=0;other < this.s;other++){// for over all routed links (smaller index) in this collection
+			System.out.println(this.getYa(this.s).y +" overlaping with "+this.getYa(other).y);
 				if (this.getYa(this.s).y.isOverlapingWith(this.getYa(other).y)){
-					this_ya_this_s__xRight=this.getYa(other).xRight+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
+					this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight, this.getYa(other).xRight+1); // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
 					System.out.println( "["+other+"] = "+ this_ya_this_s__xRight);					
 				}
 		}

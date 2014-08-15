@@ -18,6 +18,7 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 // Todo
 // Use F1 to open configuration.java
+// How to draw links defered that are values of two sources?
 
 package frame;
 
@@ -328,6 +329,7 @@ public class Frame  extends JFrame implements Mapping{
 			// ToDo:
 			//   Change constructor for partial construction
 			//   extract method to reflect top down?
+			//   Change 0 to -1
 			if (node.getValue() != null) {
 				LinkWith2Bends l=this.link.get(node);
 				if (l==null){
