@@ -209,7 +209,7 @@ public class Frame  extends JFrame implements Mapping{
 
 			System.out.println("Link at y: "+l.y.s[0]);
 			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
-						l.node, x+l.xRight+10,upsideDown);	
+						l.node, x+l.xRight,upsideDown);	
 			
 
 			
@@ -220,7 +220,7 @@ public class Frame  extends JFrame implements Mapping{
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
 			
 			drawReference(x+l.x.s[1] , j+ l.y.s[1], false,
-						l.node.getValue(), x+ l.xRight+10, upsideDown);
+						l.node.getValue(), x+ l.xRight, upsideDown);
 		}		
 	}
 	
@@ -331,23 +331,19 @@ public class Frame  extends JFrame implements Mapping{
 			if (node.getValue() != null) {
 				LinkWith2Bends l=this.link.get(node);
 				if (l==null){
-					this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0), node);
+					this.link.addLink(new Tupel(x_anchor, 0), new ClosedInterval(y,0), node);
 					l=this.link.get(node);
 				}
 				else{
 					l.x.s[0]=x_anchor;
 					l.y.s[0]=y;
 				}
-					
-				
-				// ToDo: Must be able to initialize from both ends
 			}
 
 			if (node.getValueOf() != null) {
 				LinkWith2Bends l = this.link.get(node.getValueOf());
 				if (l == null) {
-					this.link.addLink(new Tupel(0, x_anchor),
-							new ClosedInterval(0, y), node.getValueOf());
+					this.link.addLink(new Tupel(0, x_anchor), new ClosedInterval(0, y), node.getValueOf());
 					l = this.link.get(node.getValueOf());
 				} else {
 					l.x.s[1] = x_anchor;
@@ -427,6 +423,7 @@ public class Frame  extends JFrame implements Mapping{
 		int xi;
 		// references. ToDo: Call adHocRouter
 		
+		System.out.println("x_anchor: "+x_anchor);
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
 								// tiles!
 			xi = xRight;

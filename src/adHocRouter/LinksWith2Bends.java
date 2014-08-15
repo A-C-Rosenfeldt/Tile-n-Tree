@@ -95,7 +95,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		// route around bedrock // ToDo: Use data that bubbles up in the tree
 		System.out.println("s is "+this.s+" von "+this.ya.length);
 		int[] this_ya_this_s__y_s=this.getYa(this.s).y.s;
-		int this_ya_this_s__xLeft=0;
+		int this_ya_this_s__xRight=0;
 		
 		// Do not merge with render code because: ToDo: Walk the tree
 		int[] ySorted=this_ya_this_s__y_s.clone();
@@ -104,24 +104,31 @@ public class LinksWith2Bends implements Link, LinkDebug {
 			ySorted[0]=ySorted[1];
 			ySorted[1]=t;				
 		}
+
+		int y=ySorted[0];
+		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y)+1); // Space for Endmarkers
+		y++;
+		while ( y <= ySorted[1]-1) {
+			this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y));
+			y++;
+		}		
+		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y)+1);
 		
-		for (int y = ySorted[0]; y <= ySorted[1]; y++) {
-			this_ya_this_s__xLeft=Math.max(this_ya_this_s__xLeft,this.bedrock.get(y));
-		}
+		++this_ya_this_s__xRight; // Next to bedrock
 		
-		System.out.println("Bedrock says"+this_ya_this_s__xLeft);
+		System.out.println("Bedrock says"+this_ya_this_s__xRight);
 	
 		// route around other links
 		for (int other=0;other < this.s;other++){// for over all routed links (smaller index) in this collection
 				if (this.getYa(this.s).y.isOverlapingWith(this.getYa(other).y)){
-					this_ya_this_s__xLeft=this.getYa(other).xRight+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
-					System.out.println( "["+other+"] = "+ this_ya_this_s__xLeft);					
+					this_ya_this_s__xRight=this.getYa(other).xRight+1; // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
+					System.out.println( "["+other+"] = "+ this_ya_this_s__xRight);					
 				}
 		}
 	
-		this.getYa(this.s).xRight=this_ya_this_s__xLeft;
+		this.getYa(this.s).xRight=this_ya_this_s__xRight;
 		
-		System.out.println( this.getYa(this.s));
+		System.out.println( "GetNext: "+this.getYa(this.s));
 			
 		// ToDo implement enumerator interface
 		// now paint it (ToDo: May need to make a copy to write protect the original)
