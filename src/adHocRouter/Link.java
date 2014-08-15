@@ -39,5 +39,7 @@ public interface Link {
 
 	public boolean hasNext();
 
+	public void addBedrock(int x, int y);
+
 
 }

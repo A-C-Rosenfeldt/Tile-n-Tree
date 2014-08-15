@@ -364,14 +364,16 @@ public class Frame  extends JFrame implements Mapping{
 //				// ClosedInterval(y,0));
 //			}
 			
-			this.link.addBedrock(x_anchor);
+			//this.link.addBedrock(x_anchor);
 
 			// } concept code
 			
 			Vector v;
 			if ((transformation & 4) == 0) {
+				this.link.addBedrock(x_anchor,y);
 				v = new Vector(this.treepos, this.tileSize, x_anchor, y + 1);
 			} else {
+				this.link.addBedrock(y,x_anchor);
 				v = new Vector(this.treepos, this.tileSize, y, x_anchor + 1);
 			}
 			

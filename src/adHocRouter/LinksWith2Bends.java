@@ -40,6 +40,21 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		bedrock.add(x);
 	}
 	
+	@Override
+	public void addBedrock(int x, int y) {
+		// not called for
+		while (y>this.bedrock.size()){
+			this.bedrock.add(0);
+		}
+		
+		// okay
+		if (y==this.bedrock.size()){
+			this.bedrock.add(x);
+		}else{
+			this.bedrock.set(y, Math.max(this.bedrock.get(y), x));
+		}
+	}
+	
 	private ArrayList<LinkWith2Bends> y=new ArrayList<LinkWith2Bends>();
 	
 	private Object[] ya; // LinkWith2Bends  . ToDo: hide type inside sort?
@@ -156,7 +171,4 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	public boolean hasNext() {
 		return this.ya.length>this.s;
 	}
-
-
-
 }
