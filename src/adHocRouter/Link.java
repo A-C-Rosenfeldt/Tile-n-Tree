@@ -21,6 +21,8 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 package adHocRouter;
 
+import java.util.ArrayList;
+
 import tree.Node;
 import vector2.ClosedInterval;
 import vector2.Tupel;
@@ -40,6 +42,7 @@ public interface Link {
 	public boolean hasNext();
 
 	public void addBedrock(int x, int y);
-
+	public LinkWith2Bends getLinksSortedByYPrevious();
+	public void jumpBelowLinks();
 
 }

@@ -29,6 +29,8 @@ Features
 * the following features are not yet implemented
 * instantiate first level children to second level children
 * more references
+	* crossings and joins
+	* 
 ----
 * foreground layer
 	*	crossing (all alternatives look ugly)

@@ -54,6 +54,7 @@ import adHocRouter.Table;
 import rasterizer.MakeTheBestOfSwing;
 import tile.Tile;
 import tile.Tiles;
+import tree.Buffer;
 import tree.Node;
 import tree.Util;
 import vector2.ClosedInterval;
@@ -172,7 +173,12 @@ public class Frame  extends JFrame implements Mapping{
 		this.link=new LinksWith2Bends();
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
 		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0,new Table()); // root == frame window // Dupe (2,3)
-		this.drawRoutes( 15,0); // debug-info: draw bedrock and routes to the left 
+		try {
+			this.drawLinks( 15,0);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // debug-info: draw bedrock and routes to the left 
 		///this.drawTree second pass. Now really drawing using the routing from pass one.
 		this.treepos=new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
@@ -187,15 +193,16 @@ public class Frame  extends JFrame implements Mapping{
 	}
 	
 	// ToDo: Transformation (as default in Swing, OpenGl ..)
-	private void drawRoutes(int x, int j) {
+	private void drawLinks(int x, int j) throws Exception {
 		ArrayList<Integer> b=((LinkDebug)this.link).getBedrock();
-		for (int y = 0; y < b.size(); y++) {
-			this.drawVI(b.get(y)+x-3, y+j, 0, 0);
+		// to place text labels in front   draw backwards
+		for (int y = b.size()-1; y >=0 ; y--) {
+			this.drawVI(b.get(y)+x, y+j, 0, 0);
 		}
 		
 		this.link.sort();
-		
-		
+
+		// supplement links with layout info. For debugging the loop is in frame. Todo: Remove into test
 		while(this.link.hasNext()){
 			int upsideDown=2;
 			LinkWith2Bends l=this.link.getNext();
@@ -212,8 +219,6 @@ public class Frame  extends JFrame implements Mapping{
 			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
 						l.node, x+l.xRight,upsideDown);	
 			
-
-			
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
 			for(int y=ySorted[0]+1;y<ySorted[1];y++){
 				drawVI(x+l.xRight, j+y, 3, 4); // 3,4 is a dupe from this.draw reference
@@ -222,7 +227,68 @@ public class Frame  extends JFrame implements Mapping{
 			
 			drawReference(x+l.x.s[1] , j+ l.y.s[1], false,
 						l.node.getValue(), x+ l.xRight, upsideDown);
-		}		
+		}
+		
+		Buffer buffer= new Buffer(new Tupel(2,0)); // Space
+		link.jumpBelowLinks();
+		LinkWith2Bends current=link.getLinksSortedByYPrevious();
+		// to place text labels in front   draw backwards
+		for (int y = b.size()-1; y >=0 && current!=null; y--) {
+			this.shade ^= 2;
+			do{
+				if (current.y.getLimitsSorted(1)<y){
+					break;
+				}
+				
+				for(int side=1;side>=0;side--){
+					if (current.y.s[side]==y){
+						int xi=current.xRight;
+						if (buffer.get(xi).equals(new Tupel(2,0))){
+							buffer.set(xi, new Tupel(0, (current.y.s[side]<current.y.s[1-side])?2:0));
+						}else{
+							buffer.set(xi, new Tupel(1, (current.y.s[side]<current.y.s[1-side])?2:0));
+							// ToDo: Use 4 or 5 for more compact layout
+						}
+						
+						while (xi > current.x.s[side]+1) {
+							buffer.set(xi--, new Tupel(3, 2));
+						}
+						
+						buffer.set(current.xRight, side==0 ? new Tupel(3, 2) : new Tupel(0, 4)); // ToDo: Add a concave start to the link
+					}
+						
+				}
+			}
+			while((current=link.getLinksSortedByYPrevious())!=null);
+				
+			
+			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
+			for (int xPaint=buffer.getMax();xPaint>b.get(y);xPaint--){
+				Tupel t=buffer.get(xPaint);
+				drawVI(x+xPaint, j+y, t.s[0], t.s[1]);
+				
+				//update after bend
+				if (t.s[0]==0){
+					if (t.s[1]==2){
+						t.s[0]=2; // space
+					}else{
+						t.s[0]=3;
+						t.s[1]=4;
+					}
+				}
+				
+				// update after horizontal bar
+				if (t.s[0]==3 && t.s[1]==0){
+					t.s[0]=2; // space
+				}
+				
+				buffer.set(xPaint,t);
+			}
+			
+			this.shade ^= 2;
+			
+			this.drawVI(b.get(y)+x-3, y+j, 0, 0);
+		}
 	}
 	
 	// Parameter from this.paint to this.drawTree

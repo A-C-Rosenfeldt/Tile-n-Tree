@@ -56,6 +56,20 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	}
 	
 	private ArrayList<LinkWith2Bends> y=new ArrayList<LinkWith2Bends>();
+	private int getIndex;
+	
+	@Override
+	public void jumpBelowLinks() {
+		this.getIndex=this.y.size();
+	}
+
+	@Override
+	public LinkWith2Bends getLinksSortedByYPrevious(){
+		if (--this.getIndex<0){
+			return null;
+		}
+		return this.y.get(this.getIndex);
+	}
 	
 	private Object[] ya; // LinkWith2Bends  . ToDo: hide type inside sort?
 	
