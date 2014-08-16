@@ -107,7 +107,7 @@ public class Util {
 		Node b=new Node("instance b");
 
 		Node selector=new Node("instance real part");
-		selector.setValue(v);
+		selector.setValueDoNotNotify(v);
 		b.getChildren().add(selector); // ToDo: separate method  getchildren.edit  from   getchildren.view
 		b.setValue(proto);
 		

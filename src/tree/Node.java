@@ -171,6 +171,10 @@ public class Node {
 		value.valueOf=this;
 		this.value = value;
 	}
+	
+	public void setValueDoNotNotify(Node value) {
+		this.value = value;
+	}	
 
 	public Node getClassObject() {
 		return classObject;
