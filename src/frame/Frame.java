@@ -254,7 +254,7 @@ public class Frame  extends JFrame implements Mapping{
 							buffer.set(xi--, new Tupel(3, 2));
 						}
 						
-						buffer.set(current.xRight, side==0 ? new Tupel(3, 2) : new Tupel(0, 4)); // ToDo: Add a concave start to the link
+						buffer.set(current.x.s[side], side==0 ? new Tupel(3, 2) : new Tupel(0, 4)); // ToDo: Add a concave start to the link
 					}
 						
 				}
@@ -263,7 +263,7 @@ public class Frame  extends JFrame implements Mapping{
 				
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
-			for (int xPaint=buffer.getMax();xPaint>b.get(y);xPaint--){
+			for (int xPaint=buffer.getMax()-1;xPaint>b.get(y);xPaint--){
 				Tupel t=buffer.get(xPaint);
 				drawVI(x+xPaint, j+y, t.s[0], t.s[1]);
 				
@@ -487,7 +487,7 @@ public class Frame  extends JFrame implements Mapping{
 	}
 
 
-	// ToDo: UnitTest that there are no dangling bounds!
+	// ToDo: UnitTest that there are no dangling bonds!
 	private boolean drawReference(int x_anchor, int y, boolean linkPasses,
 			Node node, int xRight, int upsideDown) {
 		int xi;
@@ -567,7 +567,7 @@ public class Frame  extends JFrame implements Mapping{
 
 	// with the help of source, the seam can be taken or omitted
 	// straigth line on seam
-	// ToDo: remove dupes? Extract and JUnitTest for dangling bounds
+	// ToDo: remove dupes? Extract and JUnitTest for dangling bonds
 	private void flip(Graphics2D g, VolatileImage vi, Vector v , int f){
 		
 		AffineTransform backup=g.getTransform(); // TextOut wants a different rotation

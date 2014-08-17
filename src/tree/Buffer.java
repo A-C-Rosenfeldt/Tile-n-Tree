@@ -47,9 +47,10 @@ public class Buffer {
 			// shift values. But wait, what if we already have active edge list? Chose implementation later.
 			throw new Exception("Not implemented");
 		} else {
-			// ToDo: Too sparse: Use active edge list instead
+			// ToDo: Too sparse for a screen-buffer like approach. Use active edge list instead
 			while (i >= this.getMax()) {
 				this.line.add(this.surroundedBy);
+				System.out.println("I too large: "+i);
 			} 
 
 			this.line.set(i, value);
