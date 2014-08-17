@@ -216,7 +216,7 @@ public class Frame  extends JFrame implements Mapping{
 			}
 
 			System.out.println("Link at y: "+l.y.s[0]);
-			 drawReference(x+l.x.s[0] , j+l.y.s[0], false,
+			 drawLink(x+l.x.s[0] , j+l.y.s[0], false,
 						l.node, x+l.xRight,upsideDown);	
 			
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
@@ -225,11 +225,11 @@ public class Frame  extends JFrame implements Mapping{
 			}
 			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
 			
-			drawReference(x+l.x.s[1] , j+ l.y.s[1], false,
+			drawLink(x+l.x.s[1] , j+ l.y.s[1], false,
 						l.node.getValue(), x+ l.xRight, upsideDown);
 		}
 		
-		Buffer buffer= new Buffer(new Tupel(2,0)); // Space
+		Buffer buffer= new Buffer(Tile.space());
 		link.jumpBelowLinks();
 		LinkWith2Bends current=link.getLinksSortedByYPrevious();
 		// to place text labels in front   draw backwards
@@ -243,18 +243,18 @@ public class Frame  extends JFrame implements Mapping{
 				for(int side=1;side>=0;side--){
 					if (current.y.s[side]==y){
 						int xi=current.xRight;
-						if (buffer.get(xi).equals(new Tupel(2,0))){
-							buffer.set(xi, new Tupel(0, (current.y.s[side]<current.y.s[1-side])?2:0));
-						}else{
-							buffer.set(xi, new Tupel(1, (current.y.s[side]<current.y.s[1-side])?2:0));
+						if (buffer.get(xi).equals(new Tupel(2, 0))) {
+							buffer.set(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
+						} else {
+							buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
 							// ToDo: Use 4 or 5 for more compact layout
 						}
 						
 						while (xi > current.x.s[side]+1) {
-							buffer.set(xi--, new Tupel(3, 2));
+							buffer.set(xi--, new Tile(3, 2,2));
 						}
 						
-						buffer.set(current.x.s[side], side==0 ? new Tupel(3, 2) : new Tupel(0, 4)); // ToDo: Add a concave start to the link
+						buffer.set(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
 					}
 						
 				}
@@ -264,9 +264,18 @@ public class Frame  extends JFrame implements Mapping{
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
 			for (int xPaint=buffer.getMax()-1;xPaint>b.get(y);xPaint--){
-				Tupel t=buffer.get(xPaint);
-				drawVI(x+xPaint, j+y, t.s[0], t.s[1]);
+				Tile t=buffer.get(xPaint);
 				
+				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
+				
+				// clean up
+				t.shape=2;t.shade=0; // space collides with arrow in the chosen tileSet
+						/*
+				if (!(t.s[0]==2 && t.s[1]==0))
+				{
+				
+				}*/
+				/*
 				//update after bend
 				if (t.s[0]==0){
 					if (t.s[1]==2){
@@ -281,7 +290,7 @@ public class Frame  extends JFrame implements Mapping{
 				if (t.s[0]==3 && t.s[1]==0){
 					t.s[0]=2; // space
 				}
-				
+				*/
 				buffer.set(xPaint,t);
 			}
 			
@@ -371,7 +380,7 @@ public class Frame  extends JFrame implements Mapping{
 			///this.link.get(node); // ToDo: put the burden of y ordering into Interface Links
 			// loop over all links passing this y
 			// taken live rendering
-			linkPasses = drawReference(x_anchor, y, linkPasses, node,10,0);
+			linkPasses = drawLink(x_anchor, y, linkPasses, node,10,0);
 			
 			
 			// table
@@ -488,7 +497,7 @@ public class Frame  extends JFrame implements Mapping{
 
 
 	// ToDo: UnitTest that there are no dangling bonds!
-	private boolean drawReference(int x_anchor, int y, boolean linkPasses,
+	private boolean drawLink(int x_anchor, int y, boolean linkPasses,
 			Node node, int xRight, int upsideDown) {
 		int xi;
 		// references. ToDo: Call adHocRouter
@@ -541,11 +550,20 @@ public class Frame  extends JFrame implements Mapping{
 	private void drawVI(int x, int y, int i, int j) {
 		
 		if ((this.transformation & 4)==0){
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<2 | (this.shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j^this.transformation);
+		}else{
+		drawVolatileImage(new Vector(this.treepos, this.tileSize,y,x),  i<<2 | (this.shade) | ((y==this.cursor.s[0] && x==this.cursor.s[1])? 1:0), j^this.transformation);
+		}
+	}
+	
+	private void drawVI(int x, int y, int i, int j, int shade) {
+		
+		if ((this.transformation & 4)==0){
 		drawVolatileImage(new Vector(this.treepos, this.tileSize,x,y),  i<<2 | (shade) | ((x==this.cursor.s[0] && y==this.cursor.s[1])? 1:0), j^this.transformation);
 		}else{
 		drawVolatileImage(new Vector(this.treepos, this.tileSize,y,x),  i<<2 | (shade) | ((y==this.cursor.s[0] && x==this.cursor.s[1])? 1:0), j^this.transformation);
 		}
-	}
+	}	
 
 	private void drawVolatileImage(Vector v, int i, int j) {
 		VolatileImage vi = tiles.vImg[i];

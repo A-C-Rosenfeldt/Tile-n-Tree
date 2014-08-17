@@ -20,15 +20,15 @@ package tree;
 
 import java.util.ArrayList;
 
-import vector2.Tupel;
+import tile.Tile;
 
 public class Buffer {
 	// till now just a typeDef
-	private ArrayList<Tupel> line=new ArrayList<Tupel>(); // ToDo: Reduce unused capacity via limited capacity sharing along the Tree. Implicit and based on min and max
+	private ArrayList<Tile> line=new ArrayList<Tile>(); // ToDo: Reduce unused capacity via limited capacity sharing along the Tree. Implicit and based on min and max
 	private int min=0;
 
-	private Tupel surroundedBy;
-	public Buffer(Tupel surroundedBy){
+	private Tile surroundedBy;
+	public Buffer(Tile surroundedBy){
 		this.surroundedBy=surroundedBy;
 	}
 	
@@ -37,12 +37,12 @@ public class Buffer {
 		return this.min+this.line.size();
 	}
 	
-	public Tupel get(int i){
+	public Tile get(int i){
 		if (i<this.min || i>=this.getMax()){ return this.surroundedBy;}
 		return this.line.get(i);
 	}
 	
-	public void set(int i, Tupel value) throws Exception {
+	public void set(int i, Tile value) throws Exception {
 		if (i < this.min) {
 			// shift values. But wait, what if we already have active edge list? Chose implementation later.
 			throw new Exception("Not implemented");
