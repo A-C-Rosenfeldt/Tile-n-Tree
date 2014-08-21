@@ -50,7 +50,7 @@ public class Buffer {
 			// ToDo: Too sparse for a screen-buffer like approach. Use active edge list instead
 			while (i >= this.getMax()) {
 				this.line.add(this.surroundedBy);
-				System.out.println("I too large: "+i);
+				/// System.out.println("I too large: "+i);
 			} 
 
 			this.line.set(i, value);

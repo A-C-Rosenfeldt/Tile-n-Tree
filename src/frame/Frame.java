@@ -207,12 +207,12 @@ public class Frame  extends JFrame implements Mapping{
 		
 		this.link.sort();
 
-		// ToDo: LinkedList with cursor instead of hash
-		Set<LinkWith2Bends> passing=new LinkedHashSet<LinkWith2Bends>(); // For each line we draw all links so we should be able to keep pointers on all of them
 		// supplement links with layout info. For debugging the loop is in frame. Todo: Remove into test
 		while(this.link.hasNext()){
 			int upsideDown=2;
-			LinkWith2Bends l=this.link.getNext();
+			LinkWith2Bends l=this.link.getNext(); // sideEffect: Calculation
+			/*
+			 Debug code: check calculaton: ToDo: Make  Junit test out of it
 			int[] ySorted=l.y.s.clone(); // should work for value type
 			// sort for top-down left-right drawing. Could have changed y++ to y-- otherwise.
 			if (ySorted[0]>ySorted[1]){
@@ -234,9 +234,12 @@ public class Frame  extends JFrame implements Mapping{
 			
 			drawLink(x+l.x.s[1] , j+ l.y.s[1], false,
 						l.node.getValue(), x+ l.xRight, upsideDown);
+						*/
 		}
 		
-		
+		// ToDo: LinkedList with cursor instead of hash
+		Set<LinkWith2Bends> passing=new LinkedHashSet<LinkWith2Bends>(); // For each line we draw all links so we should be able to keep pointers on all of them
+				
 		link.jumpBelowLinks();
 		LinkWith2Bends current=link.getLinksSortedByYPrevious();
 		// to place text labels in front   draw backwards
@@ -254,8 +257,7 @@ public class Frame  extends JFrame implements Mapping{
 					drawReferenceEnd(current, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
 					iter.remove();
 				}
-			}
-		
+			}		
 			
 			do{
 				if (current.y.getLimitsSorted(1)<y){
@@ -265,13 +267,7 @@ public class Frame  extends JFrame implements Mapping{
 				for(int side=1;side>=0;side--){
 					if (current.y.s[side]==y){
 						int xi=current.xRight;
-						Tile t=buffer.get(xi);
-						if (t.shape==2 && t.transformation==0) {
-							buffer.set(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
-						} else {
-							buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
-							// ToDo: Use 4 or 5 for more compact layout
-						}
+
 						
 						drawReferenceEnd(current, buffer, side, xi);
 					}
@@ -284,13 +280,13 @@ public class Frame  extends JFrame implements Mapping{
 			
 			
 			
-			/*
+			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
 			for (int xPaint=buffer.getMax()-1;xPaint>b.get(y);xPaint--){
 				Tile t=buffer.get(xPaint);
 				
 				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
-				
+				/*
 				// clean up
 				if (t.shape == 3 && t.transformation == 4 && t.shade == 2) {
 
@@ -311,8 +307,8 @@ public class Frame  extends JFrame implements Mapping{
 				if (!(t.s[0]==2 && t.s[1]==0))
 				{
 				
-				}*/
-				/*
+				}
+				
 				//update after bend
 				if (t.s[0]==0){
 					if (t.s[1]==2){
@@ -329,7 +325,8 @@ public class Frame  extends JFrame implements Mapping{
 				}
 				
 				buffer.set(xPaint,t);
-			}*/
+				*/
+			}
 			
 			this.shade ^= 2;
 			
@@ -340,8 +337,24 @@ public class Frame  extends JFrame implements Mapping{
 
 
 	private void drawReferenceEnd(LinkWith2Bends current, Buffer buffer, int side, int xi) throws Exception {
-		while (xi > current.x.s[side]+1) {
-			buffer.set(xi--, new Tile(3, 2,2));
+
+		// and bend
+		Tile t=buffer.get(xi);
+		if (t.equals(Tile.space())) {
+			buffer.set(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
+		} else {
+			buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 1 : 1, 2));
+			// ToDo: Use 4 or 5 for more compact layout
+		}
+		
+		// end
+		while (--xi > current.x.s[side]+1) {
+			t=buffer.get(xi);
+			if (t.equals(Tile.space())){ // ToDo: replace space with null? Different spaces possible?
+				buffer.set(xi, new Tile(3, 2,2));
+			}else{
+				buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 1 : 1, 2));
+			}
 		}
 		
 		buffer.set(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
