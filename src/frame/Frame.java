@@ -33,7 +33,12 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -202,6 +207,8 @@ public class Frame  extends JFrame implements Mapping{
 		
 		this.link.sort();
 
+		// ToDo: LinkedList with cursor instead of hash
+		Set<LinkWith2Bends> passing=new LinkedHashSet<LinkWith2Bends>(); // For each line we draw all links so we should be able to keep pointers on all of them
 		// supplement links with layout info. For debugging the loop is in frame. Todo: Remove into test
 		while(this.link.hasNext()){
 			int upsideDown=2;
@@ -229,12 +236,27 @@ public class Frame  extends JFrame implements Mapping{
 						l.node.getValue(), x+ l.xRight, upsideDown);
 		}
 		
-		Buffer buffer= new Buffer(Tile.space());
+		
 		link.jumpBelowLinks();
 		LinkWith2Bends current=link.getLinksSortedByYPrevious();
 		// to place text labels in front   draw backwards
 		for (int y = b.size()-1; y >=0 && current!=null; y--) {
+			Buffer buffer= new Buffer(Tile.space());
 			this.shade ^= 2;
+			
+			Iterator<LinkWith2Bends> iter=passing.iterator();
+			while(iter.hasNext()){
+				LinkWith2Bends linkWith2Bends=iter.next();
+						
+				if (linkWith2Bends.y.getLimitsSorted(0) < y) {
+					buffer.set(linkWith2Bends.xRight, new Tile(3, 4, 2));
+				} else {
+					drawReferenceEnd(current, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
+					iter.remove();
+				}
+			}
+		
+			
 			do{
 				if (current.y.getLimitsSorted(1)<y){
 					break;
@@ -243,25 +265,26 @@ public class Frame  extends JFrame implements Mapping{
 				for(int side=1;side>=0;side--){
 					if (current.y.s[side]==y){
 						int xi=current.xRight;
-						if (buffer.get(xi).equals(new Tupel(2, 0))) {
+						Tile t=buffer.get(xi);
+						if (t.shape==2 && t.transformation==0) {
 							buffer.set(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
 						} else {
-							buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
+							buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
 							// ToDo: Use 4 or 5 for more compact layout
 						}
 						
-						while (xi > current.x.s[side]+1) {
-							buffer.set(xi--, new Tile(3, 2,2));
-						}
-						
-						buffer.set(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
+						drawReferenceEnd(current, buffer, side, xi);
 					}
 						
 				}
+				
+				passing.add(current);
 			}
 			while((current=link.getLinksSortedByYPrevious())!=null);
-				
 			
+			
+			
+			/*
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
 			for (int xPaint=buffer.getMax()-1;xPaint>b.get(y);xPaint--){
 				Tile t=buffer.get(xPaint);
@@ -269,8 +292,22 @@ public class Frame  extends JFrame implements Mapping{
 				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
 				
 				// clean up
-				t.shape=2;t.shade=0; // space collides with arrow in the chosen tileSet
-						/*
+				if (t.shape == 3 && t.transformation == 4 && t.shade == 2) {
+
+				} else {
+
+					if (t.shape == 0 && t.transformation == 2 && t.shade == 2) {
+						t.shape = 3;
+						t.transformation = 4;
+						t.shade = 2;
+					} else {
+
+						t.shape = 2;
+						t.shade = 0; // space collides with arrow in the chosen
+										// tileSet
+					}
+				}
+						
 				if (!(t.s[0]==2 && t.s[1]==0))
 				{
 				
@@ -290,14 +327,24 @@ public class Frame  extends JFrame implements Mapping{
 				if (t.s[0]==3 && t.s[1]==0){
 					t.s[0]=2; // space
 				}
-				*/
+				
 				buffer.set(xPaint,t);
-			}
+			}*/
 			
 			this.shade ^= 2;
 			
 			this.drawVI(b.get(y)+x-3, y+j, 0, 0);
 		}
+	}
+
+
+
+	private void drawReferenceEnd(LinkWith2Bends current, Buffer buffer, int side, int xi) throws Exception {
+		while (xi > current.x.s[side]+1) {
+			buffer.set(xi--, new Tile(3, 2,2));
+		}
+		
+		buffer.set(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
 	}
 	
 	// Parameter from this.paint to this.drawTree

@@ -47,4 +47,14 @@ public class LinkWith2Bends {
 	public String toString(){
 		return "Link( y:"+y.toString()+", x: "+x.toString()+" xRight: "+xRight+")";
 	}
+
+	public int whichSide(int y) {
+		for (int side = 1; side >= 0; side--) {
+			if (this.y.s[side] == y) {
+				return side;
+			}
+		}
+		
+		return -1;
+	}
 }
