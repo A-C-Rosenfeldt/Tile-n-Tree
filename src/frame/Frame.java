@@ -343,17 +343,21 @@ public class Frame  extends JFrame implements Mapping{
 		if (t.equals(Tile.space())) {
 			buffer.set(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
 		} else {
-			buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 1 : 1, 2));
+			buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
 			// ToDo: Use 4 or 5 for more compact layout
 		}
 		
 		// end
 		while (--xi > current.x.s[side]+1) {
 			t=buffer.get(xi);
-			if (t.equals(Tile.space())){ // ToDo: replace space with null? Different spaces possible?
-				buffer.set(xi, new Tile(3, 2,2));
-			}else{
-				buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 1 : 1, 2));
+			Tile ttomerge=new Tile(3, 2,2);
+			if (!t.equals(ttomerge)) { // a nice effect would be to intensify
+				if (t.equals(Tile.space())) { // ToDo: replace space with null?
+												// Different spaces possible?
+					buffer.set(xi, new Tile(3, 2, 2));
+				} else {
+					buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
+				}
 			}
 		}
 		
