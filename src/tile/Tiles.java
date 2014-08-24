@@ -186,5 +186,19 @@ public class Tiles {
 		} while (vi.contentsLost());
 	}
 	
+	// Returns a minimal bitmap (3x3) of the character. Needed for union
+	// Adresses are bottom-up  right-left  for BigEndian  compatibility
+	// It is copy and paste from this.updateGivenTile()
+	public static int getMap(int i){
+		int r=0;
+		int m=4; // skip shading.  Todo separete shading from shape also in this class
+		if ((i & m )!=0) r|=7<<3;//g.drawLine(0, s[1]/2, s[0], s[1]/2);
+		m<<=1;
+		if ((i & m )==0) r|=4<<6;//g.drawArc(-s[0]/2, -s[1]/2, s[0], s[1], -90,90);
+		m<<=1;
+		if ((i & m )!=0) r|=4;//g.drawArc(-s[0]/2, +s[1]/2, s[0], s[1], +90,360); // ToDo explain 10 ->
+		
+		return r;
+	}	
 	
 }
