@@ -70,27 +70,27 @@ public class Tile {
 		// Code copied from Frame.flip() 
 		// modified using a screenshot as guide
 		int m=1;		
-		if ((f & m) != 0) {
-			int t = map;
-			final int column= (1<<3|1)<<3|1;
-			map = (map & (1 | 2 << 3 | 3 << 6)) | (map & (2 | 2 << 3 | 3 << 6)) | (map & (2 | 2 << 3 | 3 << 6));
-		}
-
-		m<<=1;
-		if ((f & m)!=0) {
-			c[1][1]=c[0][3];
-			c[1][3]=c[0][1];
-		}
-
-		m<<=1;
-		// swap the coordinates. ToDo: Works only for square tiles (square in px)
-		//AffineTransform trans;
-		if ((f & m)!=0) { 
-			g.setTransform( new AffineTransform(0,1,1,0,v.s[0],v.s[1]));
-		}else
-		{
-			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
-		}		
+//		if ((f & m) != 0) {
+//			int t = map;
+//			final int column= (1<<3|1)<<3|1;
+//			map = (map & (1 | 2 << 3 | 3 << 6)) | (map & (2 | 2 << 3 | 3 << 6)) | (map & (2 | 2 << 3 | 3 << 6));
+//		}
+//
+//		m<<=1;
+//		if ((f & m)!=0) {
+//			c[1][1]=c[0][3];
+//			c[1][3]=c[0][1];
+//		}
+//
+//		m<<=1;
+//		// swap the coordinates. ToDo: Works only for square tiles (square in px)
+//		//AffineTransform trans;
+//		if ((f & m)!=0) { 
+//			g.setTransform( new AffineTransform(0,1,1,0,v.s[0],v.s[1]));
+//		}else
+//		{
+//			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
+//		}		
 		
 		return shape;
 	}
