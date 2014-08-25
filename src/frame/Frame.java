@@ -252,9 +252,9 @@ public class Frame  extends JFrame implements Mapping{
 				LinkWith2Bends linkWith2Bends=iter.next();
 						
 				if (linkWith2Bends.y.getLimitsSorted(0) < y) {
-					buffer.set(linkWith2Bends.xRight, new Tile(3, 4, 2));
+					buffer.uniteAt(linkWith2Bends.xRight, new Tile(3, 4, 2));
 				} else {
-					drawReferenceEnd(current, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
+					drawLinkEnd(current, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
 					iter.remove();
 				}
 			}		
@@ -269,7 +269,7 @@ public class Frame  extends JFrame implements Mapping{
 						int xi=current.xRight;
 
 						
-						drawReferenceEnd(current, buffer, side, xi);
+						drawLinkEnd(current, buffer, side, xi);
 					}
 						
 				}
@@ -336,32 +336,23 @@ public class Frame  extends JFrame implements Mapping{
 
 
 
-	private void drawReferenceEnd(LinkWith2Bends current, Buffer buffer, int side, int xi) throws Exception {
+	private void drawLinkEnd(LinkWith2Bends current, Buffer buffer, int side, int xi) throws Exception {
 
 		// and bend
 		Tile t=buffer.get(xi);
 		if (t.equals(Tile.space())) {
-			buffer.set(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
+			buffer.uniteAt(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
 		} else {
-			buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
+			buffer.uniteAt(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
 			// ToDo: Use 4 or 5 for more compact layout
 		}
 		
 		// end
 		while (--xi > current.x.s[side]+1) {
-			t=buffer.get(xi);
-			Tile ttomerge=new Tile(3, 2,2);
-			if (!t.equals(ttomerge)) { // a nice effect would be to intensify
-				if (t.equals(Tile.space())) { // ToDo: replace space with null?
-												// Different spaces possible?
-					buffer.set(xi, new Tile(3, 2, 2));
-				} else {
-					buffer.set(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
-				}
-			}
+			buffer.uniteAt(xi, new Tile(3, 2,2)); // horizontal bar. ToDo: Make enum with  trival names
 		}
 		
-		buffer.set(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
+		buffer.uniteAt(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
 	}
 	
 	// Parameter from this.paint to this.drawTree

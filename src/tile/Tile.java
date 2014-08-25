@@ -49,7 +49,7 @@ public class Tile {
 	public final static Tile space(){
 		return new Tile(2,0,0);
 	}
-	
+		
 	@Override
 	public boolean equals(Object that) {
 		if (that != null && that.getClass() == getClass()
@@ -62,43 +62,43 @@ public class Tile {
 		return super.equals(that);
 	}
 	
-
-	private int getBitmap()
+	// ToDo: Rewrite using an array  if  it doesn't get that much longer and uglier due to references all over the place
+	private int getBitmap() throws Exception
 	{
-		int map=Tiles.getMap(this.shape);
+		if (this.shape==2 && (this.shade&2)!=0){
+			throw new Exception("Line-endings are not supposed to be part of a union");
+		}
+		
+		int map=Tiles.getBitmap(this.shape);
 		
 		// Code copied from Frame.flip() 
-		// modified using a screenshot as guide
-		int m=1;		
-//		if ((f & m) != 0) {
-//			int t = map;
-//			final int column= (1<<3|1)<<3|1;
-//			map = (map & (1 | 2 << 3 | 3 << 6)) | (map & (2 | 2 << 3 | 3 << 6)) | (map & (2 | 2 << 3 | 3 << 6));
-//		}
-//
-//		m<<=1;
-//		if ((f & m)!=0) {
-//			c[1][1]=c[0][3];
-//			c[1][3]=c[0][1];
-//		}
-//
-//		m<<=1;
-//		// swap the coordinates. ToDo: Works only for square tiles (square in px)
-//		//AffineTransform trans;
-//		if ((f & m)!=0) { 
-//			g.setTransform( new AffineTransform(0,1,1,0,v.s[0],v.s[1]));
-//		}else
-//		{
-//			g.setTransform( new AffineTransform(1,0,0,1,v.s[0],v.s[1]));
-//		}		
+		// modified using a screenshot as a guide
+		int mask=1;		
+		if ((this.transformation & mask) != 0) {
+			final int column= (1<<3|1)<<3|1;
+			map = map & column<<1 | (map & column)<<2 | map<<2 & column;
+		}
+
+		mask<<=1;
+		if ((this.transformation & mask)!=0) {
+			final int row=7;
+			map = map & row<<3 | (map & row)<< (2*3) | (map >> (2*3) & row);  
+		}
+
+		mask<<=1;
+		// swap the coordinates. Note: Since sign of both x and y coorindates is changes, code stays the same
+		if ((this.transformation & mask)!=0) { 
+			final int diagonal=(1<<4 | 1)<<4 |1;
+			map = map & diagonal | (map & diagonal << 1)<<2 | (map & diagonal << 3)>>2 | (map & 4)<<4 | (map>>4)&4;
+		}
 		
-		return shape;
+		return map;
 	}
 	
 	
 	
 	// In buffer we need in-place union
-	public void uniteWith(Tile that){
+	public void uniteWith(Tile that) throws Exception{
 		if (that.equals(Tile.space())){
 			return;
 		}
@@ -110,7 +110,28 @@ public class Tile {
 			return;
 		}
 	
+		int union=this.getBitmap() | that.getBitmap();
+		int transformation;
+		int shape=this.shape;
+		boolean found=false;
+		// reverse: Replace all function with arrays? shape[bitmap] and vice versa?
+		// negative numbers and bit logic are not defined in C
+		// (premature) optimize on shape and transformation stay the same, which makes operation asymmetric
+		for (transformation = this.transformation; transformation != (this.transformation + 7 & 7); transformation = transformation + 1 & 7) {
+			for (shape = this.shape; shape != (this.shape+5) % 6; shape=(shape+1)%6) {
+				if ((new Tile(shape, transformation, 0)).getBitmap()==union){
+					found=true;
+					break;
+				}
+			}
+		}
+
+		if (!found){
+			throw new Exception("No tile for union found");
+		}
 		
+		this.shape=shape;
+		this.transformation=transformation;
 		
 //		Tile[] t=new Tile[]{this, that};
 //		if (this.shape>that.shape){t[0]=that;t[1]=this;}

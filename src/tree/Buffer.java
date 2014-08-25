@@ -39,7 +39,11 @@ public class Buffer {
 	
 	public Tile get(int i){
 		if (i<this.min || i>=this.getMax()){ return this.surroundedBy;}
-		return this.line.get(i);
+		Tile t= this.line.get(i);
+		if (t==null) {
+			return this.surroundedBy; // should be 000 anyways
+		}
+		return t;
 	}
 	
 	public void set(int i, Tile value) throws Exception {
@@ -49,7 +53,7 @@ public class Buffer {
 		} else {
 			// ToDo: Too sparse for a screen-buffer like approach. Use active edge list instead
 			while (i >= this.getMax()) {
-				this.line.add(this.surroundedBy);
+				this.line.add(null);
 				/// System.out.println("I too large: "+i);
 			} 
 
@@ -57,4 +61,26 @@ public class Buffer {
 			// ToDo: Shrink
 		}
 	}
+	
+	public void uniteAt(int i, Tile value) throws Exception {
+		if (i < this.min) {
+			// shift values. But wait, what if we already have active edge list? Chose implementation later.
+			throw new Exception("Not implemented");
+		} else {
+			// ToDo: Too sparse for a screen-buffer like approach. Use active edge list instead
+			while (i >= this.getMax()) {
+				this.line.add(null);
+				/// System.out.println("I too large: "+i);
+			} 
+
+			Tile old=this.line.get(i);
+			if (old==null){
+				this.line.set(i,value );
+			}else{
+				old.uniteWith(value);
+			}
+			
+			// ToDo: Shrink, convert to null, RLE for null ...
+		}
+	}	
 }

@@ -45,7 +45,13 @@ public class TileSymmetryCheck {
 	public void union() {
 		Tile a=new Tile(2,0,0);
 		Tile b=new Tile(0,0,0);
-		a.uniteWith(b);
+		try {
+			a.uniteWith(b);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Exception!");
+		}
 		if (!a.equals(b)){
 			fail("union a!=b");
 		}
