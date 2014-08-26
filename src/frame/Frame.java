@@ -243,43 +243,35 @@ public class Frame  extends JFrame implements Mapping{
 		link.jumpBelowLinks();
 		LinkWith2Bends current=link.getLinksSortedByYPrevious();
 		// to place text labels in front   draw backwards
-		for (int y = b.size()-1; y >=0 && current!=null; y--) {
+		for (int y = b.size()-1; y >=0; y--) {
 			Buffer buffer= new Buffer(Tile.space());
 			this.shade ^= 2;
 			
 			Iterator<LinkWith2Bends> iter=passing.iterator();
 			while(iter.hasNext()){
 				LinkWith2Bends linkWith2Bends=iter.next();
-						
+				System.out.println("Passing at y = "+y);		
 				if (linkWith2Bends.y.getLimitsSorted(0) < y) {
 					buffer.uniteAt(linkWith2Bends.xRight, new Tile(3, 4, 2));
 				} else {
-					drawLinkEnd(current, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
+					drawLinkEnd(linkWith2Bends, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
 					iter.remove();
 				}
 			}		
 			
-			do{
-				if (current.y.getLimitsSorted(1)<y){
-					break;
-				}
-				
+			
+			while (current != null && current.y.getLimitsSorted(1)>=y){
+					
 				for(int side=1;side>=0;side--){
 					if (current.y.s[side]==y){
 						int xi=current.xRight;
-
-						
 						drawLinkEnd(current, buffer, side, xi);
-					}
-						
+					}						
 				}
 				
 				passing.add(current);
-			}
-			while((current=link.getLinksSortedByYPrevious())!=null);
-			
-			
-			
+				current=link.getLinksSortedByYPrevious();
+			};
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
 			for (int xPaint=buffer.getMax()-1;xPaint>0;xPaint--){ // b.get(y)
@@ -344,7 +336,7 @@ public class Frame  extends JFrame implements Mapping{
 		}
 		
 		buffer.set(current.x.s[side]+1, side==0 ? new Tile(3, 0,2) : new Tile(2, 0,2)); // ToDo: Add a concave start to the link
-		System.out.println("end"+current.x.s[side]);
+		//System.out.println("end"+current.x.s[side]);
 	}
 	
 	// Parameter from this.paint to this.drawTree

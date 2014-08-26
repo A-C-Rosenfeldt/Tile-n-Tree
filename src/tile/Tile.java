@@ -120,10 +120,10 @@ public class Tile {
 		for (transformation = this.transformation; transformation != (this.transformation + 7 & 7); transformation = transformation + 1 & 7) {
 			for (shape = this.shape; shape != (this.shape + 5) % 6; shape = (shape + 1) % 6) {
 				int test = (new Tile(shape, transformation, 0)).getBitmap();
-				System.out.println("shape: " + shape + " trans: " + transformation + " Map:" + test);
+				// System.out.println("shape: " + shape + " trans: " + transformation + " Map:" + test);
 				if (test == union) {
 
-					System.out.println("found");
+					//System.out.println("found");
 
 					this.shape = shape;
 					this.transformation = transformation;

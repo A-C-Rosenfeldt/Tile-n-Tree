@@ -32,7 +32,7 @@ public class Keyboard implements KeyListener {
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("pressed "+e.getKeyCode()+" vs "+KeyEvent.VK_KP_RIGHT);
+//		System.out.println("pressed "+e.getKeyCode()+" vs "+KeyEvent.VK_KP_RIGHT);
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_F1:
 			m.escape();
