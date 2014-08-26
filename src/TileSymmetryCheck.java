@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import tile.Tile;
+import tile.Tiles;
 
 /* Copyright 2014   Arne Christian  Rosenfeldt
 
@@ -42,7 +43,7 @@ public class TileSymmetryCheck {
 	}
 	
 	@Test
-	public void union() {
+	public void unionWSpace() {
 		Tile a=new Tile(2,0,0);
 		Tile b=new Tile(0,0,0);
 		try {
@@ -61,5 +62,36 @@ public class TileSymmetryCheck {
 		}
 	}
 	
+	@Test
+	public void shapeBend(){
+		int map=Tiles.getBitmap(0);
+		if (map!=256){
+			fail("shape 0  bend top left. Map is: "+map);
+		}
+	}
 
+	@Test
+	public void shapeBar(){
+		int map=Tiles.getBitmap(3);
+		if (map!=24+32){
+			fail("shape 3  horizontal bar. Map is: "+map);
+		}
+	}	
+	
+	@Test
+	public void unionLines() {
+		Tile a=new Tile(3,0,0);
+		Tile b=new Tile(0,0,0);
+		Tile c=new Tile(1,0,0);
+		try {
+			a.uniteWith(b);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("Exception!");
+		}
+		if (!a.equals(c)){
+			fail("union result not  the  same as manual. Shape: "+a.shape+" trans: "+a.transformation);
+		}
+	}
 }

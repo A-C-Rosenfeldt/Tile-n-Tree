@@ -118,20 +118,23 @@ public class Tile {
 		// negative numbers and bit logic are not defined in C
 		// (premature) optimize on shape and transformation stay the same, which makes operation asymmetric
 		for (transformation = this.transformation; transformation != (this.transformation + 7 & 7); transformation = transformation + 1 & 7) {
-			for (shape = this.shape; shape != (this.shape+5) % 6; shape=(shape+1)%6) {
-				if ((new Tile(shape, transformation, 0)).getBitmap()==union){
-					found=true;
-					break;
+			for (shape = this.shape; shape != (this.shape + 5) % 6; shape = (shape + 1) % 6) {
+				int test = (new Tile(shape, transformation, 0)).getBitmap();
+				System.out.println("shape: " + shape + " trans: " + transformation + " Map:" + test);
+				if (test == union) {
+
+					System.out.println("found");
+
+					this.shape = shape;
+					this.transformation = transformation;
+					return;
 				}
 			}
 		}
 
-		if (!found){
-			throw new Exception("No tile for union found");
-		}
+		throw new Exception("No tile for union found");
 		
-		this.shape=shape;
-		this.transformation=transformation;
+
 		
 //		Tile[] t=new Tile[]{this, that};
 //		if (this.shape>that.shape){t[0]=that;t[1]=this;}
