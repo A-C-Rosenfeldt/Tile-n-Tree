@@ -282,7 +282,7 @@ public class Frame  extends JFrame implements Mapping{
 			
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
-			for (int xPaint=buffer.getMax()-1;xPaint>b.get(y);xPaint--){
+			for (int xPaint=buffer.getMax()-1;xPaint>0;xPaint--){ // b.get(y)
 				Tile t=buffer.get(xPaint);
 				
 				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
@@ -337,22 +337,14 @@ public class Frame  extends JFrame implements Mapping{
 
 
 	private void drawLinkEnd(LinkWith2Bends current, Buffer buffer, int side, int xi) throws Exception {
-
-		// and bend
-		Tile t=buffer.get(xi);
-		if (t.equals(Tile.space())) {
-			buffer.uniteAt(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2));
-		} else {
-			buffer.uniteAt(xi, new Tile(1, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 1, 2));
-			// ToDo: Use 4 or 5 for more compact layout
-		}
+		buffer.uniteAt(xi, new Tile(0, (current.y.s[side] < current.y.s[1 - side]) ? 2 : 0, 2)); 		// and bend
 		
-		// end
 		while (--xi > current.x.s[side]+1) {
-			buffer.uniteAt(xi, new Tile(3, 2,2)); // horizontal bar. ToDo: Make enum with  trival names
+			buffer.uniteAt(xi, new Tile(3, 0,2)); // horizontal bar. ToDo: Make enum with  trival names
 		}
 		
-		buffer.uniteAt(current.x.s[side], side==0 ? new Tile(3, 2,2) : new Tile(0, 4,2)); // ToDo: Add a concave start to the link
+		buffer.set(current.x.s[side]+1, side==0 ? new Tile(3, 0,2) : new Tile(2, 0,2)); // ToDo: Add a concave start to the link
+		System.out.println("end"+current.x.s[side]);
 	}
 	
 	// Parameter from this.paint to this.drawTree
