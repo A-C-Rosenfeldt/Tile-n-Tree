@@ -45,4 +45,10 @@ public interface Link {
 	public LinkWith2Bends getLinksSortedByYPrevious();
 	public void jumpBelowLinks();
 
+	LinkWith2Bends getPrevious();
+
+	void sort(boolean moveToEnd);
+
+	Object[] getY();
+
 }

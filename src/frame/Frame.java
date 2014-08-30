@@ -33,6 +33,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -206,10 +208,13 @@ public class Frame  extends JFrame implements Mapping{
 		}
 		
 		this.link.sort();
+		
+		// ToDo: Links are sorted by y[0]. For paint bottom up they would need y[1]
 
 		// supplement links with layout info. For debugging the loop is in frame. Todo: Remove into test
 		while(this.link.hasNext()){
 			int upsideDown=2;
+			//LinkWith2Bends l=this.link.getPrevious();
 			LinkWith2Bends l=this.link.getNext(); // sideEffect: Calculation
 			/*
 			 Debug code: check calculaton: ToDo: Make  Junit test out of it
@@ -237,11 +242,26 @@ public class Frame  extends JFrame implements Mapping{
 						*/
 		}
 		
+		Object[] ya = this.link.getY(); // as docu tells us, Collections.sort would do this anyway. May be useful
+		
+		Arrays.sort(ya, new Comparator<Object>(){
+			
+			@Override
+			public int compare(Object l0, Object l1) {		
+				Tupel[] a={((LinkWith2Bends)l0).y,
+				((LinkWith2Bends)l1).y};
+				return a[1].s[1]-a[0].s[1];
+			}
+			
+		});
+		
+		int i=ya.length;
+		
 		// ToDo: LinkedList with cursor instead of hash
 		Set<LinkWith2Bends> passing=new LinkedHashSet<LinkWith2Bends>(); // For each line we draw all links so we should be able to keep pointers on all of them
 				
 		link.jumpBelowLinks();
-		LinkWith2Bends current=link.getLinksSortedByYPrevious();
+		LinkWith2Bends current=(LinkWith2Bends) ya[--i];///link.getLinksSortedByYPrevious();
 		// to place text labels in front   draw backwards
 		for (int y = b.size()-1; y >=0; y--) {
 			Buffer buffer= new Buffer(Tile.space());
@@ -258,9 +278,8 @@ public class Frame  extends JFrame implements Mapping{
 					iter.remove();
 				}
 			}		
-			
-			
-			while (current != null && current.y.getLimitsSorted(1)>=y){
+					
+			while (/*current != null*/ i>0 && current.y.getLimitsSorted(1)>=y){
 					
 				for(int side=1;side>=0;side--){
 					if (current.y.s[side]==y){
@@ -270,58 +289,16 @@ public class Frame  extends JFrame implements Mapping{
 				}
 				
 				passing.add(current);
-				current=link.getLinksSortedByYPrevious();
+				current=(LinkWith2Bends) ya[--i];///=link.getLinksSortedByYPrevious();
 			};
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
 			for (int xPaint=buffer.getMax()-1;xPaint>0;xPaint--){ // b.get(y)
-				Tile t=buffer.get(xPaint);
-				
+				Tile t=buffer.get(xPaint);				
 				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
-				/*
-				// clean up
-				if (t.shape == 3 && t.transformation == 4 && t.shade == 2) {
-
-				} else {
-
-					if (t.shape == 0 && t.transformation == 2 && t.shade == 2) {
-						t.shape = 3;
-						t.transformation = 4;
-						t.shade = 2;
-					} else {
-
-						t.shape = 2;
-						t.shade = 0; // space collides with arrow in the chosen
-										// tileSet
-					}
-				}
-						
-				if (!(t.s[0]==2 && t.s[1]==0))
-				{
-				
-				}
-				
-				//update after bend
-				if (t.s[0]==0){
-					if (t.s[1]==2){
-						t.s[0]=2; // space
-					}else{
-						t.s[0]=3;
-						t.s[1]=4;
-					}
-				}
-				
-				// update after horizontal bar
-				if (t.s[0]==3 && t.s[1]==0){
-					t.s[0]=2; // space
-				}
-				
-				buffer.set(xPaint,t);
-				*/
 			}
 			
 			this.shade ^= 2;
-			
 			this.drawVI(b.get(y)+x-3, y+j, 0, 0);
 		}
 	}
@@ -399,7 +376,7 @@ public class Frame  extends JFrame implements Mapping{
 		}
 	}
 	
-	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, int x_min, int x_min2, int trans, boolean chicane, Table table) {
+	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table) {
 		
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 		
@@ -500,22 +477,26 @@ public class Frame  extends JFrame implements Mapping{
 					drawVI(xi, y, 0, 6);
 					if (xi == x_min) {
 						x_min++;
+					}else{
+						buf.set(xi,false); // limit possible values. Other tiles make no sense
+						throw new UnsupportedOperationException("Lücke in Buffer");
 					}
+					
 				} else {
 					drawVI(xi, y, 1, 6);
 				}
 				xi--;
-			
-			
-			while(xi>=x_min){	
-				drawVI(xi, y, 3, 4);
-				xi--;
-			}
-	
-			while(xi>=x_min2){	
-				drawVI(xi, y, 2, 0);
-				xi--;
-			}			
+
+				// ToDo: Jump over Gaps. x_min has to be an ArrayList
+				while (xi >= x_min) {
+					drawVI(xi, y, 3, 4);
+					xi--;
+				}
+
+				while (xi >= x_min2) {
+					drawVI(xi, y, 2, 0);
+					xi--;
+				}
 			}
 			
 			// ToDo: Jump over gaps due to "group names" in other header. Reuse chicane marker and rename to "has children inside table body"!??

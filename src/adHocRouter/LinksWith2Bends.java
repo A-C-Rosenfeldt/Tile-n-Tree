@@ -103,21 +103,30 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	}
 	
 	@Override
-	public void sort() {
+	public Object[] getY(){
+		return this.y.toArray(); // ToDo: Do not leak this ugly Object[]
+	}
+	
+	@Override
+	public void sort(boolean moveToEnd) {
 		this.connectDanglingBounds();
-		this.ya=y.toArray(); // as docu tells us, Collections.sort would do this anyway. May be useful
+		this.ya=this.y.toArray(); // as docu tells us, Collections.sort would do this anyway. May be useful
 		
 		// not obviously a natural comparator
-		Arrays.sort(this.ya, new Comparator<Object>(){
-
-			@Override
-			public int compare(Object l0, Object l1) {		
-				Tupel a0=((LinkWith2Bends)l0).y;
-				Tupel a1=((LinkWith2Bends)l1).y;
-				return Math.abs(a0.s[1]-a0.s[0])-Math.abs(a1.s[1]-a1.s[0]);
-			}
-			
-		});
+		if (moveToEnd){
+			// nonsense. We do not  list all sorts in this one place
+		}else{
+			Arrays.sort(this.ya, new Comparator<Object>(){
+	
+				@Override
+				public int compare(Object l0, Object l1) {		
+					Tupel a0=((LinkWith2Bends)l0).y;
+					Tupel a1=((LinkWith2Bends)l1).y;
+					return Math.abs(a0.s[1]-a0.s[0])-Math.abs(a1.s[1]-a1.s[0]);
+				}
+				
+			});
+		}
 		
 //		Collections.sort(this.y, new Comparator<Tupel>(){
 //
@@ -126,7 +135,8 @@ public class LinksWith2Bends implements Link, LinkDebug {
 //				// TODO Auto-generated method stub
 //				return 0;
 //			}});
-		this.s=0;
+		
+		this.s=moveToEnd ? this.ya.length-1 : 0;
 	}
 	
 	private int s;
@@ -182,6 +192,59 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		return this.getYa(this.s++);
 	}
 
+	// Just need to tell the starting point. End is known to node
+	// This implementation is meant as reference and documentation and thus abstains from recursive code and optimized interfaces
+	// Copied from getNext(); Still sorted by y[0], just reversed. 
+	@Override
+	public LinkWith2Bends getPrevious() {
+		// Strange: Link( y:{23, 0}, x: {4, 0} xRight: 0)
+
+		throw new UnsupportedOperationException();
+		// ToDo: No way to get sorted by y[1] here elegantly
+//		// route around bedrock // ToDo: Use data that bubbles up in the tree
+//		System.out.println("s is "+this.s+" von "+this.ya.length);
+//		int[] this_ya_this_s__y_s=this.getYa(this.s).y.s;
+//		int this_ya_this_s__xRight=0;
+//		
+//		// Do not merge with render code because: ToDo: Walk the tree
+//		int[] ySorted=this_ya_this_s__y_s.clone();
+//		if (ySorted[0]>ySorted[1]){
+//			int t=ySorted[0];
+//			ySorted[0]=ySorted[1];
+//			ySorted[1]=t;				
+//		}
+//
+//		int y=ySorted[0];
+//		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y)+1); // Space for Endmarkers
+//		y++;
+//		while ( y <= ySorted[1]-1) {
+//			this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y));
+//			y++;
+//		}		
+//		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y)+1);
+//		
+//		++this_ya_this_s__xRight; // Next to bedrock
+//		
+//		System.out.println("Bedrock says"+this_ya_this_s__xRight);
+//	
+//		// route around other links
+//		for (int other=0;other < this.s;other++){// for over all routed links (smaller index) in this collection
+//			System.out.println(this.getYa(this.s).y +" overlaping with "+this.getYa(other).y);
+//				if (this.getYa(this.s).y.isOverlapingWith(this.getYa(other).y)){
+//					this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight, this.getYa(other).xRight+1); // no need to revisit older routes since they are ordered by x. ToDo: Make a UnitTest out of this
+//					System.out.println( "["+other+"] = "+ this_ya_this_s__xRight);					
+//				}
+//		}
+//	
+//		this.getYa(this.s).xRight=this_ya_this_s__xRight;
+//		
+//		System.out.println( "GetNext: "+this.getYa(this.s));
+//			
+//		// ToDo implement enumerator interface
+//		// now paint it (ToDo: May need to make a copy to write protect the original)
+//		return this.getYa(this.s++);
+	}	
+	
 	// ToDo: Optimize  Tree  or  if really necessary: hash
 	@Override
 	public LinkWith2Bends get(Node node) {
@@ -202,5 +265,10 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	@Override
 	public boolean hasNext() {
 		return this.ya.length>this.s;
+	}
+
+	@Override
+	public void sort() {
+		this.sort(false);
 	}
 }
