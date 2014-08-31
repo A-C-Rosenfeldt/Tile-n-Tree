@@ -294,7 +294,7 @@ public class Frame  extends JFrame implements Mapping{
 			};
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
-			for (int xPaint=buffer.getBoundary(1)-1;xPaint>0;xPaint--){ // b.get(y)
+			for (int xPaint=buffer.getBoundary(1);xPaint>=buffer.getBoundary(0);xPaint--){ // b.get(y)
 				Tile t=buffer.get(xPaint);				
 				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
 			}
