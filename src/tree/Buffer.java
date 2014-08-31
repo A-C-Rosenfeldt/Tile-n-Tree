@@ -73,12 +73,12 @@ public class Buffer {
 	}
 	
 	private void realloc(int[] boundary) {
-		int sizeOld=this.boundary[1]+1-this.boundary[0]; // ToDo: Import Span
-		int sizeNew=boundary[1]+1-boundary[0]; // ToDo: Import Span
+		int sizeOld = this.boundary[1] + 1 - this.boundary[0]; // ToDo: Import Span
+		int sizeNew = boundary[1] + 1 - boundary[0]; // ToDo: Import Span
 		Skeleton s = this.newOffset(sizeNew, boundary); // ToDo remove dupe of size heurisitc
 		System.arraycopy(this.line, boundary[0] + this.offset, s.tiles, boundary[0] + s.offset, sizeOld);
 		this.line = s.tiles;
-		this.offset=s.offset;
+		this.offset = s.offset;
 	}	
 	
 	public void set(int i, Tile value)  {	
@@ -97,6 +97,8 @@ public class Buffer {
 			for (int k = this.boundary[0] - 1 + this.offset; k > i + this.offset; k--) {
 				this.line[k] = null;
 			}
+			
+			this.boundary[0] = i;
 		} else {
 			if (i > this.boundary[1]) {
 				if (i + this.offset >= this.line.length) {
@@ -106,6 +108,8 @@ public class Buffer {
 				for (int k = this.boundary[1] + 1 + this.offset; k < i + this.offset; k++) {
 					this.line[k] = null;
 				}
+				
+				this.boundary[1] = i;
 			}
 		}
 

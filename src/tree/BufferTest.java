@@ -62,7 +62,8 @@ public class BufferTest {
 	
 	@Test
 	public void getsetOtherValueAtDifferentIndices() {
-		Buffer b = new Buffer(null);
+		// found update boundary bug in .set
+		Buffer b = new Buffer(Tile.space);
 
 		b.set(-1, new Tile(1, 0, 0));
 		b.set(+1, new Tile(1, 2, 0));
