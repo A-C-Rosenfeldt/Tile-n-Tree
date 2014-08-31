@@ -381,9 +381,9 @@ public class Frame  extends JFrame implements Mapping{
 		
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 		
-		int x_max=x_anchor;;
+		int x_max=x_anchor;
 
-		for (int i=0;i< nodes.size();i++) {
+		for (int i = 0; i < nodes.size(); i++) {
 			Node node=nodes.get(i);
 			
 			this.shade=0;
@@ -475,27 +475,29 @@ public class Frame  extends JFrame implements Mapping{
 			xi--;
 			if (!chicane) {
 				if (i + 1 == nodes.size()) {
-					drawVI(xi, y, 0, 6);
-					if (xi == links.getBoundary(1)/*x_min*/) {
-						links.set(xi,new Tile(2,0,0)) /*x_min++*/;
-					}else{
+					drawVI(xi, y, 0, 6); // bend
+					//if (xi == links.getBoundary(1)/*x_min*/) {
+					//	links.set(xi,new Tile(3,4,0)) /*x_min++*/;
+					//}else{
 						links.set(xi,Tile.space); // limit possible values. Other tiles make no sense
 						///throw new UnsupportedOperationException("Lücke in Buffer");
-					}
+					//}
 					
 				} else {
-					drawVI(xi, y, 1, 6);
+					drawVI(xi, y, 1, 6); // branch
+					links.set(xi, new Tile(3, 4, 0)); // vertical bar
 				}
 				xi--;
 
-				// ToDo: Jump over Gaps. x_min has to be an ArrayList
-				while (xi >= links.getBoundary(1)/*x_min*/) {
-					drawVI(xi, y, 3, 4);
-					xi--;
-				}
+//				// ToDo: Jump over Gaps. x_min has to be an ArrayList
+//				while (xi >= links.getBoundary(1)/*x_min*/) {
+//					drawVI(xi, y, 3, 4);
+//					xi--;
+//				}
 
 				while (xi >= links.getBoundary(0)/*x_min2*/) {
-					drawVI(xi, y, 2, 0);
+					Tile t=links.get(xi);
+					drawVI(xi, y, t.shape, t.transformation);
 					xi--;
 				}
 			}

@@ -75,4 +75,26 @@ public class BufferTest {
 			fail("set get not working");		
 		System.out.println("boundaries "+b.getBoundary(0)+" -- "+b.getBoundary(1));
 	}		
+	
+	@Test
+	public void grow() {
+		// found update boundary bug in .set
+		Buffer b = new Buffer(Tile.space);
+
+		b.set(-1, new Tile(1, 0, 0));
+		b.set(+1, new Tile(1, 2, 0));
+		b.set(+20, new Tile(1, 3, 0));
+
+		if (!b.get(-1).equals(new Tile(1, 0, 0)))
+			fail("set get not working");
+
+		if (!b.get(+1).equals(new Tile(1, 2, 0)))
+			fail("set get not working");
+		
+
+		if (!b.get(+20).equals(new Tile(1, 3, 0)))
+			fail("set get not working");
+		
+		System.out.println("boundaries "+b.getBoundary(0)+" -- "+b.getBoundary(1));
+	}	
 }
