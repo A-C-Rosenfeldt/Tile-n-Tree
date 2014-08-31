@@ -1,9 +1,7 @@
+package tile;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import tile.Tile;
-import tile.Tiles;
 
 /* Copyright 2014   Arne Christian  Rosenfeldt
 
