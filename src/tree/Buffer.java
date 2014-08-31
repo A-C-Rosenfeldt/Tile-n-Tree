@@ -81,7 +81,7 @@ public class Buffer {
 		this.offset=s.offset;
 	}	
 	
-	public void set(int i, Tile value) throws Exception {	
+	public void set(int i, Tile value)  {	
 		if (this.line == null) {
 			this.boundary[0] = this.boundary[1] = i;
 			Skeleton s = this.newOffset(8, this.boundary); // the set operation occurs inside a loop. We cannot avoid uninitialized objects
