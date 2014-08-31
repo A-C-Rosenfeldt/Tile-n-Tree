@@ -36,6 +36,11 @@ public class Buffer {
 		this.surroundedBy=surroundedBy;
 	}
 	
+	// needed for coordinate swap
+	public Buffer(int y) {
+		this.boundary = new int[]{y,y-1};
+	}
+
 	// for text labels: draw right to left
 	// Clean interface wins over  "if" . Compiler knows how to optimize.
 	public int getBoundary(int i){

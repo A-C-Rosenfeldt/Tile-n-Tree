@@ -324,7 +324,7 @@ public class Frame  extends JFrame implements Mapping{
 	
 	private Link link; // links are less local than table-headers
 	// Todo: less parameters!
-	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, /*int x_min, int x_min2*/ Buffer buffer, int trans, Table table) throws Exception {
+	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, /*int x_min, int x_min2*/ Buffer links, int trans, Table table) throws Exception {
 		Tupel t=new Tupel(x_anchor,y);
 		if ((current.getSwapCoordinates()&4)>0){
 			this.shade=0;
@@ -343,7 +343,7 @@ public class Frame  extends JFrame implements Mapping{
 
 			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
 			
-			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildrenWithInline(),  linkPasses,  /*y+0,y+0*/ buffer,  trans^current.getSwapCoordinates(), current.isChicane(), table);
+			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildrenWithInline(),  linkPasses,  /*y+0,y+0*/ new Buffer(y),  trans^current.getSwapCoordinates(), current.isChicane(), table);
 			
 			this.transformation=trans;
 			int x3=xi;
@@ -353,14 +353,20 @@ public class Frame  extends JFrame implements Mapping{
 					drawVI(xi, y, 2, 0);
 					xi--;
 				}
-				// dupe {
-				while (xi >= buffer.getBoundary(1) /*x_min*/) {
-					drawVI(xi, y, 3, 4);
-					xi--;
-				}
-
-				while (xi >= buffer.getBoundary(0) /*x_min2*/) {
-					drawVI(xi, y, 2, 0);
+//				// dupe {
+//				while (xi >= buffer.getBoundary(1) /*x_min*/) {
+//					drawVI(xi, y, 3, 4);
+//					xi--;
+//				}
+//
+//				while (xi >= buffer.getBoundary(0) /*x_min2*/) {
+//					drawVI(xi, y, 2, 0);
+//					xi--;
+//				}
+				
+				while (xi >= links.getBoundary(0)/*x_min2*/) {
+					Tile t0=links.get(xi);
+					drawVI(xi, y, t0.shape, t0.transformation);
 					xi--;
 				}
 				
@@ -373,7 +379,7 @@ public class Frame  extends JFrame implements Mapping{
 		} else {
 			//System.out.println("Y is: "+y);
 			return drawTreeInner(x_anchor, y, current.getChildrenWithInline(),
-					linkPasses, buffer /*x_min, x_min2*/, trans, current.isChicane(), table);
+					linkPasses, links /*x_min, x_min2*/, trans, current.isChicane(), table);
 		}
 	}
 	
