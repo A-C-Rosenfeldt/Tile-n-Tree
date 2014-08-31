@@ -27,8 +27,9 @@ import tile.Tile;
 
 public class Buffer {
 	// till now just a typeDef
-	private List<Tile> line; // ToDo: Reduce unused capacity via limited capacity sharing along the Tree. Implicit and based on min and max
-	private int min;
+	private Tile[] line; // ToDo: Reduce unused capacity via limited capacity sharing along the Tree. Implicit and based on min and max
+	private int[] boundary={0, -1};
+	private int offset;
 
 	private Tile surroundedBy;
 	public Buffer(Tile surroundedBy){
@@ -38,58 +39,76 @@ public class Buffer {
 	// for text labels: draw right to left
 	// Clean interface wins over  "if" . Compiler knows how to optimize.
 	public int getBoundary(int i){
+		return this.boundary[i];
+		/*
 		if (i==0){ return this.min;}
 		else {return this.min+this.line.size();}
+		*/
 	}
 	
 	public Tile get(int i){
-		if (i<this.min || i>=this.getBoundary(1)){ return this.surroundedBy;}
-		Tile t= this.line.get(i);
-		if (t==null) {
-			return this.surroundedBy; // should be 000 anyways
+		if (i<this.boundary[0] || i>this.boundary[1]){
+			return this.surroundedBy; // This class is supposed to work with the tile renderer, which is supposed to be an opaque background-layer (retro style).
 		}
+		
+		Tile t= this.line[i+this.offset];
+		if (t==null) {
+			return this.surroundedBy;
+		}
+		
 		return t;
 	}
 	
-	public void set(int i, Tile value) throws Exception {
+	private int newOffset(Tile[] t, int size, int[] boundary){
+		t=new Tile[size << 1];
+		return (size >> 1) - boundary[0];
+	}
+	
+	private void realloc(int[] boundary) {
+		int sizeOld=this.boundary[1]+1-this.boundary[0]; // ToDo: Import Span
+		int sizeNew=boundary[1]+1-boundary[0]; // ToDo: Import Span
+		Tile[] t = null;
+		int offset = this.newOffset(t, sizeNew, boundary); // ToDo remove dupe of size heurisitc
+		System.arraycopy(this.line, boundary[0] + this.offset, t, boundary[0] + offset, sizeOld);
+		this.line = t;
+		this.offset=offset;
+	}	
+	
+	public void set(int i, Tile value) throws Exception {	
 		if (this.line==null){
-			this.line=new ArrayList<Tile>(); // the set operation occurs inside a loop. We cannot avoid uninitialized objects
+			this.boundary[0] = this.boundary[1] = i;
+			this.offset = this.newOffset(this.line, 8, this.boundary); // the set operation occurs inside a loop. We cannot avoid uninitialized objects			
 		}
 		
-		if (i < this.min) {
-			// shift values. But wait, what if we already have active edge list? Chose implementation later.
-			throw new Exception("Not implemented");
+		if (i < this.boundary[0]) {
+			if (i + this.offset < 0) {
+				this.realloc(new int[]{i, this.boundary[1]});
+			}
+			
+			for (int k = this.boundary[0] - 1 + this.offset; k > i + this.offset; k--) {
+				this.line[k] = null;
+			}
 		} else {
-			// ToDo: Too sparse for a screen-buffer like approach. Use active edge list instead
-			while (i >= this.getBoundary(1)) {
-				this.line.add(null);
-				/// System.out.println("I too large: "+i);
-			} 
-
-			this.line.set(i, value);
-			// ToDo: Shrink
+			if (i > this.boundary[1]) {
+				if (i + this.offset >= this.line.length) {
+					this.realloc(new int[] { this.boundary[0], i });
+				}
+				
+				for (int k = this.boundary[1] + 1 + this.offset; k < i + this.offset; k++) {
+					this.line[k] = null;
+				}
+			}
 		}
+
+		this.line[i + this.offset] = value;
 	}
 	
 	public void uniteAt(int i, Tile value) throws Exception {
-		if (i < this.min) {
-			// shift values. But wait, what if we already have active edge list? Chose implementation later.
-			throw new Exception("Not implemented");
+		Tile old = this.line[i + this.offset];
+		if (old == null) {
+			this.set(i, value);
 		} else {
-			// ToDo: Too sparse for a screen-buffer like approach. Use active edge list instead
-			while (i >= this.getBoundary(1)) {
-				this.line.add(null);
-				/// System.out.println("I too large: "+i);
-			} 
-
-			Tile old=this.line.get(i);
-			if (old==null){
-				this.line.set(i,value );
-			}else{
-				old.uniteWith(value);
-			}
-			
-			// ToDo: Shrink, convert to null, RLE for null ...
+			old.uniteWith(value);
 		}
 	}	
 }
