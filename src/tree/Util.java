@@ -18,6 +18,7 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 package tree;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 	public static Node createSampleTree(){
@@ -48,7 +49,7 @@ public class Util {
 		secondBranch.getChildren().add(new Node("baz"));		
 		location.getChildren().add(secondBranch);
 		
-		ArrayList<Node> s=time.getChildren();
+		List<Node> s=time.getChildren();
 		Node unitOfTime;
 		
 		s.add(new Node("Sa"));

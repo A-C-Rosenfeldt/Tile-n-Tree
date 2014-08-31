@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import tree.Node;
 import vector2.ClosedInterval;
@@ -55,7 +56,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		}
 	}
 	
-	private ArrayList<LinkWith2Bends> y=new ArrayList<LinkWith2Bends>();
+	private List<LinkWith2Bends> y=new ArrayList<LinkWith2Bends>();
 	private int getIndex;
 	
 	@Override
@@ -258,7 +259,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	}
 
 	@Override
-	public ArrayList<Integer> getBedrock() {
+	public List<Integer> getBedrock() {
 		return this.bedrock;
 	}
 

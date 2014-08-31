@@ -179,8 +179,9 @@ public class Frame  extends JFrame implements Mapping{
 		this.treepos=new Vector(pos.x, pos.y);
 		this.link=new LinksWith2Bends();
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window
-		this.drawTree( 2,0,Util.createSampleTree(),false,0,0,0,new Table()); // root == frame window // Dupe (2,3)
 		try {
+		this.drawTree( 2,0,Util.createSampleTree(),false,new Buffer(Tile.space)/*0,0*/,0,new Table()); // root == frame window // Dupe (2,3)
+
 			this.drawLinks( 15,0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -201,7 +202,7 @@ public class Frame  extends JFrame implements Mapping{
 	
 	// ToDo: Transformation (as default in Swing, OpenGl ..)
 	private void drawLinks(int x, int j) throws Exception {
-		ArrayList<Integer> b=((LinkDebug)this.link).getBedrock();
+		List<Integer> b=((LinkDebug)this.link).getBedrock();
 		// to place text labels in front   draw backwards
 		for (int y = b.size()-1; y >=0 ; y--) {
 			this.drawVI(b.get(y)+x, y+j, 0, 0);
@@ -264,7 +265,7 @@ public class Frame  extends JFrame implements Mapping{
 		LinkWith2Bends current=(LinkWith2Bends) ya[--i];///link.getLinksSortedByYPrevious();
 		// to place text labels in front   draw backwards
 		for (int y = b.size()-1; y >=0; y--) {
-			Buffer buffer= new Buffer(Tile.space());
+			Buffer buffer= new Buffer(Tile.space);
 			this.shade ^= 2;
 			
 			Iterator<LinkWith2Bends> iter=passing.iterator();
@@ -293,7 +294,7 @@ public class Frame  extends JFrame implements Mapping{
 			};
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
-			for (int xPaint=buffer.getMax()-1;xPaint>0;xPaint--){ // b.get(y)
+			for (int xPaint=buffer.getBoundary(1)-1;xPaint>0;xPaint--){ // b.get(y)
 				Tile t=buffer.get(xPaint);				
 				drawVI(x+xPaint, j+y, t.shape, t.transformation, t.shade);
 			}
@@ -323,7 +324,7 @@ public class Frame  extends JFrame implements Mapping{
 	
 	private Link link; // links are less local than table-headers
 	// Todo: less parameters!
-	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, int x_min, int x_min2, int trans, Table table) {
+	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, /*int x_min, int x_min2*/ Buffer buffer, int trans, Table table) throws Exception {
 		Tupel t=new Tupel(x_anchor,y);
 		if ((current.getSwapCoordinates()&4)>0){
 			this.shade=0;
@@ -342,7 +343,7 @@ public class Frame  extends JFrame implements Mapping{
 
 			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
 			
-			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildrenWithInline(),  linkPasses,  y+0,y+0,  trans^current.getSwapCoordinates(), current.isChicane(), table);
+			t=  drawTreeInner( y+2-(current.isChicane()?3:0),x_anchor+1  ,  current.getChildrenWithInline(),  linkPasses,  /*y+0,y+0*/ buffer,  trans^current.getSwapCoordinates(), current.isChicane(), table);
 			
 			this.transformation=trans;
 			int x3=xi;
@@ -353,12 +354,12 @@ public class Frame  extends JFrame implements Mapping{
 					xi--;
 				}
 				// dupe {
-				while (xi >= x_min) {
+				while (xi >= buffer.getBoundary(1) /*x_min*/) {
 					drawVI(xi, y, 3, 4);
 					xi--;
 				}
 
-				while (xi >= x_min2) {
+				while (xi >= buffer.getBoundary(0) /*x_min2*/) {
 					drawVI(xi, y, 2, 0);
 					xi--;
 				}
@@ -372,11 +373,11 @@ public class Frame  extends JFrame implements Mapping{
 		} else {
 			//System.out.println("Y is: "+y);
 			return drawTreeInner(x_anchor, y, current.getChildrenWithInline(),
-					linkPasses, x_min, x_min2, trans, current.isChicane(), table);
+					linkPasses, buffer /*x_min, x_min2*/, trans, current.isChicane(), table);
 		}
 	}
 	
-	private Tupel drawTreeInner(int x_anchor, int y, ArrayList<Node> nodes, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table) {
+	private Tupel drawTreeInner(int x_anchor, int y, List<Node> nodes, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table) throws Exception {
 		
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 		
@@ -475,10 +476,10 @@ public class Frame  extends JFrame implements Mapping{
 			if (!chicane) {
 				if (i + 1 == nodes.size()) {
 					drawVI(xi, y, 0, 6);
-					if (xi == x_min) {
-						x_min++;
+					if (xi == links.getBoundary(1)/*x_min*/) {
+						links.set(xi,new Tile(2,0,0)) /*x_min++*/;
 					}else{
-						buf.set(xi,false); // limit possible values. Other tiles make no sense
+						links.set(xi,Tile.space); // limit possible values. Other tiles make no sense
 						throw new UnsupportedOperationException("Lücke in Buffer");
 					}
 					
@@ -488,12 +489,12 @@ public class Frame  extends JFrame implements Mapping{
 				xi--;
 
 				// ToDo: Jump over Gaps. x_min has to be an ArrayList
-				while (xi >= x_min) {
+				while (xi >= links.getBoundary(1)/*x_min*/) {
 					drawVI(xi, y, 3, 4);
 					xi--;
 				}
 
-				while (xi >= x_min2) {
+				while (xi >= links.getBoundary(0)/*x_min2*/) {
 					drawVI(xi, y, 2, 0);
 					xi--;
 				}
@@ -505,7 +506,7 @@ public class Frame  extends JFrame implements Mapping{
 		
 			// store gaps  due to "group names" for other header
 			table.add();
-			t=this.drawTree( x_anchor+1,y, node,linkPasses, x_min, x_min2, trans, table);
+			t=this.drawTree( x_anchor+1,y, node,linkPasses, links /*x_min, x_min2*/, trans, table);
 			
 			y=t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
 			x_max=Math.max(x_max, t.s[0]);

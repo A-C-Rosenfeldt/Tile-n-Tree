@@ -23,11 +23,12 @@ package tree;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Node {
 	private String title;
 	// Aggregation / persistent	
-	private ArrayList<Node> children=new ArrayList<Node>();
+	private List<Node> children=new ArrayList<Node>();
 	// needed for tables. Useful for layout
 	//private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
 	private int swapCoordinates=0; // see  class Tiles  for definition (not yet fixed) 
@@ -76,7 +77,7 @@ public class Node {
 	}
 
 	// ToDo: getChildren with out inlining makes no sense in context, but is needed for Getter Setter behaviour
-	public ArrayList<Node> getChildrenWithInline() {
+	public List<Node> getChildrenWithInline() {
 		// Concat duplicates a lot and would hinders debugging
 		// Merge needed to fill in values into the form
 		
@@ -135,7 +136,7 @@ public class Node {
 		// I will have to leak some info for the  rasterizer  to  count levels on  and to pass to node
 	}
 
-	public void setChildren(ArrayList<Node> children) {
+	public void setChildren(List<Node> children) {
 		this.children = children;
 	}
 
@@ -209,7 +210,7 @@ public class Node {
 		InlineReferenced = inlineReferenced;
 	}
 
-	public ArrayList<Node> getChildren() {
+	public List<Node> getChildren() {
 		return children;
 	}
 }

@@ -45,11 +45,9 @@ public class Tile {
 		this.transformation = original.transformation;
 		this.shade = original.shade;
 	}
+
+	public final static Tile space = new Tile(2, 0, 0);
 	
-	public final static Tile space(){
-		return new Tile(2,0,0);
-	}
-		
 	@Override
 	public boolean equals(Object that) {
 		if (that != null && that.getClass() == getClass()
@@ -99,11 +97,11 @@ public class Tile {
 	
 	// In buffer we need in-place union
 	public void uniteWith(Tile that) throws Exception{
-		if (that.equals(Tile.space())){
+		if (that.equals(Tile.space)){
 			return;
 		}
 				
-		if (this.equals(Tile.space())){
+		if (this.equals(Tile.space)){
 			this.shape = that.shape;
 			this.transformation = that.transformation;
 			this.shade = that.shade;
