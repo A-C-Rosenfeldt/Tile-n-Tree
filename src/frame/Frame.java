@@ -251,7 +251,7 @@ public class Frame  extends JFrame implements Mapping{
 			public int compare(Object l0, Object l1) {		
 				Tupel[] a={((LinkWith2Bends)l0).y,
 				((LinkWith2Bends)l1).y};
-				return a[1].s[1]-a[0].s[1];
+				return a[0].s[1]-a[1].s[1];
 			}
 			
 		});
@@ -275,7 +275,7 @@ public class Frame  extends JFrame implements Mapping{
 				if (linkWith2Bends.y.getLimitsSorted(0) < y) {
 					buffer.uniteAt(linkWith2Bends.xRight, new Tile(3, 4, 2));
 				} else {
-					drawLinkEnd(linkWith2Bends, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight);
+					drawLinkEnd(linkWith2Bends, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight); // Bug: at y there is not always end 
 					iter.remove();
 				}
 			}		
@@ -480,7 +480,7 @@ public class Frame  extends JFrame implements Mapping{
 						links.set(xi,new Tile(2,0,0)) /*x_min++*/;
 					}else{
 						links.set(xi,Tile.space); // limit possible values. Other tiles make no sense
-						throw new UnsupportedOperationException("Lücke in Buffer");
+						///throw new UnsupportedOperationException("Lücke in Buffer");
 					}
 					
 				} else {

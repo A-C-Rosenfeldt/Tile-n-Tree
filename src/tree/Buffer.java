@@ -59,25 +59,34 @@ public class Buffer {
 		return t;
 	}
 	
-	private int newOffset(Tile[] t, int size, int[] boundary){
-		t=new Tile[size << 1];
-		return (size >> 1) - boundary[0];
+	// ToDo: Make parent? But access should be private
+	private class Skeleton{
+		public Tile[] tiles;
+		public int offset;
+	}
+	
+	private Skeleton newOffset(int size, int[] boundary){
+		Skeleton s=new Skeleton();
+		s.tiles=new Tile[size << 1];
+		s.offset= (size >> 1) - boundary[0];
+		return s;		
 	}
 	
 	private void realloc(int[] boundary) {
 		int sizeOld=this.boundary[1]+1-this.boundary[0]; // ToDo: Import Span
 		int sizeNew=boundary[1]+1-boundary[0]; // ToDo: Import Span
-		Tile[] t = null;
-		int offset = this.newOffset(t, sizeNew, boundary); // ToDo remove dupe of size heurisitc
-		System.arraycopy(this.line, boundary[0] + this.offset, t, boundary[0] + offset, sizeOld);
-		this.line = t;
-		this.offset=offset;
+		Skeleton s = this.newOffset(sizeNew, boundary); // ToDo remove dupe of size heurisitc
+		System.arraycopy(this.line, boundary[0] + this.offset, s.tiles, boundary[0] + s.offset, sizeOld);
+		this.line = s.tiles;
+		this.offset=s.offset;
 	}	
 	
 	public void set(int i, Tile value) throws Exception {	
-		if (this.line==null){
+		if (this.line == null) {
 			this.boundary[0] = this.boundary[1] = i;
-			this.offset = this.newOffset(this.line, 8, this.boundary); // the set operation occurs inside a loop. We cannot avoid uninitialized objects			
+			Skeleton s = this.newOffset(8, this.boundary); // the set operation occurs inside a loop. We cannot avoid uninitialized objects
+			this.line = s.tiles;
+			this.offset = s.offset;
 		}
 		
 		if (i < this.boundary[0]) {
@@ -104,11 +113,15 @@ public class Buffer {
 	}
 	
 	public void uniteAt(int i, Tile value) throws Exception {
-		Tile old = this.line[i + this.offset];
-		if (old == null) {
+		if (this.line == null) {
 			this.set(i, value);
 		} else {
-			old.uniteWith(value);
+			Tile old = this.line[i + this.offset];
+			if (old == null) {
+				this.set(i, value);
+			} else {
+				old.uniteWith(value);
+			}
 		}
 	}	
 }
