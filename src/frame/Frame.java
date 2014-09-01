@@ -249,9 +249,9 @@ public class Frame  extends JFrame implements Mapping{
 			
 			@Override
 			public int compare(Object l0, Object l1) {		
-				Tupel[] a={((LinkWith2Bends)l0).y,
+				ClosedInterval[] a={((LinkWith2Bends)l0).y,
 				((LinkWith2Bends)l1).y};
-				return a[0].s[1]-a[1].s[1];
+				return a[0].getLimitsSorted(1)-a[1].getLimitsSorted(1);
 			}
 			
 		});
@@ -268,16 +268,20 @@ public class Frame  extends JFrame implements Mapping{
 			Buffer buffer= new Buffer(Tile.space);
 			this.shade ^= 2;
 			
+			System.out.print("Passing at y = "+y);
 			Iterator<LinkWith2Bends> iter=passing.iterator();
 			while(iter.hasNext()){
 				LinkWith2Bends linkWith2Bends=iter.next();
-				System.out.println("Passing at y = "+y);		
+				System.out.print(".");;		
 				if (linkWith2Bends.y.getLimitsSorted(0) < y) {
 					buffer.uniteAt(linkWith2Bends.xRight, new Tile(3, 4, 2));
 				} else {
 					drawLinkEnd(linkWith2Bends, buffer, linkWith2Bends.whichSide(y), linkWith2Bends.xRight); // Bug: at y there is not always end 
 					iter.remove();
+					System.out.print(" remove");
 				}
+				
+				
 			}		
 					
 			while (/*current != null*/ i>0 && current.y.getLimitsSorted(1)>=y){
@@ -289,9 +293,11 @@ public class Frame  extends JFrame implements Mapping{
 					}						
 				}
 				
-				passing.add(current);
+				passing.add(current); System.out.print(" add");
 				current=(LinkWith2Bends) ya[--i];///=link.getLinksSortedByYPrevious();
 			};
+			
+			System.out.println("");
 			
 			// Also draw spaces (inside). ToDo: Draw outside spaces if necessary (window size, (subTile) scrolling etc).
 			for (int xPaint=buffer.getBoundary(1);xPaint>=buffer.getBoundary(0);xPaint--){ // b.get(y)
