@@ -284,7 +284,7 @@ public class Frame  extends JFrame implements Mapping{
 				
 			}		
 					
-			while (/*current != null*/ i>0 && current.y.getLimitsSorted(1)>=y){
+			while (/*current != null*/ i>=0 && current.y.getLimitsSorted(1)>=y){
 					
 				for(int side=1;side>=0;side--){
 					if (current.y.s[side]==y){
@@ -293,8 +293,12 @@ public class Frame  extends JFrame implements Mapping{
 					}						
 				}
 				
-				passing.add(current); System.out.print(" add");
-				current=(LinkWith2Bends) ya[--i];///=link.getLinksSortedByYPrevious();
+				passing.add(current); System.out.print(" add. And get next 'current' from i= "+(i-1));
+				if (--i<0){
+					break;
+				}
+				current=(LinkWith2Bends) ya[i];///=link.getLinksSortedByYPrevious();
+				
 			};
 			
 			System.out.println("");
