@@ -63,6 +63,7 @@ import tile.Tile;
 import tile.Tiles;
 import tree.Buffer;
 import tree.LayedOutPosition;
+import tree.MergingIterator;
 import tree.Node;
 import tree.Util;
 import vector2.ClosedInterval;
@@ -177,7 +178,7 @@ public class Frame extends JFrame implements Mapping {
 		try {
 			Node tree = Util.createSampleTree(); // misuse try block to limit scope of local variable
 			this.link = new LinksWith2Bends(tree);
-			this.drawTree(2, 0, tree, false, new Buffer(Tile.space)/*0,0*/, 0, new Table()); // root == frame window // Dupe (2,3)
+			this.drawTree(2, 0, tree, false, new Buffer(Tile.space)/*0,0*/, 0, new Table(), null); // root == frame window // Dupe (2,3)
 
 			this.drawLinks(15, 0);
 		} catch (Exception e) {
@@ -331,7 +332,7 @@ public class Frame extends JFrame implements Mapping {
 	private Link link; // links are less local than table-headers
 
 	// Todo: less parameters!
-	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, /*int x_min, int x_min2*/Buffer links, int trans, Table table) throws Exception {
+	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, /*int x_min, int x_min2*/Buffer links, int trans, Table table, LayedOutPosition layout) throws Exception {
 		Tupel t = new Tupel(x_anchor, y);
 		if ((current.getSwapCoordinates() & 4) > 0) {
 			this.shade = 0;
@@ -350,7 +351,7 @@ public class Frame extends JFrame implements Mapping {
 
 			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
 
-			t = drawTreeInner(y + 2 - (current.isChicane() ? 3 : 0), x_anchor + 1, current, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ current.getSwapCoordinates(), current.isChicane(), table);
+			t = drawTreeInner(y + 2 - (current.isChicane() ? 3 : 0), x_anchor + 1, current, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ current.getSwapCoordinates(), current.isChicane(), table, layout);
 
 			this.transformation = trans;
 			int x3 = xi;
@@ -385,30 +386,30 @@ public class Frame extends JFrame implements Mapping {
 			return new Tupel(x_anchor, t.s[0]);
 		} else {
 			//System.out.println("Y is: "+y);
-			return drawTreeInner(x_anchor, y, current, linkPasses, links /*x_min, x_min2*/, trans, current.isChicane(), table);
+			return drawTreeInner(x_anchor, y, current, linkPasses, links /*x_min, x_min2*/, trans, current.isChicane(), table, layout);
 		}
 	}
 
-	private Tupel drawTreeInner(int x_anchor, int y, Node parent, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table) throws Exception {
+	private Tupel drawTreeInner(int x_anchor, int y, Node parent, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table, LayedOutPosition layout) throws Exception {
 		// ToDo: One Call for layout and a second one for draw (text). Make two pass optional für debugging purpose
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
-		Node switchToOwn=parent.getChildren().get(0); // Value comes before children.
-		boolean ownChildren=false;
-		List<Node> nodes=parent.getChildrenWithInline();
-		int x_max=x_anchor;
+		//Node switchToOwn=parent.getChildren().get(0); // Value comes before children.
+		//boolean ownChildren=false;
+		///Iterator<Node> nodes=parent.iterator(); //.getChildrenWithInline();
+		int x_max = x_anchor;
 
-		for (int i = 0; i < nodes.size(); i++) {
-			Node node=nodes.get(i);
-			
-			// References are okay as these are copied within the current RAM just some time before
-			if (node == switchToOwn){
-				ownChildren = true;
-			}
-			
-			this.shade=0;
-			this.transformation=trans;
+		// ToDo: Remove cast
+		for (MergingIterator iterator = (MergingIterator) parent.iterator(); iterator.hasNext();) {
+			Node node = (Node) iterator.next();
+
+			//			// References are okay as these are copied within the current RAM just some time before
+			//			if (node == switchToOwn){
+			//				ownChildren = true;
+			//			}
+
+			this.shade = 0;
+			this.transformation = trans;
 			int xi;
-		
 
 			// Deferred to routing. ToDo: Change constructor for partial construction
 			//this.link.addLink(new Tupel(x_anchor, 0),new ClosedInterval(y,0));
@@ -416,21 +417,29 @@ public class Frame extends JFrame implements Mapping {
 			///this.link.get(node); // ToDo: put the burden of y ordering into Interface Links
 			// loop over all links passing this y
 			// taken live rendering
-			linkPasses = drawLink(x_anchor, y, linkPasses, node,10,0);
-			
-			
+			linkPasses = drawLink(x_anchor, y, linkPasses, node, 10, 0);
+
 			// table
-			if (node.isChicane()){
+			if (node.isChicane()) {
 				// ToDo: Use loop and use max(x) of this header (info flowing backwards) as the start value
-				drawVI(x_anchor+1, y, 3,2);
+				drawVI(x_anchor + 1, y, 3, 2);
 			}
 
-			xi=x_anchor;
-			drawVI(xi, y, 2, 0);			
+			xi = x_anchor;
+			drawVI(xi, y, 2, 0);
 			xi--;
 			if (!chicane) {
 				// ToDo: Cache children view
-				drawVI(xi, y, node.getChildrenWithInline().size() != 0 && !node.isChicane() ? 1 : 3, 2);
+				if (node.isChicane()) {
+					drawVI(xi, y, 3, 2);
+				} else {
+					Iterator test = node.iterator();
+					if (!test.hasNext()) {
+						drawVI(xi, y, 3, 2);
+					} else {
+						drawVI(xi, y, 1, 2);
+					}
+				}
 			}
 
 			// concept code {
@@ -442,14 +451,13 @@ public class Frame extends JFrame implements Mapping {
 			//   extract method to reflect top down?
 			//   Change 0 to -1
 			if (node.getValue() != null) {
-				LinkWith2Bends l=this.link.get(node);
-				if (l==null){
-					this.link.addLink(new Tupel(x_anchor, 0), new ClosedInterval(y,0), node);
-					l=this.link.get(node);
-				}
-				else{
-					l.x.s[0]=x_anchor;
-					l.y.s[0]=y;
+				LinkWith2Bends l = this.link.get(node);
+				if (l == null) {
+					this.link.addLink(new Tupel(x_anchor, 0), new ClosedInterval(y, 0), node);
+					l = this.link.get(node);
+				} else {
+					l.x.s[0] = x_anchor;
+					l.y.s[0] = y;
 				}
 			}
 
@@ -463,91 +471,101 @@ public class Frame extends JFrame implements Mapping {
 					l.y.s[1] = y;
 				}
 			}
-			
+
 			// Paint uses Y right now. It is supposed that tree is fixed before routing
-//			if (node.getValueOf() != null) {
-//				LinkWith2Bends this_link_get_node_getValueOf___ = this.link
-//						.get(node.getValueOf());
-//				// ToDo upwards links
-//				if (this_link_get_node_getValueOf___ != null) {
-//					this_link_get_node_getValueOf___
-//							.setDestination(x_anchor, y);
-//				}
-//				// this.link.addLink(new Tupel(x_anchor, 0),new
-//				// ClosedInterval(y,0));
-//			}
-			
+			//			if (node.getValueOf() != null) {
+			//				LinkWith2Bends this_link_get_node_getValueOf___ = this.link
+			//						.get(node.getValueOf());
+			//				// ToDo upwards links
+			//				if (this_link_get_node_getValueOf___ != null) {
+			//					this_link_get_node_getValueOf___
+			//							.setDestination(x_anchor, y);
+			//				}
+			//				// this.link.addLink(new Tupel(x_anchor, 0),new
+			//				// ClosedInterval(y,0));
+			//			}
+
 			//this.link.addBedrock(x_anchor);
 
 			// } concept code
-			
-			
+
 			Vector positionInGridcount;
 			if ((transformation & 4) == 0) {
 				///this.link.addBedrock(x_anchor,y); // < 2014-10-06
 				// >= 2014-10-07
 				// ToDo: Add a new list. Prototype and owner are connected by value, but none has a list for multiple children. I vote for a new list for the owner ... owner.layoutNode!
-				positionInGridcount=new Vector(x_anchor, y+1);			
-				
+				positionInGridcount = new Vector(x_anchor, y + 1);
+
 			} else {
 				///this.link.addBedrock(y,x_anchor); // < 2014-10-06
 				// >= 2014-10-07
-				positionInGridcount=new Vector(y, x_anchor + 1);
+				positionInGridcount = new Vector(y, x_anchor + 1);
 			}
-			
-			if (ownChildren){
-				node.layout=new LayedOutPosition(positionInGridcount);
-			}else{
-				parent.layout.value_children.add(new LayedOutPosition(positionInGridcount));
+
+			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
+			LayedOutPosition layoutChild = null;
+			if (node.getReferenceHistory() == 2) { // ToDo layout reference as parameter
+				node.layout = new LayedOutPosition(positionInGridcount);
+			}else{				
+				// some ancestor already got inlined
+				if (layout != null) {
+					layoutChild = new LayedOutPosition(positionInGridcount);
+					layout.value_children.add(layoutChild);
+				} else {
+					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
+						node.layout = new LayedOutPosition(positionInGridcount);
+					} else {
+						parent.layout.value_children.add(new LayedOutPosition(positionInGridcount));
+					}
+				}
 			}
-			
+
 			Vector positionInPixel = new Vector(this.treepos, this.tileSize, positionInGridcount);
-			
-			this.gForRec.drawString(node.getTitle()+" "+(node.getReferenceHistory()!=0?node.getReferenceHistory():""),  positionInPixel.s[0]+1, positionInPixel.s[1]-3); // May flicker without doubleBuffering
+
+			this.gForRec.drawString(node.getTitle() + " " + (node.getReferenceHistory() != 0 ? node.getReferenceHistory() : ""), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
-				if (i + 1 == nodes.size()) {
+				if (!iterator.hasNext()) { //i + 1 == nodes.size()) {
 					drawVI(xi, y, 0, 6); // bend
 					//if (xi == links.getBoundary(1)/*x_min*/) {
 					//	links.set(xi,new Tile(3,4,0)) /*x_min++*/;
 					//}else{
-						links.set(xi,Tile.space); // limit possible values. Other tiles make no sense
-						///throw new UnsupportedOperationException("Lücke in Buffer");
+					links.set(xi, Tile.space); // limit possible values. Other tiles make no sense
+					///throw new UnsupportedOperationException("Lücke in Buffer");
 					//}
-					
+
 				} else {
 					drawVI(xi, y, 1, 6); // branch
 					links.set(xi, new Tile(3, 4, 0)); // vertical bar
 				}
 				xi--;
 
-//				// ToDo: Jump over Gaps. x_min has to be an ArrayList
-//				while (xi >= links.getBoundary(1)/*x_min*/) {
-//					drawVI(xi, y, 3, 4);
-//					xi--;
-//				}
+				//				// ToDo: Jump over Gaps. x_min has to be an ArrayList
+				//				while (xi >= links.getBoundary(1)/*x_min*/) {
+				//					drawVI(xi, y, 3, 4);
+				//					xi--;
+				//				}
 
 				while (xi >= links.getBoundary(0)/*x_min2*/) {
-					Tile t=links.get(xi);
+					Tile t = links.get(xi);
 					drawVI(xi, y, t.shape, t.transformation);
 					xi--;
 				}
 			}
-			
+
 			// ToDo: Jump over gaps due to "group names" in other header. Reuse chicane marker and rename to "has children inside table body"!??
 			y++;
 			Tupel t;
-		
+
 			// store gaps  due to "group names" for other header
 			table.add();
-			t=this.drawTree( x_anchor+1,y, node,linkPasses, links /*x_min, x_min2*/, trans, table);
-			
-			y=t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
-			x_max=Math.max(x_max, t.s[0]);
+			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, layoutChild);
+
+			y = t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
+			x_max = Math.max(x_max, t.s[0]);
 		}
 
-		
-		return new Tupel(x_max,y); // ToDo: Why does boxing not work?
+		return new Tupel(x_max, y); // ToDo: Why does boxing not work?
 	}
 
 	// ToDo: UnitTest that there are no dangling bonds!

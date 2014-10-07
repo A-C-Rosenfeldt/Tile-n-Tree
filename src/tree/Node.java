@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Node {
+public class Node implements Iterable{
 	private String title;
 	// Aggregation / persistent	
-	private List<Node> children=new ArrayList<Node>();
+	private List<Node> children;
 	// needed for tables. Useful for layout
 	//private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
 	private int swapCoordinates=0; // see  class Tiles  for definition (not yet fixed) 
@@ -45,15 +45,25 @@ public class Node {
 	private int referenceHistory=0; // for dupes	
 	public LayedOutPosition layout; // Position on 2D Screen. Duplicates!! With Links!!
 	
+	public Node(){
+		this.children=new ArrayList<Node>();
+	}
+	
 	public Node(String title){
+		new Node();
 		this.setTitle(title);
 	}
 
-	public Node(Node node, int event) {
-		// { sort of   duplicate of field declaration. ToDo: Group
+	public Node(Node node, int event, boolean dedicatedChildren) {
+		if (dedicatedChildren){
+			new Node();
+		}else{
+			this.children=node.children;
+		}
+		
 		this.title=node.title;
-		// Aggregation / persistent	
-		this.children=node.children;
+		// Aggregation / persistent		
+		
 		// needed for tables. Useful for layout
 		//private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
 		this.swapCoordinates=node.swapCoordinates; // see  class Tiles  for definition (not yet fixed) 
@@ -77,7 +87,28 @@ public class Node {
 		this.title = title;
 	}
 
-	// ToDo: getChildren with out inlining makes no sense in context, but is needed for Getter Setter behaviour
+	// Version with ref return (and with Inline)
+
+	@Override
+	public Iterator<Node> iterator() {
+		if (this.value==null || !this.InlineReferenced){
+			return this.children.iterator();
+		}
+		
+		Iterator<Node>[] i= new Iterator[2];
+		i[0]=this.value.iterator(); // Daisy chain needed for inheritance (test later! Is an advanced feature!)
+		i[1]=this.children.iterator(); // No endless loop
+		
+		return new MergingIterator(i, this.title);
+	}
+	
+	/*
+	 * no dupes!! < 2014-10-07
+	 
+	// No size method! I do not know the size without two passes. I hate two passes (debugging, performance)!!
+	
+	// ToDo: getChildren without inlining makes no sense in context, but is needed for Getter Setter behavior
+	// Version with value return (but only shallow, why ?? For debugging). No one modifies the returned value (as of 2014-10-07)
 	public List<Node> getChildrenWithInline() {
 		// Concat duplicates a lot and would hinders debugging
 		// Merge needed to fill in values into the form
@@ -97,7 +128,7 @@ public class Node {
 		
 		System.out.println("sa: "+sa+" sb: "+sb);
 		
-		ArrayList<Node> c=new ArrayList<Node>( Math.max(sa, sb) ); // I would like to have a temporary array to avoid bugs to increase the lenght uncontrolled
+		ArrayList<Node> c=new ArrayList<Node>( Math.max(sa, sb) ); // I would like to have a temporary array to avoid bugs to increase the length uncontrolled
 		// Some map, zip function needed here, but hey it is java, so
 		// Incompatible with write:  Iterator<Node> ic=c.iterator();
 		Iterator<Node> ia=this.value.getChildrenWithInline().iterator(); // Daisy chain needed for inheritance (test later! Is an advanced feature!)
@@ -106,7 +137,7 @@ public class Node {
 		while (ia.hasNext() || ib.hasNext()) {
 			Node ia_next;
 			if (ia.hasNext()) {
-				ia_next = new Node(ia.next(), 1);
+				ia_next = new Node(ia.next(), 1, true);
 				ia_next.children=new ArrayList<Node>(); // ToDo: Ugly .  But according to design. Copy should appear a deep at first sight. Just save mem internally, but do not leak. Here choosing a value means actively deciding against other values
 
 				// null pointer or not null pointer? Since enums are supposed to
@@ -114,7 +145,7 @@ public class Node {
 				if (ib.hasNext()) {
 					// ia_next.
 					Node t=ib.next();
-					Node mirror=new Node(t.getValue(),2); // internally the instance points to the global address of the value
+					Node mirror=new Node(t.getValue(),2, false); // internally the instance points to the global address of the value
 					mirror.title=t.title+" / "+mirror.title;
 					ia_next.children.add(mirror); // Bug: Has side-effect!  ToDo: Allow multi-select ?
 					ia_next.setValue(mirror); // for the UI this would lead to link spaghetti. Thus: a mirror. And valueOf works!
@@ -137,10 +168,9 @@ public class Node {
 		// ToDo: Inform children about this indirection => write protection.
 		// I will have to leak some info for the  rasterizer  to  count levels on  and to pass to node
 	}
+*/
+	
 
-	public void setChildren(List<Node> children) {
-		this.children = children;
-	}
 
 //	public ArrayList<Node> getChildrenSwapCoordinates() {
 //		return childrenSwapCoordinates;
