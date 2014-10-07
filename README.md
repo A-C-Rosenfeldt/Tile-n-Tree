@@ -1,4 +1,6 @@
-The program tries to combine the experiences on a 8-bit home computer BASIC with modern languages (XML, C#, Scala) and graphs. A web front-end is planned, but was deemed to clumsy for every-day development in eclipse.
+The program tries to combine the experiences on a 8-bit home computer BASIC with modern languages (XML, C#, Scala) and graphs. It is planned to put this in the web using Google Web Toolkit (GWT).
+Development uses elements which worked well in the past: A good IDE (this time eclipse) with re-factoring, version control (GIT), unit tests (Junit4), a program which runs without user interaction.
+Test driven development does not work. And I do not use UML. In fact there are no documents besides the Code in GIT and I do not miss them.
 
 ![Screenshot](https://plus.google.com/photos/+ArneChristianRosenfeldt/albums/6042486578143006305/6043434580258012258?pid=6043434580258012258&oid=101260750722957758932]
 
@@ -30,8 +32,14 @@ Features
 * instantiate first level children to second level children
 * more references
 	* crossings and joins
-	* 
+	* optimize for clarity  not  for comapactness
 ----
+* Box Model
+	* paint Boxes in debug mode (similar to HTML Browsers)
+* DOM
+	* store complete layout with all references
+		* for delta
+		* to avoid dupes
 * foreground layer
 	*	crossing (all alternatives look ugly)
 	*	nTupel

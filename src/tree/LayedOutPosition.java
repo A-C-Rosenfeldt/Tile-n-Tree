@@ -14,43 +14,29 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-// Todo
-// Use F1 to open configuration.java
-
-package adHocRouter;
+*/
+package tree;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import tree.Node;
-import vector2.ClosedInterval;
-import vector2.Tupel;
+import vector2.RectSize;
 import vector2.Vector;
 
-public interface Link {
-	///public void addBedrock(int x);
-	
-	public void sort();
-	public LinkWith2Bends getNext();
-	void addLink(Tupel x, ClosedInterval y, Node node);
-	// node is used to match these two calls
-	// indexed via y right now (more paint - centric)
-	
-	public  LinkWith2Bends get(Node node); // Needed for completion of y
+/**
+ * @author Arne Rosenfeldt
+ * Only cached -- not persistent
+ * ToDo: Duplicate need their own. Links?
+ */
+public class LayedOutPosition {
+	public Vector position; // center would be fair
+	public RectSize size; // no affected by move
 
-	public boolean hasNext();
+	///public LayedOutPosition parent;
+	public List<LayedOutPosition> value_children=new ArrayList<LayedOutPosition>();
 
-	///public void addBedrock(int x, int y);
-	public LinkWith2Bends getLinksSortedByYPrevious();
-	public void jumpBelowLinks();
-
-	LinkWith2Bends getPrevious();
-
-	void sort(boolean moveToEnd);
-
-	Object[] getY();
-
-
-
+	public LayedOutPosition(Vector position) { ///, LayedOutPosition parent) {
+		this.position = position;
+		///this.parent = parent;
+	}
 }

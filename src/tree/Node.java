@@ -40,9 +40,10 @@ public class Node {
 	private Node classObject; //unused! appears below as  T-junction
 	private boolean InlineReferenced; // read like  "Reference  is   inlined"
 	
-	// volatile. ToDo: Put some (where oo does not work well) into extra class Cache
+	// Volatile (if null, can be regenerated. Set to null on compression, or for cheap regeneration (short links).
 	private Node valueOf; // internally every link is bidirectional  because otherwise the code has to search all the time  
-	private int referenceHistory=0; // for dupes
+	private int referenceHistory=0; // for dupes	
+	public LayedOutPosition layout; // Position on 2D Screen. Duplicates!! With Links!!
 	
 	public Node(String title){
 		this.setTitle(title);
@@ -80,7 +81,8 @@ public class Node {
 	public List<Node> getChildrenWithInline() {
 		// Concat duplicates a lot and would hinders debugging
 		// Merge needed to fill in values into the form
-		
+		// pass0/1: Frame.drawTreeInner   using Node.getChildrenWithInline(); (This)
+		// pass1/1: LinkWith2Bends.getBedrockInner		
 		
 		if (this.value==null || !this.InlineReferenced){
 			return this.children;

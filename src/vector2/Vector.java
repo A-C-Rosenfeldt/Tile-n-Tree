@@ -35,6 +35,10 @@ public class Vector extends Tupel {
 		}
 	}
 
+	public Vector(Vector a, RectSize b, Vector grid) {
+		new Vector(a,b,grid.s[0],grid.s[1]);
+	}
+	
 	// I really miss  operator overloading  
 	public void add(Vector d) {
 		for(int i=this.s.length-1;i>=0;i--){

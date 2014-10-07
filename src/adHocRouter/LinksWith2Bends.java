@@ -27,34 +27,94 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import tree.LayedOutPosition;
 import tree.Node;
 import vector2.ClosedInterval;
 import vector2.Tupel;
 import vector2.Vector;
 
-public class LinksWith2Bends implements Link, LinkDebug {
+public class LinksWith2Bends implements Link /*, LinkDebug */ {
 	// public for debug. I certainly do not want a global "DEBUG" option. ToDo: set to private
-	public ArrayList<Integer> bedrock= new ArrayList<Integer>();
+/*	public ArrayList<Integer> bedrock= new ArrayList<Integer>();
 
-	@Override
-	public void addBedrock(int x) {
-		bedrock.add(x);
+	private int getBedrock(int y){
+		return this.bedrock.get(y);
+	}*/
+	
+	public LinksWith2Bends(Node root) {
+		this.root = root;
+	}
+
+	private Node root;
+	///private Node current; // later not all parts of the tree should reside on the client
+	
+	private int getBedrock(int y){
+		this.findY = y;
+		return this.getBedrockInner(this.root, null);
 	}
 	
-	@Override
-	public void addBedrock(int x, int y) {
-		// not called for
-		while (y>this.bedrock.size()){
-			this.bedrock.add(0);
+	private int findY;
+	
+	private int getBedrockInner(Node node0, LayedOutPosition layout0){
+		LayedOutPosition layout1=null;
+		LayedOutPosition layout2=null;
+		Node node1=null;
+		Node node2=null;
+		
+		// Value first (ToDo: Define this at a single place)
+		// pass0/1: Frame.drawTreeInner   using Node.getChildrenWithInline();
+		// pass1/1: This (LinkWith2Bends.getBedrockInner)
+		for (int i = 0; i < node0.getValue().getChildren().size(); i++) {
+			node2 = node1;
+			layout2 = layout1;
+			node1 = node0.getValue().getChildren().get(i);
+			layout1 = layout0.value_children.get(i);
+			if (layout1.position.s[1] == this.findY){
+				return layout1.position.s[0];
+			}else{
+				return this.getBedrockInner(node1, layout1);
+			}
 		}
 		
-		// okay
-		if (y==this.bedrock.size()){
-			this.bedrock.add(x);
-		}else{
-			this.bedrock.set(y, Math.max(this.bedrock.get(y), x));
+		for (int i = 0; i < node0.getChildren().size(); i++) {
+			node2 = node1;
+			layout2 = layout1;
+			node1 = node0.getChildren().get(i);
+			if (layout0 != null){
+				layout1 = layout0.value_children.get(i); // After first inlining step (for-loop above): Always use layout
+			}else{
+				layout1 = node1.layout;
+			}
+			if (layout1.position.s[1] == this.findY){
+				return layout1.position.s[0];
+			}else{
+				return this.getBedrockInner(node1, layout1);
+			}
 		}
+		
+		return layout1.position.s[0];
 	}
+	
+	
+//	@Override
+//	public void addBedrock(int x) {
+//		bedrock.add(x);
+//	}
+	
+//	@Override
+//	public void addBedrock(int x, int y) {
+//		// not called for
+//		while (y>this.bedrock.size()){
+//			this.bedrock.add(0);
+//		}
+//		
+//		// okay
+//		if (y==this.bedrock.size()){
+//			this.bedrock.add(x);
+//		}else{
+//			this.bedrock.set(y, Math.max(this.bedrock.get(y), x));
+//		}
+//	}
 	
 	private List<LinkWith2Bends> y=new ArrayList<LinkWith2Bends>();
 	private int getIndex;
@@ -163,13 +223,13 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		}
 
 		int y=ySorted[0];
-		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y)+1); // Space for Endmarkers
+		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.getBedrock(y)+1); // Space for Endmarkers
 		y++;
 		while ( y <= ySorted[1]-1) {
-			this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y));
+			this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.getBedrock(y));
 			y++;
 		}		
-		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.bedrock.get(y)+1);
+		this_ya_this_s__xRight=Math.max(this_ya_this_s__xRight,this.getBedrock(y)+1);
 		
 		++this_ya_this_s__xRight; // Next to bedrock
 		
@@ -258,10 +318,10 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		return null;
 	}
 
-	@Override
-	public List<Integer> getBedrock() {
-		return this.bedrock;
-	}
+//	@Override
+//	public List<Integer> getBedrock() {
+//		return this.bedrock;
+//	}
 
 	@Override
 	public boolean hasNext() {
