@@ -33,8 +33,9 @@ Features
 * more references
 	* crossings and joins
 	* optimize for clarity  not  for comapactness
-* Replace Buffer by Layed out node?
+* MergeIterator.nextNode fügt ein Node als Child an ein Node ran (wie es auch gezeichnet wird)
 ----
+* Replace Buffer by Layed out node?
 * Box Model
 	* paint Boxes in debug mode (similar to HTML Browsers)
 * DOM

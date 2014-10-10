@@ -32,11 +32,17 @@ public class LayedOutPosition {
 	public Vector position; // center would be fair
 	public RectSize size; // no affected by move
 
+	public Node value; // At instances each mirrored component needs to remember a reference to the value. For Links 
+	
 	///public LayedOutPosition parent;
 	public List<LayedOutPosition> value_children=new ArrayList<LayedOutPosition>();
 
 	public LayedOutPosition(Vector position) { ///, LayedOutPosition parent) {
 		this.position = position;
 		///this.parent = parent;
+	}
+
+	public LayedOutPosition() {
+		// Create skeleton to connect instance components to owner
 	}
 }

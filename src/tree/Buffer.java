@@ -26,7 +26,7 @@ import java.util.List;
 import tile.Tile;
 
 public class Buffer {
-	// till now just a typeDef
+	// should be owned by LayedOutPosition
 	private Tile[] line; // ToDo: Reduce unused capacity via limited capacity sharing along the Tree. Implicit and based on min and max
 	private int[] boundary={0, -1};
 	private int offset;

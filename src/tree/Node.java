@@ -95,11 +95,16 @@ public class Node implements Iterable{
 			return this.children.iterator();
 		}
 		
+		Iterator<Node>[] i = getIterators();
+		
+		return new MergingIterator(i, this.title);
+	}
+
+	public Iterator<Node>[] getIterators() {
 		Iterator<Node>[] i= new Iterator[2];
 		i[0]=this.value.iterator(); // Daisy chain needed for inheritance (test later! Is an advanced feature!)
 		i[1]=this.children.iterator(); // No endless loop
-		
-		return new MergingIterator(i, this.title);
+		return i;
 	}
 	
 	/*
