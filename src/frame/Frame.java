@@ -26,50 +26,39 @@ import inputDevice.Keyboard;
 import inputDevice.Mapping;
 import inputDevice.Modifier;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.image.VolatileImage;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.ColorModel;
-import java.awt.image.VolatileImage;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import adHocRouter.Link;
-import adHocRouter.LinkDebug;
-import adHocRouter.LinkWith2Bends;
-import adHocRouter.LinksWith2Bends;
-import adHocRouter.Table;
-import rasterizer.MakeTheBestOfSwing;
 import tile.Tile;
 import tile.Tiles;
 import tree.Buffer;
 import tree.LayedOutPosition;
 import tree.MergingIterator;
 import tree.Node;
+import tree.NodeBase;
 import tree.Util;
 import vector2.ClosedInterval;
 import vector2.RectSize;
 import vector2.Tupel;
 import vector2.Vector;
+import adHocRouter.Link;
+import adHocRouter.LinkDebug;
+import adHocRouter.LinkWith2Bends;
+import adHocRouter.LinksWith2Bends;
+import adHocRouter.Table;
 
 public class Frame extends JFrame implements Mapping {
 	/**
@@ -108,69 +97,11 @@ public class Frame extends JFrame implements Mapping {
 	public void paint(Graphics g) {
 		// ToDo: On startup there seems to be a double paint
 
-		//g.hint(antialias)
-		// now inside tile. Interferes with seam. MakeTheBestOutOfSwing.configure2((Graphics2D) g);
-
-		// TODO Auto-generated method stub
-		//	super.paint(arg0);  changes background from grey to white. There is nothing to draw for super in the client area as I want a full tile-based display, do I?
-
 		// What point?
 		Point pos = this.getContentPane().getLocationOnScreen();
 		Rectangle bounds = this.getContentPane().getBounds();
-
-		RectSize rs = new RectSize(bounds);
 		bounds.setLocation(pos);
 
-		//		System.out.println("add next to second");
-		//		System.out.println(pos.y);
-		//		System.out.println(bounds.y);
-
-		/*
-		 depreciated
-		 
-
-		///System.out.print( rs.s[0]/2); System.out.print(" ");System.out.print( rs.s[1]/2); System.out.print(" ");System.out.print( rs.s[0]); System.out.print(" ");System.out.print( rs.s[1]); System.out.print(" ");System.out.print( 0);System.out.print( 90);
-		g.drawArc(rs.s[0]/2, rs.s[1]/2, rs.s[0], rs.s[1], 0, 90);
-		//bounds.getMinX();
-
-
-		// Todo: Make enumeration out of this (parameter of direction)
-		for(vector2.Vector v=new vector2.Vector(0,(int)bounds.getMinY());v.s[1]<(int)bounds.getMaxY();v.AddAt(tileSize.s[1], 1))
-		{
-			for(v.s[0]=(int)bounds.getMinX();v.s[0]<(int)bounds.getMaxX();v.AddAt(tileSize.s[0], 0))
-			{
-				g.setColor(new Color(v.s[0] & 255, v.s[1] & 255, v.s[0] & 255));
-
-				g.fillRect(v.s[0], v.s[1], tileSize.s[0], tileSize.s[1]);
-			}			
-		}
-
-		for (int i = 0; i < tiles.vImg.length; i++) {
-			VolatileImage vi = tiles.vImg[i];
-			do {	
-
-				int returnCode = vi.validate(getGraphicsConfiguration());
-				if (returnCode == VolatileImage.IMAGE_RESTORED) {
-					// Contents need to be restored
-					tiles.updateTile( this, i);      // restore contents
-				} else if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE) {
-					// old vImg doesn't work with new GraphicsConfig; re-create it
-					this.tiles=new Tiles(this.tileSize, this);
-					tiles.updateTile( this, i);  // only affected tiles!! New parameter! ToDo
-				}
-
-					for (int j = 0; j < 8; j++) {
-						this.flip((Graphics2D) g, vi,
-								new Vector((int) bounds.getMinX() + i * 16 ,
-										(int) bounds.getMinY() + j * 32), j);
-				}
-			} while (vi.contentsLost());
-		}
-		*/
-
-		// String
-		//((Graphics2D) g).setTransform( new AffineTransform(1,0,0,1,(int)bounds.getMinX(),(int)bounds.getMinY()));
-		//this.topLevelx=pos.x+432;
 		this.gForRec = g;
 		this.treepos = new Vector(pos.x, pos.y);
 		//this.drawTree( this.topLevelx + 2*this.tileSize.s[0],pos.y+48,Util.createSampleTree()); // root == frame window	
@@ -212,33 +143,7 @@ public class Frame extends JFrame implements Mapping {
 
 		// supplement links with layout info. For debugging the loop is in frame. Todo: Remove into test
 		while (this.link.hasNext()) {
-			int upsideDown = 2;
-			//LinkWith2Bends l=this.link.getPrevious();
-			LinkWith2Bends l = this.link.getNext(); // sideEffect: Calculation
-			/*
-			 Debug code: check calculaton: ToDo: Make  Junit test out of it
-			int[] ySorted=l.y.s.clone(); // should work for value type
-			// sort for top-down left-right drawing. Could have changed y++ to y-- otherwise.
-			if (ySorted[0]>ySorted[1]){
-				int t=ySorted[0];
-				ySorted[0]=ySorted[1];
-				ySorted[1]=t;
-				upsideDown=0;
-			}
-
-			System.out.println("Link at y: "+l.y.s[0]);
-			 drawLink(x+l.x.s[0] , j+l.y.s[0], false,
-						l.node, x+l.xRight,upsideDown);	
-			
-			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
-			for(int y=ySorted[0]+1;y<ySorted[1];y++){
-				drawVI(x+l.xRight, j+y, 3, 4); // 3,4 is a dupe from this.draw reference
-			}
-			this.shade ^= 2; // ToDo: A parameter after all? Hide hack in tiles!
-			
-			drawLink(x+l.x.s[1] , j+ l.y.s[1], false,
-						l.node.getValue(), x+ l.xRight, upsideDown);
-						*/
+			this.link.calculateNext(); // sideEffect: Calculation
 		}
 
 		Object[] ya = this.link.getY(); // as docu tells us, Collections.sort would do this anyway. May be useful
@@ -433,7 +338,7 @@ public class Frame extends JFrame implements Mapping {
 				if (node.isChicane()) {
 					drawVI(xi, y, 3, 2);
 				} else {
-					Iterator test = node.iterator();
+					Iterator<? extends NodeBase> test = node.iterator();
 					if (!test.hasNext()) {
 						drawVI(xi, y, 3, 2);
 					} else {
@@ -657,11 +562,6 @@ public class Frame extends JFrame implements Mapping {
 	private void flip(Graphics2D g, VolatileImage vi, Vector v, int f) {
 
 		AffineTransform backup = g.getTransform(); // TextOut wants a different rotation
-
-		int seamWidth = this.tiles.getSeamWidht(); // ToDo: Change into flag to indicate odd seamWidth
-
-		/*		g.drawImage(vi, v.s[0]+16,v.s[1], 32+v.s[0],v.s[1]+ 16, 0, 0, 16, 16, this);
-		 */
 
 		int[][] c = { { 0, 0, tileSize.s[0], tileSize.s[1] }, { 0, 0, 0, 0 } };
 		for (int i = 0; i < c[0].length; i++) {

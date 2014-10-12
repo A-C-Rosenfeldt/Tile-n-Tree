@@ -23,18 +23,14 @@ package adHocRouter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import tree.LayedOutPosition;
 import tree.MergingIterator;
 import tree.Node;
 import tree.NodeBase;
 import vector2.ClosedInterval;
 import vector2.Tupel;
-import vector2.Vector;
 
 public class LinksWith2Bends implements Link /*, LinkDebug */{
 	// public for debug. I certainly do not want a global "DEBUG" option. ToDo: set to private
@@ -197,10 +193,6 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 		return (LinkWith2Bends) this.ya[i];
 	}
 
-	private void setYa(int i, LinkWith2Bends v) {
-		this.ya[i] = (Object) v;
-	}
-
 	@Override
 	public void addLink(Tupel x, ClosedInterval y, Node node) {
 		this.y.add(new LinkWith2Bends(x, y, node));
@@ -264,7 +256,7 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 	// Just need to tell the starting point. End is known to node
 	// This implementation is meant as reference and documentation and thus abstains from recursive code and optimized interfaces
 	@Override
-	public LinkWith2Bends getNext() {
+	public LinkWith2Bends calculateNext() {
 		// Strange: Link( y:{23, 0}, x: {4, 0} xRight: 0)
 
 		// route around bedrock // ToDo: Use data that bubbles up in the tree

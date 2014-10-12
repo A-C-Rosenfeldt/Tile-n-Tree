@@ -18,7 +18,6 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 package frame;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Configuration extends JFrame {

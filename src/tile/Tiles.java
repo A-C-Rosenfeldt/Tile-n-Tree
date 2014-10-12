@@ -17,32 +17,20 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
  */
 package tile;
 
-import java.awt.Toolkit;
-import java.awt.image.ColorModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.image.VolatileImage;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.GraphicsEnvironment;
-import java.awt.GraphicsDevice;
-
-import vector2.RectSize;
-
 import java.awt.Window;
+import java.awt.image.VolatileImage;
 
 import rasterizer.MakeTheBestOfSwing;
+import vector2.RectSize;
 
 
 
 
 public class Tiles {
-
-	private ColorModel cm=null;
-	//private List<VolatileImage> a = new ArrayList<VolatileImage>();
 
 	public VolatileImage[] vImg; //=new VolatileImage();
 	private GraphicsConfiguration mgc;

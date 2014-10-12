@@ -17,8 +17,9 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 */
 package tree;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+
+
 
 /**
  * @author Arne Rosenfeldt
@@ -27,22 +28,19 @@ import java.util.Iterator;
 /**
 ToDo: Move a lot of code form frame and here
  */
-public class MergingIterator implements Iterator {
+public class MergingIterator implements Iterator<NodeBase> {
 	// references to persistent date
 	private Iterator<LayedOutPosition> layout;
-	private Node node;
-	private Node owningParent; // for instancing. My caller may no know it
 
 	// volatile
 
-	Iterator<Node>[] i;
-	private String title; // for debugging at least
-
+	Iterator<Node> value;
+	Iterator<Node> children;
 	// Iterator for pass1
 	// Layout iterator will be iterated in sync
-	public MergingIterator(Iterator<Node>[] i, String title, Iterator<LayedOutPosition> layout) {
-		this.i = i;
-		this.title = title;
+	public MergingIterator(Iterator<Node> value, Iterator<Node> children, String title, Iterator<LayedOutPosition> layout) {
+		this.value = value;
+		this.children = children;
 		this.layout = layout;
 	}
 
@@ -51,14 +49,14 @@ public class MergingIterator implements Iterator {
 	 */
 	@Override
 	public boolean hasNext() {
-		if (i[0].hasNext() || i[1].hasNext()) {
+		if (value.hasNext() || children.hasNext()) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Object next() {
+	public NodeBase next() {
 		return this.nextNode();
 	}
 
@@ -69,16 +67,16 @@ public class MergingIterator implements Iterator {
 		if (this.hasNext()) {
 			this.feedTrough = false;
 			NodeBase i_next;
-			if (i[0].hasNext()) {
-				i_next = new NodeInstance(i[0].next(), this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
-				if (i[1].hasNext()) {
-					i_next.setValue(i[1].next());
+			if (value.hasNext()) {
+				i_next = new NodeInstance(value.next(), this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
+				if (children.hasNext()) {
+					i_next.setValue(children.next());
 				}
 
 				return i_next;
 			} else {
 				this.feedTrough = true;
-				return i[1].next(); // feed through custom fields
+				return children.next(); // feed through custom fields
 			}
 
 		}

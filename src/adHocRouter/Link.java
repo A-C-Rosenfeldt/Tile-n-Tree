@@ -21,18 +21,15 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 package adHocRouter;
 
-import java.util.ArrayList;
-
 import tree.Node;
 import vector2.ClosedInterval;
 import vector2.Tupel;
-import vector2.Vector;
 
 public interface Link {
 	///public void addBedrock(int x);
 	
 	public void sort();
-	public LinkWith2Bends getNext();
+	public LinkWith2Bends calculateNext();
 	void addLink(Tupel x, ClosedInterval y, Node node);
 	// node is used to match these two calls
 	// indexed via y right now (more paint - centric)

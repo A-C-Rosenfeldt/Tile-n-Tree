@@ -18,7 +18,6 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 package rasterizer;
 
 import java.awt.BasicStroke;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 

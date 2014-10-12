@@ -47,10 +47,6 @@ public class infinitelyElemtensAfterEndIterator implements Iterator<LayedOutPosi
 		this.layout = layout;
 	}
 
-	private infinitelyElemtensAfterEndIterator() {
-		// Hide default
-	}
-
 	private Iterator<LayedOutPosition> iterator;
 
 	private boolean pastTheEnd = false;

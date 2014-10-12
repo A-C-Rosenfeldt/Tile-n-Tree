@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class Node extends NodeBase {
 
 	// Aggregation / persistent	
@@ -67,17 +68,12 @@ public class Node extends NodeBase {
 	// Version with ref return (and with Inline)
 	// No Covariance inside template brackets
 	@Override
-	public Iterator iterator() {
-		if (this.value == null || !this.InlineReferenced) {
+	public Iterator<? extends NodeBase> iterator() {
+		if (this.value == null ) {
 			return this.children.iterator();
 		}
-
-		// Merging only inside Node but not inside NodeSkeleton
-		// but (2nd) also for NodeSkeleton child!?
-		Iterator<Node>[] i = new Iterator[2];
-		i[0] = this.value.iterator(); // Values do themselves reference values => no real recursion, but turn to exit. Daisy chain needed for inheritance (test later! Is an advanced feature!)
-		i[1] = this.children.iterator(); // No endless loop
-		return new MergingIterator(i, this.title, this.layout.iterator());
+		
+		return new MergingIterator(this.value.children.iterator(), this.children.iterator(), this.title, this.layout.iterator());
 	}
 
 	public int getSwapCoordinates() {

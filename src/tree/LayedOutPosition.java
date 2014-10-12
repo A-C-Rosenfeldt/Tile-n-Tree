@@ -17,7 +17,6 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 */
 package tree;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,7 +28,7 @@ import vector2.Vector;
  * Only cached -- not persistent
  * ToDo: Duplicate need their own. Links?
  */
-public class LayedOutPosition implements Iterable{
+public class LayedOutPosition implements Iterable<LayedOutPosition>{
 	public Vector position; // center would be fair
 	public RectSize size; // no affected by move
 

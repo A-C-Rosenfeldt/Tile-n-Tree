@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
+
 /**
  * @author Arne Rosenfeldt
  *
@@ -33,7 +35,7 @@ public class NodeInstance extends NodeBase {
 	}
 
 	@Override
-	public Iterator iterator() {
+	public Iterator<? extends NodeBase> iterator() {
 		List<Node> list = new ArrayList<Node>();
 		list.add(this.value); // Degenerated
 		return list.iterator();

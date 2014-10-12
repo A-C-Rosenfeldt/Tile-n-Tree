@@ -17,7 +17,6 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
  */
 package tree;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Util {

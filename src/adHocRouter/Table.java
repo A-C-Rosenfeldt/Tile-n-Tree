@@ -1,7 +1,6 @@
 package adHocRouter;
 
 import java.util.ArrayList;
-import java.util.Deque;
 
 /* Copyright 2014   Arne Christian  Rosenfeldt
 

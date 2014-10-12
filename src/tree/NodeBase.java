@@ -17,19 +17,20 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 */
 package tree;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+
 
 /**
  * @author Arne Rosenfeldt
  * Iterable CoVariance does not work
  */
-public abstract class NodeBase implements Iterable {
+public abstract class NodeBase { // implements Iterable<NodeBase> {
 
 	protected String title;
 	protected Node value; // used! appears  stores values
 
+	public abstract Iterator<? extends NodeBase> iterator();
+	
 	// References
 	protected LayedOutPosition layout; // Position on 2D Screen.
 	

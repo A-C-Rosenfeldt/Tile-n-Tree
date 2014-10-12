@@ -17,8 +17,6 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
  */
 package tile;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 // Gather RGB layout from font rendered and captured
 // Robot().createScreenCapture ToDo: Expand interface
@@ -111,7 +109,6 @@ public class Tile {
 		int union=this.getBitmap() | that.getBitmap();
 		int transformation;
 		int shape=this.shape;
-		boolean found=false;
 		// reverse: Replace all function with arrays? shape[bitmap] and vice versa?
 		// negative numbers and bit logic are not defined in C
 		// (premature) optimize on shape and transformation stay the same, which makes operation asymmetric
