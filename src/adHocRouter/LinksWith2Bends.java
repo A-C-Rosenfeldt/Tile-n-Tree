@@ -31,6 +31,7 @@ import java.util.List;
 import tree.LayedOutPosition;
 import tree.MergingIterator;
 import tree.Node;
+import tree.NodeBase;
 import vector2.ClosedInterval;
 import vector2.Tupel;
 import vector2.Vector;
@@ -53,35 +54,46 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 
 	private int getBedrock(int y) {
 		this.findY = y;
-		return this.getBedrockInner(this.root, null);
+		return this.getBedrockInner(this.root);
 	}
 
 	private int findY;
 
-	private int getBedrockInner(Node node, LayedOutPosition layout) {
+	private int getBedrockInner(NodeBase node) {
 		// pass0/1: Frame.drawTreeInner   using Node.getChildrenWithInline();
 		// pass1/1: This (LinkWith2Bends.getBedrockInner)
 
+		/*
+		 Now moved into MergingIterator. <2014-10-19:
 		LayedOutPosition[] layoutChildren = new LayedOutPosition[2];
-		Node[] nodeChildren = new Node[2];
-
+		/*
+		 * 
+		 */
+		NodeBase[] nodeChildren = new Node[2];
+/*
 		// ToDo: Reduce to one iterator
 		Iterator<LayedOutPosition> layoutRef = null;
 		if (layout != null) {
 			layoutRef = layout.value_children.iterator();
 		}
 
-		Iterator<LayedOutPosition> layoutParent = node.layout.value_children.iterator();
-
+		///    Iterator<LayedOutPosition> layoutParent = node.getLayout().value_children.iterator();
+		*/
+		
 		// Not really forEach because I have to detect adopted children
 		// loop over persistent nodes
 		for (MergingIterator iterator = (MergingIterator) node.iterator(); iterator.hasNext();) {
+			nodeChildren[0] = (NodeBase) iterator.next();
+			nodeChildren[1] = null;
+			
+			/*
+			 * Now moved into MergingIterator. <2014-10-19:
 			nodeChildren[0] = (Node) iterator.next();
 
 			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
 			if (nodeChildren[0].getReferenceHistory() == 2) {
 				// owned by grand-parent. // ToDo: Make sure that grandparent is no dupe. History ends after 32 bits! Let bits stack up!
-				layoutChildren[0] = nodeChildren[0].layout;
+				layoutChildren[0] = nodeChildren[0].getLayout();
 			} else {
 
 				// some ancestor already got inlined
@@ -90,7 +102,7 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 				} else {
 
 					if (iterator.lastWasFeedthrough()) { // ToDo: Is lastWasAggregate. But then merging does not reduce count
-						layoutChildren[0] = nodeChildren[0].layout;
+						layoutChildren[0] = nodeChildren[0].getLayout();
 					} else {
 
 						// first generation Inline
@@ -98,13 +110,14 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 					}
 				}
 			}
+			*/
 
 			// Check, if two low. Nodes Positions are upper left corner (due to tree structure)
-			if (layoutChildren[0].position.s[1] == this.findY) {
-				return layoutChildren[0].position.s[0];
+			if (nodeChildren[0].getLayout().position.s[1] == this.findY) {
+				return nodeChildren[0].getLayout().position.s[0];
 			} else {
-				if (layoutChildren[0].position.s[1] > this.findY) {
-					return this.getBedrockInner(nodeChildren[1], layoutChildren[1]);
+				if (nodeChildren[0].getLayout().position.s[1] > this.findY) {
+					return this.getBedrockInner(nodeChildren[1]);
 				}
 			}
 

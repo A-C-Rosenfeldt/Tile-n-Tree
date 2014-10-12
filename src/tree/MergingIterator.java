@@ -29,19 +29,21 @@ ToDo: Move a lot of code form frame and here
  */
 public class MergingIterator implements Iterator {
 	// references to persistent date
-	private LayedOutPosition layout;
+	private Iterator<LayedOutPosition> layout;
 	private Node node;
 	private Node owningParent; // for instancing. My caller may no know it
-	
+
 	// volatile
-	
+
 	Iterator<Node>[] i;
 	private String title; // for debugging at least
 
 	// Iterator for pass1
-	
-	public MergingIterator(Iterator<Node>[] i, String title) {
+	// Layout iterator will be iterated in sync
+	public MergingIterator(Iterator<Node>[] i, String title, Iterator<LayedOutPosition> layout) {
 		this.i = i;
+		this.title = title;
+		this.layout = layout;
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +51,9 @@ public class MergingIterator implements Iterator {
 	 */
 	@Override
 	public boolean hasNext() {
-		if (i[0].hasNext() || i[1].hasNext()) { return true; }
+		if (i[0].hasNext() || i[1].hasNext()) {
+			return true;
+		}
 		return false;
 	}
 
@@ -57,6 +61,7 @@ public class MergingIterator implements Iterator {
 	public Object next() {
 		return this.nextNode();
 	}
+
 	/* (non-Javadoc)
 	 * @see java.util.Iterator#next()
 	 */
@@ -65,7 +70,7 @@ public class MergingIterator implements Iterator {
 			this.feedTrough = false;
 			NodeBase i_next;
 			if (i[0].hasNext()) {
-			   i_next = new NodeInstance(i[0].next());
+				i_next = new NodeInstance(i[0].next(), this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
 				if (i[1].hasNext()) {
 					i_next.setValue(i[1].next());
 				}
@@ -90,13 +95,12 @@ public class MergingIterator implements Iterator {
 	}
 
 	private boolean feedTrough;
-	
+
 	/*
 	 *  For pass two: where to attach the layout information to
 	 */
 	public boolean lastWasFeedthrough() {
 		return this.feedTrough;
 	}
-	
 
 }

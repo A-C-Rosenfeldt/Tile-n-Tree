@@ -34,16 +34,17 @@ public class Node extends NodeBase {
 	private int swapCoordinates = 0; // see  class Tiles  for definition (not yet fixed) 
 	private boolean chicane = false; //a special for tables
 
-	// References
-	private Node link; // unused! appears to the left 
 
+
+	private Node link; // unused! appears to the left 
+	
 	// replaced by Skeleton : private Node classObject; //unused! appears below as  T-junction
 	private boolean InlineReferenced; // read like  "Reference  is   inlined"
-
+	private int referenceHistory = 0; // for dupes	
+	
 	// Volatile (if null, can be regenerated. Set to null on compression, or for cheap regeneration (short links).
 	private Node valueOf; // internally every link is bidirectional  because otherwise the code has to search all the time  
-	private int referenceHistory = 0; // for dupes	
-
+	
 	public Node() {
 		this.children = new ArrayList<Node>();
 	}
@@ -76,7 +77,7 @@ public class Node extends NodeBase {
 		Iterator<Node>[] i = new Iterator[2];
 		i[0] = this.value.iterator(); // Values do themselves reference values => no real recursion, but turn to exit. Daisy chain needed for inheritance (test later! Is an advanced feature!)
 		i[1] = this.children.iterator(); // No endless loop
-		return new MergingIterator(i, this.title);
+		return new MergingIterator(i, this.title, this.layout.iterator());
 	}
 
 	public int getSwapCoordinates() {
@@ -122,11 +123,11 @@ public class Node extends NodeBase {
 	}
 
 	public int getReferenceHistory() {
-		return referenceHistory;
+		return this.referenceHistory;
 	}
 
 	public boolean isInlineReferenced() {
-		return InlineReferenced;
+		return this.InlineReferenced;
 	}
 
 	public void setInlineReferenced(boolean inlineReferenced) {
@@ -134,6 +135,8 @@ public class Node extends NodeBase {
 	}
 
 	public List<Node> getChildren() {
-		return children;
+		return this.children;
 	}
+
+
 }

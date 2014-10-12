@@ -29,18 +29,21 @@ public abstract class NodeBase implements Iterable {
 
 	protected String title;
 	protected Node value; // used! appears  stores values
-	public LayedOutPosition layout; // Position on 2D Screen. Duplicates!! With Links!!
 
-	public NodeBase() {
+	// References
+	protected LayedOutPosition layout; // Position on 2D Screen.
+	
+	// None of these constructors is suitable for NodeInstance
+	protected NodeBase() {
 		///ToDo: Initialize Children DataStructre new NodeBase();  Instance is degenerated in this respect
 	}
 
-	public NodeBase(String title) {
+	protected NodeBase(String title) {
 		this();
 		this.setTitle(title);
 	}
 
-	public NodeBase(NodeBase node) {
+	protected NodeBase(NodeBase node) {
 		this(node.title);
 		// Aggregation / persistent		
 
@@ -72,6 +75,11 @@ public abstract class NodeBase implements Iterable {
 
 	public abstract boolean isChicane();
 
-	/// Children is not a list in every sub-class. public abstract List<Node> getChildren();
+	public LayedOutPosition getLayout() {
+		return this.layout;
+	}
 
+	public void setLayout(LayedOutPosition layout) {
+		this.layout = layout;
+	}
 }

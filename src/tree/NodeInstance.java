@@ -27,7 +27,8 @@ import java.util.List;
  */
 public class NodeInstance extends NodeBase {
 
-	public NodeInstance(Node node) {
+	// Copy constructor, some info is copied from prototype, layout is copied from layout tree linked to first original parent
+	public NodeInstance(Node node, LayedOutPosition layout) {
 		super(node); // method needs to be inherited somewhere to exist
 	}
 
@@ -45,7 +46,7 @@ public class NodeInstance extends NodeBase {
 
 	@Override
 	public void setValue(Node value) {
-		// Java does not allow me to implement some of it in abstract class or so indirect error
+		// Java does not allow me to implement some of it in abstract class or so (indirect error)
 		this.value = value;
 	}
 
@@ -53,5 +54,4 @@ public class NodeInstance extends NodeBase {
 	public boolean isChicane() {
 		return false;
 	}
-
 }

@@ -505,7 +505,7 @@ public class Frame extends JFrame implements Mapping {
 			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
 			LayedOutPosition layoutChild = null;
 			if (node.getReferenceHistory() == 2) { // ToDo layout reference as parameter
-				node.layout = new LayedOutPosition(positionInGridcount);
+				node.setLayout(new LayedOutPosition(positionInGridcount));
 			}else{				
 				// some ancestor already got inlined
 				if (layout != null) {
@@ -513,9 +513,9 @@ public class Frame extends JFrame implements Mapping {
 					layout.value_children.add(layoutChild);
 				} else {
 					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
-						node.layout = new LayedOutPosition(positionInGridcount);
+						node.setLayout(new LayedOutPosition(positionInGridcount));
 					} else {
-						parent.layout.value_children.add(new LayedOutPosition(positionInGridcount));
+						parent.getLayout().value_children.add(new LayedOutPosition(positionInGridcount));
 					}
 				}
 			}

@@ -18,6 +18,7 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 package tree;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import vector2.RectSize;
@@ -28,14 +29,14 @@ import vector2.Vector;
  * Only cached -- not persistent
  * ToDo: Duplicate need their own. Links?
  */
-public class LayedOutPosition {
+public class LayedOutPosition implements Iterable{
 	public Vector position; // center would be fair
 	public RectSize size; // no affected by move
 
 	public Node value; // At instances each mirrored component needs to remember a reference to the value. For Links 
 	
 	///public LayedOutPosition parent;
-	public List<LayedOutPosition> value_children=new ArrayList<LayedOutPosition>();
+	public List<LayedOutPosition> value_children; //most of the time it is null and makes no sense. Therefor no zero size  .=new ArrayList<LayedOutPosition>();
 
 	public LayedOutPosition(Vector position) { ///, LayedOutPosition parent) {
 		this.position = position;
@@ -44,5 +45,9 @@ public class LayedOutPosition {
 
 	public LayedOutPosition() {
 		// Create skeleton to connect instance components to owner
+	}
+
+	public Iterator<LayedOutPosition> iterator() {		
+		return new infinitelyElemtensAfterEndIterator(this); // ToDo: this as argument looks strange (at least this is no lock)
 	}
 }
