@@ -83,4 +83,9 @@ public abstract class NodeBase { // implements Iterable<NodeBase> {
 	public void setLayout(LayedOutPosition layout) {
 		this.layout = layout;
 	}
+
+	public NodeBase getValueOf() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

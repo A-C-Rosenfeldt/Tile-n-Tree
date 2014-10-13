@@ -32,6 +32,7 @@ public class NodeInstance extends NodeBase {
 	// Copy constructor, some info is copied from prototype, layout is copied from layout tree linked to first original parent
 	public NodeInstance(Node node, LayedOutPosition layout) {
 		super(node); // method needs to be inherited somewhere to exist
+		this.layout = layout;
 	}
 
 	@Override

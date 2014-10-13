@@ -194,7 +194,7 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 	}
 
 	@Override
-	public void addLink(Tupel x, ClosedInterval y, Node node) {
+	public void addLink(Tupel x, ClosedInterval y, NodeBase node) {
 		this.y.add(new LinkWith2Bends(x, y, node));
 	}
 
@@ -358,7 +358,7 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 
 	// ToDo: Optimize  Tree  or  if really necessary: hash
 	@Override
-	public LinkWith2Bends get(Node node) {
+	public LinkWith2Bends get(NodeBase node) {
 		if (this.y != null)
 			for (Object linkWith2Bends : this.y) {
 				if (((LinkWith2Bends) linkWith2Bends).node == node) {

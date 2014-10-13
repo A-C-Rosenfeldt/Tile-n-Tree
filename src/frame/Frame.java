@@ -46,7 +46,6 @@ import tile.Tile;
 import tile.Tiles;
 import tree.Buffer;
 import tree.LayedOutPosition;
-import tree.MergingIterator;
 import tree.Node;
 import tree.NodeBase;
 import tree.Util;
@@ -237,13 +236,13 @@ public class Frame extends JFrame implements Mapping {
 	private Link link; // links are less local than table-headers
 
 	// Todo: less parameters!
-	private Tupel drawTree(int x_anchor, int y, Node current, boolean linkPasses, /*int x_min, int x_min2*/Buffer links, int trans, Table table, LayedOutPosition layout) throws Exception {
+	private Tupel drawTree(int x_anchor, int y, NodeBase node, boolean linkPasses, /*int x_min, int x_min2*/Buffer links, int trans, Table table, LayedOutPosition layout) throws Exception {
 		Tupel t = new Tupel(x_anchor, y);
-		if ((current.getSwapCoordinates() & 4) > 0) {
+		if ((node.getSwapCoordinates() & 4) > 0) {
 			this.shade = 0;
 			this.transformation = trans;
 			int xi = x_anchor;
-			if (!current.isChicane()) {
+			if (!node.isChicane()) {
 				drawVI(xi, y, 3, 2);
 				xi--;
 				drawVI(xi, y, 3, 2);
@@ -256,7 +255,7 @@ public class Frame extends JFrame implements Mapping {
 
 			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
 
-			t = drawTreeInner(y + 2 - (current.isChicane() ? 3 : 0), x_anchor + 1, current, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ current.getSwapCoordinates(), current.isChicane(), table, layout);
+			t = drawTreeInner(y + 2 - (node.isChicane() ? 3 : 0), x_anchor + 1, node, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ node.getSwapCoordinates(), node.isChicane(), table);
 
 			this.transformation = trans;
 			int x3 = xi;
@@ -291,11 +290,11 @@ public class Frame extends JFrame implements Mapping {
 			return new Tupel(x_anchor, t.s[0]);
 		} else {
 			//System.out.println("Y is: "+y);
-			return drawTreeInner(x_anchor, y, current, linkPasses, links /*x_min, x_min2*/, trans, current.isChicane(), table, layout);
+			return drawTreeInner(x_anchor, y, node, linkPasses, links /*x_min, x_min2*/, trans, node.isChicane(), table);
 		}
 	}
 
-	private Tupel drawTreeInner(int x_anchor, int y, Node parent, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table, LayedOutPosition layout) throws Exception {
+	private Tupel drawTreeInner(int x_anchor, int y, NodeBase node2, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table) throws Exception {
 		// ToDo: One Call for layout and a second one for draw (text). Make two pass optional für debugging purpose
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 		//Node switchToOwn=parent.getChildren().get(0); // Value comes before children.
@@ -304,8 +303,8 @@ public class Frame extends JFrame implements Mapping {
 		int x_max = x_anchor;
 
 		// ToDo: Remove cast
-		for (MergingIterator iterator = (MergingIterator) parent.iterator(); iterator.hasNext();) {
-			Node node = (Node) iterator.next();
+		for (Iterator <? extends NodeBase> iterator = node2.iterator(); iterator.hasNext();) {
+			NodeBase node =  iterator.next();
 
 			//			// References are okay as these are copied within the current RAM just some time before
 			//			if (node == switchToOwn){
@@ -407,27 +406,27 @@ public class Frame extends JFrame implements Mapping {
 				positionInGridcount = new Vector(y, x_anchor + 1);
 			}
 
-			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
-			LayedOutPosition layoutChild = null;
-			if (node.getReferenceHistory() == 2) { // ToDo layout reference as parameter
-				node.setLayout(new LayedOutPosition(positionInGridcount));
-			}else{				
-				// some ancestor already got inlined
-				if (layout != null) {
-					layoutChild = new LayedOutPosition(positionInGridcount);
-					layout.value_children.add(layoutChild);
-				} else {
-					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
-						node.setLayout(new LayedOutPosition(positionInGridcount));
-					} else {
-						parent.getLayout().value_children.add(new LayedOutPosition(positionInGridcount));
-					}
-				}
-			}
+//			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
+//			LayedOutPosition layoutChild = null;
+//			if (node.getReferenceHistory() == 2) { // ToDo layout reference as parameter
+//				node.setLayout(new LayedOutPosition(positionInGridcount));
+//			}else{				
+//				// some ancestor already got inlined
+//				if (layout != null) {
+//					layoutChild = new LayedOutPosition(positionInGridcount);
+//					layout.value_children.add(layoutChild);
+//				} else {
+//					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
+//						node.setLayout(new LayedOutPosition(positionInGridcount));
+//					} else {
+//						parent.getLayout().value_children.add(new LayedOutPosition(positionInGridcount));
+//					}
+//				}
+//			}
 
 			Vector positionInPixel = new Vector(this.treepos, this.tileSize, positionInGridcount);
 
-			this.gForRec.drawString(node.getTitle() + " " + (node.getReferenceHistory() != 0 ? node.getReferenceHistory() : ""), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3); // May flicker without doubleBuffering
+			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString() ), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
 				if (!iterator.hasNext()) { //i + 1 == nodes.size()) {
@@ -464,7 +463,7 @@ public class Frame extends JFrame implements Mapping {
 
 			// store gaps  due to "group names" for other header
 			table.add();
-			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, layoutChild);
+			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, node.getLayout());
 
 			y = t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
 			x_max = Math.max(x_max, t.s[0]);
@@ -474,7 +473,7 @@ public class Frame extends JFrame implements Mapping {
 	}
 
 	// ToDo: UnitTest that there are no dangling bonds!
-	private boolean drawLink(int x_anchor, int y, boolean linkPasses, Node node, int xRight, int upsideDown) {
+	private boolean drawLink(int x_anchor, int y, boolean linkPasses, NodeBase node, int xRight, int upsideDown) {
 		int xi;
 		// references. ToDo: Call adHocRouter
 

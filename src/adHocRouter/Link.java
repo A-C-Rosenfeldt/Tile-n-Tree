@@ -21,7 +21,7 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 package adHocRouter;
 
-import tree.Node;
+import tree.NodeBase;
 import vector2.ClosedInterval;
 import vector2.Tupel;
 
@@ -30,11 +30,11 @@ public interface Link {
 	
 	public void sort();
 	public LinkWith2Bends calculateNext();
-	void addLink(Tupel x, ClosedInterval y, Node node);
+	void addLink(Tupel x, ClosedInterval y, NodeBase node);
 	// node is used to match these two calls
 	// indexed via y right now (more paint - centric)
 	
-	public  LinkWith2Bends get(Node node); // Needed for completion of y
+	public  LinkWith2Bends get(NodeBase node); // Needed for completion of y
 
 	public boolean hasNext();
 
@@ -47,6 +47,7 @@ public interface Link {
 	void sort(boolean moveToEnd);
 
 	Object[] getY();
+
 
 
 

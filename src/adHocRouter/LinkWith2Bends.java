@@ -21,7 +21,7 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 package adHocRouter;
 
-import tree.Node;
+import tree.NodeBase;
 import vector2.ClosedInterval;
 import vector2.Tupel;
 
@@ -30,12 +30,12 @@ public class LinkWith2Bends {
 	public ClosedInterval y;
 	public Tupel x;
 	public Integer xRight;
-	public Node node;
+	public NodeBase node;
 
-	public LinkWith2Bends(Tupel x, ClosedInterval y2, Node node) {
+	public LinkWith2Bends(Tupel x, ClosedInterval y2, NodeBase node2) {
 		this.x=x;
 		this.y=y2;
-		this.node=node;
+		this.node=node2;
 	}
 	
 	public void setDestination(int x_anchor, int y){

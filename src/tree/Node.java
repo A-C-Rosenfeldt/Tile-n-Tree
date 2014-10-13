@@ -48,10 +48,11 @@ public class Node extends NodeBase {
 	
 	public Node() {
 		this.children = new ArrayList<Node>();
+		this.layout = new LayedOutPosition();
 	}
 
 	public Node(Node node) {
-			
+		this();	
 		this.swapCoordinates = node.swapCoordinates; // see  class Tiles  for definition (not yet fixed) 
 		this.chicane = node.chicane; //a special for tables
 
@@ -63,6 +64,7 @@ public class Node extends NodeBase {
 
 	public Node(String string) {
 		/// implicit: super(string); // ToDo: Test 
+		this();
 	}
 
 	// Version with ref return (and with Inline)
@@ -73,7 +75,7 @@ public class Node extends NodeBase {
 			return this.children.iterator();
 		}
 		
-		return new MergingIterator(this.value.children.iterator(), this.children.iterator(), this.title, this.layout.iterator());
+		return new MergingIterator(this.value.children.iterator(), this.children.iterator(), this.title, this.layout.iterator()); // Bug: This layout is null
 	}
 
 	public int getSwapCoordinates() {
