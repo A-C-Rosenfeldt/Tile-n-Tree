@@ -27,9 +27,9 @@ import java.util.Iterator;
 public abstract class NodeBase { // implements Iterable<NodeBase> {
 
 	protected String title;
-	protected Node value; // used! appears  stores values
+	protected Node value; // used! appears  stores values.  ToDo: Base for complex types
 
-	public abstract Iterator<? extends NodeBase> iterator();
+	public abstract MergingIterator iterator();  // MergingIterator implements iterator<NodeBase>. It is thus a subtype and could be casted, but I got runtime errors and have to debug/assert sortof
 	
 	// References
 	protected LayedOutPosition layout; // Position on 2D Screen.
@@ -72,7 +72,7 @@ public abstract class NodeBase { // implements Iterable<NodeBase> {
 	}
 
 	// Interface to tree layout
-	public abstract void setValue(Node value);
+	public abstract void setValue(NodeBase nodeBase);
 
 	public abstract boolean isChicane();
 

@@ -29,7 +29,7 @@ import java.util.List;
 public class Node extends NodeBase {
 
 	// Aggregation / persistent	
-	private List<Node> children; // NodeSkeleton Objects are returned by MergeIterator, but not referenced here
+	private List<NodeBase> children; // should only contain is <Node>. ToDo: Test // NodeSkeleton Objects are returned by MergeIterator, but not referenced here
 	// needed for tables. Useful for layout
 	//private ArrayList<Node> childrenSwapCoordinates=new ArrayList<Node>();
 	private int swapCoordinates = 0; // see  class Tiles  for definition (not yet fixed) 
@@ -47,7 +47,7 @@ public class Node extends NodeBase {
 	private Node valueOf; // internally every link is bidirectional  because otherwise the code has to search all the time  
 	
 	public Node() {
-		this.children = new ArrayList<Node>();
+		this.children = new ArrayList<NodeBase>();
 		this.layout = new LayedOutPosition();
 	}
 
@@ -70,9 +70,10 @@ public class Node extends NodeBase {
 	// Version with ref return (and with Inline)
 	// No Covariance inside template brackets
 	@Override
-	public Iterator<? extends NodeBase> iterator() {
+	public MergingIterator iterator() {
 		if (this.value == null ) {
-			return this.children.iterator();
+			return new MergingIterator(null, this.children.iterator(), this.title, this.layout.iterator()); // What works
+			// What is meant, but leads to unsafe casts:  return this.children.iterator();
 		}
 		
 		return new MergingIterator(this.value.children.iterator(), this.children.iterator(), this.title, this.layout.iterator()); // Bug: This layout is null
@@ -98,9 +99,9 @@ public class Node extends NodeBase {
 		return value;
 	}
 
-	public void setValue(Node value) {
-		value.valueOf = this;
-		this.value = value;
+	public void setValue(NodeBase value) {
+		((Node) value).valueOf = this; // Being value of InstanceNode should not be remembered. Look up contract: Hierarchy is carried by LayedOutPosition
+		this.value = (Node)value;
 	}
 
 	public void setValueDoNotNotify(Node value) {
@@ -132,8 +133,13 @@ public class Node extends NodeBase {
 		InlineReferenced = inlineReferenced;
 	}
 
-	public List<Node> getChildren() {
+	public List<NodeBase> getChildren() {
 		return this.children;
+	}
+
+	public List<Integer> getBedrock() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

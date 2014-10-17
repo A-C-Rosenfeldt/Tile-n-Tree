@@ -131,6 +131,8 @@ public class Frame extends JFrame implements Mapping {
 	// ToDo: Transformation (as default in Swing, OpenGl ..)
 	private void drawLinks(int x, int j) throws Exception {
 		List<Integer> b = ((LinkDebug) this.link).getBedrock();
+
+		
 		// to place text labels in front   draw backwards
 		for (int y = b.size() - 1; y >= 0; y--) {
 			this.drawVI(b.get(y) + x, y + j, 0, 0);
@@ -303,9 +305,13 @@ public class Frame extends JFrame implements Mapping {
 		int x_max = x_anchor;
 
 		// ToDo: Remove cast
-		for (Iterator <? extends NodeBase> iterator = node2.iterator(); iterator.hasNext();) {
-			NodeBase node =  iterator.next();
-
+		for (Iterator <NodeBase> iterator = node2.iterator(); iterator.hasNext();) {
+			NodeBase node =  iterator.next(); // Bug: Can be null although hasNext == true
+			
+			if (node==null){
+				throw new NullPointerException("Iterator given by NodeInstance is to blame");
+			}
+			
 			//			// References are okay as these are copied within the current RAM just some time before
 			//			if (node == switchToOwn){
 			//				ownChildren = true;
@@ -337,7 +343,7 @@ public class Frame extends JFrame implements Mapping {
 				if (node.isChicane()) {
 					drawVI(xi, y, 3, 2);
 				} else {
-					Iterator<? extends NodeBase> test = node.iterator();
+					Iterator<NodeBase> test = node.iterator();
 					if (!test.hasNext()) {
 						drawVI(xi, y, 3, 2);
 					} else {
@@ -398,12 +404,12 @@ public class Frame extends JFrame implements Mapping {
 				///this.link.addBedrock(x_anchor,y); // < 2014-10-06
 				// >= 2014-10-07
 				// ToDo: Add a new list. Prototype and owner are connected by value, but none has a list for multiple children. I vote for a new list for the owner ... owner.layoutNode!
-				positionInGridcount = new Vector(x_anchor, y + 1);
+				positionInGridcount = new Vector(x_anchor, y ); // y+1 ??
 
 			} else {
 				///this.link.addBedrock(y,x_anchor); // < 2014-10-06
 				// >= 2014-10-07
-				positionInGridcount = new Vector(y, x_anchor + 1);
+				positionInGridcount = new Vector(y, x_anchor ); // x_anchor + 1 ??
 			}
 
 //			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
@@ -413,8 +419,8 @@ public class Frame extends JFrame implements Mapping {
 //			}else{				
 //				// some ancestor already got inlined
 //				if (layout != null) {
-//					layoutChild = new LayedOutPosition(positionInGridcount);
-//					layout.value_children.add(layoutChild);
+//					layoutChild = ;
+					node.setLayout(new LayedOutPosition(positionInGridcount));
 //				} else {
 //					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
 //						node.setLayout(new LayedOutPosition(positionInGridcount));
@@ -465,7 +471,7 @@ public class Frame extends JFrame implements Mapping {
 			table.add();
 			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, node.getLayout());
 
-			y = t.s[1];///System.out.println("Y is. "+y); // Bug: y is to large sometimes
+			y = t.s[1];///System.out.println("Y is. "+y); // Bug: y is too large sometimes
 			x_max = Math.max(x_max, t.s[0]);
 		}
 
@@ -477,7 +483,7 @@ public class Frame extends JFrame implements Mapping {
 		int xi;
 		// references. ToDo: Call adHocRouter
 
-		System.out.println("x_anchor: " + x_anchor);
+//		System.out.println("x_anchor: " + x_anchor);
 		this.shade ^= 2; // ToDo: A parameter after all? Hide hack in
 							// tiles!
 		xi = xRight;

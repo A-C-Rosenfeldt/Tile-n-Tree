@@ -34,13 +34,13 @@ public class MergingIterator implements Iterator<NodeBase> {
 
 	// volatile
 
-	Iterator<Node> value;
-	Iterator<Node> children;
+	Iterator<NodeBase> value;
+	Iterator<NodeBase> children;
 	// Iterator for pass1
 	// Layout iterator will be iterated in sync
-	public MergingIterator(Iterator<Node> value, Iterator<Node> children, String title, Iterator<LayedOutPosition> layout) {
-		this.value = value;
-		this.children = children;
+	public MergingIterator(Iterator<NodeBase> iterator, Iterator<NodeBase> iterator2, String title, Iterator<LayedOutPosition> layout) {
+		this.value = iterator;
+		this.children = iterator2;
 		this.layout = layout;
 	}
 
@@ -49,10 +49,7 @@ public class MergingIterator implements Iterator<NodeBase> {
 	 */
 	@Override
 	public boolean hasNext() {
-		if (value.hasNext() || children.hasNext()) {
-			return true;
-		}
-		return false;
+		return (value != null && value.hasNext()) || (children!= null && children.hasNext());
 	}
 
 	@Override
@@ -67,7 +64,7 @@ public class MergingIterator implements Iterator<NodeBase> {
 		if (this.hasNext()) {
 			this.feedTrough = false;
 			NodeBase i_next;
-			if (value.hasNext()) {
+			if (value != null && value.hasNext()) {
 				i_next = new NodeInstance(value.next(), this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
 				if (children.hasNext()) {
 					i_next.setValue(children.next());

@@ -32,7 +32,7 @@ import tree.NodeBase;
 import vector2.ClosedInterval;
 import vector2.Tupel;
 
-public class LinksWith2Bends implements Link /*, LinkDebug */{
+public class LinksWith2Bends implements Link, LinkDebug {
 	// public for debug. I certainly do not want a global "DEBUG" option. ToDo: set to private
 	/*	public ArrayList<Integer> bedrock= new ArrayList<Integer>();
 
@@ -41,6 +41,7 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 		}*/
 
 	public LinksWith2Bends(Node root) {
+		assert(root != null);
 		this.root = root;
 	}
 
@@ -50,12 +51,14 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 
 	private int getBedrock(int y) {
 		this.findY = y;
+		assert this.root!=null;
 		return this.getBedrockInner(this.root);
 	}
 
 	private int findY;
 
 	private int getBedrockInner(NodeBase node) {
+		
 		// pass0/1: Frame.drawTreeInner   using Node.getChildrenWithInline();
 		// pass1/1: This (LinkWith2Bends.getBedrockInner)
 
@@ -66,22 +69,28 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 		 * 
 		 */
 		NodeBase[] nodeChildren = new Node[2];
-/*
-		// ToDo: Reduce to one iterator
-		Iterator<LayedOutPosition> layoutRef = null;
-		if (layout != null) {
-			layoutRef = layout.value_children.iterator();
-		}
+		/*
+				// ToDo: Reduce to one iterator
+				Iterator<LayedOutPosition> layoutRef = null;
+				if (layout != null) {
+					layoutRef = layout.value_children.iterator();
+				}
 
-		///    Iterator<LayedOutPosition> layoutParent = node.getLayout().value_children.iterator();
-		*/
-		
+				///    Iterator<LayedOutPosition> layoutParent = node.getLayout().value_children.iterator();
+				*/
+
 		// Not really forEach because I have to detect adopted children
 		// loop over persistent nodes
-		for (MergingIterator iterator = (MergingIterator) node.iterator(); iterator.hasNext();) {
+		
+		assert(node != null);
+		MergingIterator iterator =  node.iterator();
+		
+		assert iterator != null ;
+		
+		for (; iterator.hasNext();) {
 			nodeChildren[0] = (NodeBase) iterator.next();
 			nodeChildren[1] = null;
-			
+
 			/*
 			 * Now moved into MergingIterator. <2014-10-19:
 			nodeChildren[0] = (Node) iterator.next();
@@ -109,11 +118,26 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 			*/
 
 			// Check, if two low. Nodes Positions are upper left corner (due to tree structure)
+			
+//			System.out.println(nodeChildren);
+//			System.out.println(nodeChildren[0]);
+//			System.out.println("this is null"+nodeChildren[0].getLayout());
+//			System.out.println(nodeChildren[0].getLayout().position.toString());
+//			System.out.println(nodeChildren[0].getLayout().position.s[1]);			
+			
+			System.out.println((new Integer(this.findY)).toString()+" = "+((Integer)nodeChildren[0].getLayout().position.s[1]).toString());
 			if (nodeChildren[0].getLayout().position.s[1] == this.findY) {
 				return nodeChildren[0].getLayout().position.s[0];
 			} else {
+				System.out.println((new Integer(this.findY)).toString()+" < "+((Integer)nodeChildren[0].getLayout().position.s[1]).toString());
 				if (nodeChildren[0].getLayout().position.s[1] > this.findY) {
-					return this.getBedrockInner(nodeChildren[1]);
+					//assert nodeChildren[1] != null;  future 
+					if (nodeChildren[1] == null){
+						return -1;
+					}else{
+						return this.getBedrockInner(nodeChildren[1]);	
+					}
+					
 				}
 			}
 
@@ -150,7 +174,22 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 		}
 		*/
 
+		///return null; // iterator version. Error: Cannot convert from null to int
 		throw new ArrayIndexOutOfBoundsException(); // carried over from Array implementation of bedrock
+	}
+
+	@Override
+	public List<Integer> getBedrock() {
+		List<Integer> l = new ArrayList<Integer>(); // Maybe an iterator would be as good
+		// ToDo: Use this to test the method above (instead of building a new iterator. It is part of the debug interface after all!
+		for (int y = 0; y < 100; y++) { //safety first
+			try {
+				l.add(this.getBedrock(y));
+			} catch (ArrayIndexOutOfBoundsException e) { // this is debug code, not production code. No good alternative known.
+				break;
+			}
+		}
+		return l; // ToDo: Link to Tree
 	}
 
 	//	@layoutChildren//	public void addBedrock(layoutChildren//		bedrock.add(x);
@@ -367,11 +406,6 @@ public class LinksWith2Bends implements Link /*, LinkDebug */{
 			}
 		return null;
 	}
-
-	//	@Override
-	//	public List<Integer> getBedrock() {
-	//		return this.bedrock;
-	//	}
 
 	@Override
 	public boolean hasNext() {

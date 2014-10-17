@@ -48,7 +48,7 @@ public class Util {
 		secondBranch.getChildren().add(new Node("baz"));		
 		location.getChildren().add(secondBranch);
 		
-		List<Node> s=time.getChildren();
+		List<NodeBase> s=time.getChildren();
 		Node unitOfTime;
 		
 		s.add(new Node("Sa"));

@@ -21,6 +21,8 @@ along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
 
 package adHocRouter;
 
+import java.util.List;
+
 import tree.NodeBase;
 import vector2.ClosedInterval;
 import vector2.Tupel;
@@ -48,7 +50,7 @@ public interface Link {
 
 	Object[] getY();
 
-
+	
 
 
 }

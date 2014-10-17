@@ -30,16 +30,20 @@ import java.util.List;
 public class NodeInstance extends NodeBase {
 
 	// Copy constructor, some info is copied from prototype, layout is copied from layout tree linked to first original parent
-	public NodeInstance(Node node, LayedOutPosition layout) {
-		super(node); // method needs to be inherited somewhere to exist
+	public NodeInstance(NodeBase nodeBase, LayedOutPosition layout) {
+		super(nodeBase); // method needs to be inherited somewhere to exist
 		this.layout = layout;
 	}
 
 	@Override
-	public Iterator<? extends NodeBase> iterator() {
-		List<Node> list = new ArrayList<Node>();
-		list.add(this.value); // Degenerated
-		return list.iterator();
+	public MergingIterator iterator() {
+		List<NodeBase> list = new ArrayList<NodeBase>();
+		if (this.value != null){
+			list.add(this.value); // Degenerated
+		}
+		
+		return new MergingIterator(null, list.iterator(), this.title, this.layout.iterator()); // What works
+		// What is meant, but leads to unsafe casts: return list.iterator();
 	}
 
 	@Override
@@ -48,9 +52,9 @@ public class NodeInstance extends NodeBase {
 	}
 
 	@Override
-	public void setValue(Node value) {
+	public void setValue(NodeBase value) {
 		// Java does not allow me to implement some of it in abstract class or so (indirect error)
-		this.value = value;
+		this.value = (Node) value;
 	}
 
 	@Override
