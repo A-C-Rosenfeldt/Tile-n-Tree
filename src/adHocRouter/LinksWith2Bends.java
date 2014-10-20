@@ -68,7 +68,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		/*
 		 * 
 		 */
-		NodeBase[] nodeChildren = new Node[2];
+		NodeBase[] nodeChildren = new NodeBase[2];
 		/*
 				// ToDo: Reduce to one iterator
 				Iterator<LayedOutPosition> layoutRef = null;
@@ -86,10 +86,23 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		MergingIterator iterator =  node.iterator();
 		
 		assert iterator != null ;
+		nodeChildren[1] = null;
 		
 		for (; iterator.hasNext();) {
 			nodeChildren[0] = (NodeBase) iterator.next();
-			nodeChildren[1] = null;
+			if (nodeChildren[0]== null){
+				continue;
+			}
+
+			if (nodeChildren[0].getLayout()== null){
+				continue;
+			}
+			
+			if (nodeChildren[0].getLayout().position== null){
+				continue;
+			}
+			
+			
 
 			/*
 			 * Now moved into MergingIterator. <2014-10-19:
@@ -135,6 +148,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 					if (nodeChildren[1] == null){
 						return -1;
 					}else{
+						System.out.println(" inner Rekursion:"+nodeChildren[1].getTitle());
 						return this.getBedrockInner(nodeChildren[1]);	
 					}
 					
@@ -145,6 +159,14 @@ public class LinksWith2Bends implements Link, LinkDebug {
 			//layoutChildren[1] = layoutChildren[0];n
 		}
 
+		// ToDo: This could have been found by some unit-Test (that needs a tree, and a layout.buffer.equals function ...) :
+		if (nodeChildren[1] == null){
+			return -1;
+		}else{
+			System.out.println(" after Rekursion:"+nodeChildren[1].getTitle());
+			return this.getBedrockInner(nodeChildren[1]);	
+		}
+		
 		/*
 		// Value first (ToDo: Define this at a single place)
 
@@ -175,7 +197,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		*/
 
 		///return null; // iterator version. Error: Cannot convert from null to int
-		throw new ArrayIndexOutOfBoundsException(); // carried over from Array implementation of bedrock
+	//	throw new ArrayIndexOutOfBoundsException(); // carried over from Array implementation of bedrock
 	}
 
 	@Override
