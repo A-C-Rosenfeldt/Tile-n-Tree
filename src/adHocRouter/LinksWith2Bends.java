@@ -91,14 +91,17 @@ public class LinksWith2Bends implements Link, LinkDebug {
 		for (; iterator.hasNext();) {
 			nodeChildren[0] = (NodeBase) iterator.next();
 			if (nodeChildren[0]== null){
+				System.out.println("- Child null");
 				continue;
 			}
 
 			if (nodeChildren[0].getLayout()== null){
+				System.out.println("- Layout null");
 				continue;
 			}
 			
 			if (nodeChildren[0].getLayout().position== null){
+				System.out.println("- position null");
 				continue;
 			}
 			

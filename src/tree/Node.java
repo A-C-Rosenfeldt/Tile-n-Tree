@@ -48,7 +48,7 @@ public class Node extends NodeBase {
 	
 	public Node() {
 		this.children = new ArrayList<NodeBase>();
-		this.layout = new LayedOutPosition();
+		///this.layout = new LayedOutPosition();
 	}
 
 	public Node(Node node) {
@@ -72,11 +72,11 @@ public class Node extends NodeBase {
 	@Override
 	public MergingIterator iterator() {
 		if (this.value == null ) {
-			return new MergingIterator(null, this.children.iterator(), this.title, this.layout.iterator()); // What works
+			return new MergingIterator(null, this.children.iterator(), this.title); // What works
 			// What is meant, but leads to unsafe casts:  return this.children.iterator();
 		}
 		
-		return new MergingIterator(this.value.children.iterator(), this.children.iterator(), this.title, this.layout.iterator()); // Bug: This layout is null
+		return new MergingIterator(this.value.children.iterator(), this.children.iterator(), this.title); // Bug: This layout is null
 	}
 
 	public int getSwapCoordinates() {

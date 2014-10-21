@@ -25,14 +25,14 @@ import java.util.List;
 
 /**
  * @author Arne Rosenfeldt
- *
+ * Not persistent, but otherwise full blown. I make the view data have a finite lifetime.
  */
 public class NodeInstance extends NodeBase {
 
 	// Copy constructor, some info is copied from prototype, layout is copied from layout tree linked to first original parent
-	public NodeInstance(NodeBase nodeBase, LayedOutPosition layout) {
+	public NodeInstance(NodeBase nodeBase) { ///, LayedOutPosition layout) {
 		super(nodeBase); // method needs to be inherited somewhere to exist
-		this.layout = layout;
+		///this.layout = layout;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class NodeInstance extends NodeBase {
 			list.add(this.value); // Degenerated
 		}
 		
-		return new MergingIterator(null, list.iterator(), this.title, this.layout.iterator()); // What works
+		return new MergingIterator(null, list.iterator(), this.title); ///, this.layout.iterator()); // What works
 		// What is meant, but leads to unsafe casts: return list.iterator();
 	}
 

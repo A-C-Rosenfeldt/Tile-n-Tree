@@ -14,23 +14,23 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Tile'n'Tree.  If not, see <http://www.gnu.org/licenses/>.
-*/
+
 package tree;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
+*//**
  * @author Arne Rosenfeldt
  *
- */
+ *//*
 public class infinitelyElemtensAfterEndIterator implements Iterator<LayedOutPosition> {
 
 	private int safetyFirst = 100;
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see java.util.Iterator#hasNext()
-	 */
+	 
 	@Override
 	public boolean hasNext() {
 		if (safetyFirst <= 0) {
@@ -51,9 +51,11 @@ public class infinitelyElemtensAfterEndIterator implements Iterator<LayedOutPosi
 
 	private boolean pastTheEnd = false;
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see java.util.Iterator#next()
-	 */
+	 * 
+	 * ToDo: Move to node. Looks like Merging Iterator.
+	 
 	@Override
 	public LayedOutPosition next() {
 		// ToDo: Move some of this into constructor
@@ -83,12 +85,13 @@ public class infinitelyElemtensAfterEndIterator implements Iterator<LayedOutPosi
 		return t;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see java.util.Iterator#remove()
-	 */
+	 
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
 }
+*/

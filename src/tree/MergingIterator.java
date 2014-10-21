@@ -30,7 +30,7 @@ ToDo: Move a lot of code form frame and here
  */
 public class MergingIterator implements Iterator<NodeBase> {
 	// references to persistent date
-	private Iterator<LayedOutPosition> layout;
+	///private Iterator<LayedOutPosition> layout;
 
 	// volatile
 
@@ -38,10 +38,10 @@ public class MergingIterator implements Iterator<NodeBase> {
 	Iterator<NodeBase> children;
 	// Iterator for pass1
 	// Layout iterator will be iterated in sync
-	public MergingIterator(Iterator<NodeBase> iterator, Iterator<NodeBase> iterator2, String title, Iterator<LayedOutPosition> layout) {
+	public MergingIterator(Iterator<NodeBase> iterator, Iterator<NodeBase> iterator2, String title) {
 		this.value = iterator;
 		this.children = iterator2;
-		this.layout = layout;
+		///this.layout = layout;
 	}
 
 	/* (non-Javadoc)
@@ -64,16 +64,28 @@ public class MergingIterator implements Iterator<NodeBase> {
 		if (this.hasNext()) {
 			this.feedTrough = false;
 			NodeBase i_next;
+			
+			// new added code
+			NodeBase children_next=null;
+			if (children.hasNext()){
+				children_next=children.next();
+				if (children_next instanceof NodeInstance){
+					value.next(); // dump to save location in NodeInstance from garbage. ToDo: Actively tell this method if it is called in Pass 0 or 1
+					return children_next;
+				}
+			}
+			
+			// old code stays almost the same (except for children.next())
 			if (value != null && value.hasNext()) {
-				i_next = new NodeInstance(value.next(), this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
+				i_next = new NodeInstance(value.next()); ///, this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
 				if (children.hasNext()) {
-					i_next.setValue(children.next());
+					i_next.setValue(children_next /*children.next()*/);
 				}
 
 				return i_next;
 			} else {
 				this.feedTrough = true;
-				return children.next(); // feed through custom fields
+				return children_next; //children.next(); // feed through custom fields
 			}
 
 		}
