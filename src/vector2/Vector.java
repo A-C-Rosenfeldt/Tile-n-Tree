@@ -36,7 +36,7 @@ public class Vector extends Tupel {
 	}
 
 	public Vector(Vector a, RectSize b, Vector grid) {
-		new Vector(a,b,grid.s[0],grid.s[1]);
+		this(a,b,grid.s[0],grid.s[1]);
 	}
 	
 	// I really miss  operator overloading  

@@ -63,8 +63,9 @@ public class Node extends NodeBase {
 	}
 
 	public Node(String string) {
-		/// implicit: super(string); // ToDo: Test 
-		this();
+		/// implicit only if no other constructor is called: super(string); // ToDo: Test
+		super(string);
+		this.children = new ArrayList<NodeBase>(); // Cannot call two constructors. Dupe one line of code, so what. ///this();
 	}
 
 	// Version with ref return (and with Inline)

@@ -437,7 +437,7 @@ public class Frame extends JFrame implements Mapping {
 			//			}
 
 			Vector positionInPixel = new Vector(this.treepos, this.tileSize, positionInGridcount);
-
+			
 			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString()), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
