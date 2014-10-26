@@ -27,7 +27,7 @@ import java.util.Iterator;
 public abstract class NodeBase { // implements Iterable<NodeBase> {
 
 	protected String title;
-	protected Node value; // used! appears  stores values.  ToDo: Base for complex types
+	protected Node value; // ToDo. Needs to be a list for instances.  .used! appears  stores values.  ToDo: Base for complex types
 
 	public abstract MergingIterator iterator();  // MergingIterator implements iterator<NodeBase>. It is thus a subtype and could be casted, but I got runtime errors and have to debug/assert sortof
 	

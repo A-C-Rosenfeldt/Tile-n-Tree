@@ -143,12 +143,14 @@ public class LinksWith2Bends implements Link, LinkDebug {
 			
 			System.out.println((new Integer(this.findY)).toString()+" = "+((Integer)nodeChildren[0].getLayout().position.s[1]).toString());
 			if (nodeChildren[0].getLayout().position.s[1] == this.findY) {
+				System.out.println(" -> x="+nodeChildren[0].getLayout().position.s[0]);
 				return nodeChildren[0].getLayout().position.s[0];
 			} else {
 				System.out.println((new Integer(this.findY)).toString()+" < "+((Integer)nodeChildren[0].getLayout().position.s[1]).toString());
 				if (nodeChildren[0].getLayout().position.s[1] > this.findY) {
 					//assert nodeChildren[1] != null;  future 
 					if (nodeChildren[1] == null){
+						System.out.println(" -> Not found");
 						return -1;
 					}else{
 						System.out.println(" inner Rekursion:"+nodeChildren[1].getTitle());
@@ -207,7 +209,7 @@ public class LinksWith2Bends implements Link, LinkDebug {
 	public List<Integer> getBedrock() {
 		List<Integer> l = new ArrayList<Integer>(); // Maybe an iterator would be as good
 		// ToDo: Use this to test the method above (instead of building a new iterator. It is part of the debug interface after all!
-		for (int y = 0; y < 100; y++) { //safety first
+		for (int y = 0; y < 30; y++) { //safety first
 			try {
 				l.add(this.getBedrock(y));
 			} catch (ArrayIndexOutOfBoundsException e) { // this is debug code, not production code. No good alternative known.

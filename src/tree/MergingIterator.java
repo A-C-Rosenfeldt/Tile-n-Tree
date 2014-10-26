@@ -54,7 +54,11 @@ public class MergingIterator implements Iterator<NodeBase> {
 
 	@Override
 	public NodeBase next() {
-		return this.nextNode();
+		NodeBase t=this.nextNode();
+		if (t!=null){
+			System.out.println(" next Node has layout:"+((Boolean)(t.layout!=null)).toString());
+		}
+		return t;
 	}
 
 	/* (non-Javadoc)
@@ -77,6 +81,7 @@ public class MergingIterator implements Iterator<NodeBase> {
 			
 			// old code stays almost the same (except for children.next())
 			if (value != null && value.hasNext()) {
+				System.out.println("  NEW NodeInstance");
 				i_next = new NodeInstance(value.next()); ///, this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
 				if (children.hasNext()) {
 					i_next.setValue(children_next /*children.next()*/);

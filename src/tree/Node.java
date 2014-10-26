@@ -72,7 +72,7 @@ public class Node extends NodeBase {
 	// No Covariance inside template brackets
 	@Override
 	public MergingIterator iterator() {
-		if (this.value == null ) {
+		if (this.value == null || !this.InlineReferenced) { // there can be simple references  without instancing
 			return new MergingIterator(null, this.children.iterator(), this.title); // What works
 			// What is meant, but leads to unsafe casts:  return this.children.iterator();
 		}

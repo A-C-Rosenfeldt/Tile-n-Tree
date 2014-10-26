@@ -26,6 +26,7 @@ import inputDevice.Keyboard;
 import inputDevice.Mapping;
 import inputDevice.Modifier;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -71,7 +72,7 @@ public class Frame extends JFrame implements Mapping {
 	public Frame(String titel) {
 		super(titel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(800, 800);
+		setSize(800, 750);
 		// Premature optimization (or aero non portable look and feel)	        
 		///setBackground(new Color(0,0,0,0)); // Unuseable: http://docs.oracle.com/javase/7/docs/api/java/awt/Frame.html#setOpacity%28float%29 
 
@@ -100,6 +101,7 @@ public class Frame extends JFrame implements Mapping {
 		Point pos = this.getContentPane().getLocationOnScreen();
 		Rectangle bounds = this.getContentPane().getBounds();
 		bounds.setLocation(pos);
+		g.setColor(new Color(0, 0, 0));;
 
 		this.gForRec = g;
 		this.treepos = new Vector(pos.x, pos.y);
