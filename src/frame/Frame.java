@@ -305,6 +305,10 @@ public class Frame extends JFrame implements Mapping {
 		///Iterator<Node> nodes=parent.iterator(); //.getChildrenWithInline();
 		int x_max = x_anchor;
 
+		if (y==25){
+			System.out.println("Next iteration will create NodeInstance{");
+		}
+		
 		// ToDo: Remove cast
 		for (Iterator<NodeBase> iterator = node2.iterator(); iterator.hasNext();) {
 			NodeBase node = iterator.next(); // Bug: Can be null although hasNext == true
@@ -422,7 +426,7 @@ public class Frame extends JFrame implements Mapping {
 			//				if (layout != null) {
 			//					layoutChild = ;
 			{
-				System.out.println("Position "+positionInGridcount.s[0]+", "+positionInGridcount.s[1]);
+				System.out.println("Position "+positionInGridcount.s[0]+", "+positionInGridcount.s[1] + " title: "+node.getTitle());
 				Vector p=positionInGridcount;
 				assert p!=null;
 				LayedOutPosition t = new LayedOutPosition(p);
@@ -440,7 +444,7 @@ public class Frame extends JFrame implements Mapping {
 
 			Vector positionInPixel = new Vector(this.treepos, this.tileSize, positionInGridcount);
 			
-			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString()), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3); // May flicker without doubleBuffering
+			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString()), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3+20); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
 				if (!iterator.hasNext()) { //i + 1 == nodes.size()) {
@@ -473,14 +477,29 @@ public class Frame extends JFrame implements Mapping {
 
 			// ToDo: Jump over gaps due to "group names" in other header. Reuse chicane marker and rename to "has children inside table body"!??
 			y++;
+			
+			if (y==25){
+				System.out.println("start debugger here!");
+			}			
+			
 			Tupel t;
 
 			// store gaps  due to "group names" for other header
 			table.add();
 			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, node.getLayout());
 
+			if (y==25){
+				System.out.println("start debugger here!");
+			}	
+			
 			y = t.s[1];///System.out.println("Y is. "+y); // Bug: y is too large sometimes
 			x_max = Math.max(x_max, t.s[0]);
+			
+
+			if (y==25){
+				System.out.println("Next iteration will create NodeInstance } Press F6 11 times");
+			}
+
 		}
 
 		return new Tupel(x_max, y); // ToDo: Why does boxing not work?

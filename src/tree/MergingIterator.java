@@ -71,7 +71,8 @@ public class MergingIterator implements Iterator<NodeBase> {
 			
 			// new added code
 			NodeBase children_next=null;
-			if (children.hasNext()){
+			boolean children_hasNext=children.hasNext();
+			if (children_hasNext){
 				children_next=children.next();
 				if (children_next instanceof NodeInstance){
 					value.next(); // dump to save location in NodeInstance from garbage. ToDo: Actively tell this method if it is called in Pass 0 or 1
@@ -80,10 +81,11 @@ public class MergingIterator implements Iterator<NodeBase> {
 			}
 			
 			// old code stays almost the same (except for children.next())
+			System.out.println((value != null) +"&&"+ ((value != null && value.hasNext())));
 			if (value != null && value.hasNext()) {
 				System.out.println("  NEW NodeInstance");
 				i_next = new NodeInstance(value.next()); ///, this.layout.next()); // ToDo: If null, create new layout (pass0, pass1)
-				if (children.hasNext()) {
+				if (children_hasNext) { // Here was a bug which could have been found by UnitTest!!!!
 					i_next.setValue(children_next /*children.next()*/);
 				}
 

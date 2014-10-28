@@ -106,15 +106,21 @@ public class Util {
 
 		Node b=new Node("instance b");
 
-		Node selector=new Node("instance real part");
+	/* No!	Node selector=new Node("instance real part");
 		selector.setValueDoNotNotify(v);
-		b.getChildren().add(selector); // ToDo: separate method  getchildren.edit  from   getchildren.view
-		b.setValue(proto);  // Somehow this is more complicated than a table. Put behind? MergeIterator instead of Selector?
+		*/
 				
 		inline.getChildren().add(b);
 		//b.re.setValue(v); // ToDo
 		
 		b.setInlineReferenced(true);
+
+		Node selectedRe=new Node("3 would need to be checked");
+		Node selectedIm=new Node("3i would need to be checked");
+		b.getChildren().add(selectedRe); // ToDo: separate method  getchildren.edit  from   getchildren.view
+		b.getChildren().add(selectedIm); // ToDo: separate method  getchildren.edit  from   getchildren.view
+		b.setValue(proto);  // Somehow this is more complicated than a table. Put behind? MergeIterator instead of Selector?
+		
 		
 		return node;
 	}
