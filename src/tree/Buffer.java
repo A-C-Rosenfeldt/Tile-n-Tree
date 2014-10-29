@@ -78,7 +78,17 @@ public class Buffer {
 		int sizeOld = this.boundary[1] + 1 - this.boundary[0]; // ToDo: Import Span
 		int sizeNew = boundary[1] + 1 - boundary[0]; // ToDo: Import Span
 		Skeleton s = this.newOffset(sizeNew, boundary); // ToDo remove dupe of size heurisitc
-		System.arraycopy(this.line, boundary[0] + this.offset, s.tiles, boundary[0] + s.offset, sizeOld);
+		System.out.println(this.line+", "+ boundary[0] +", "+ this.offset+", "+ s.tiles+", "+ boundary[0] +", "+ s.offset+", "+ sizeOld);
+		System.out.println(this.line+", "+ (boundary[0] + this.offset)+", "+ s.tiles+", "+ (boundary[0] + s.offset)+", "+ sizeOld);
+		// Bug: the parameter boundary is not the old boundary but a mix of new and old. Should fail every test. ToDo: Unit test
+		// System.arraycopy(this.line,      boundary[0] + this.offset, s.tiles, boundary[0] + s.offset, sizeOld);
+		int t=Math.max(this.boundary[0],boundary[0] );
+		System.out.println((this.line).toString()+", "+((Integer) (t + this.offset)).toString()+", "+( s.tiles).toString()+", "+((Integer)( t + s.offset)).toString()+", "+
+				(
+						(Integer) (Math.min(this.boundary[1], boundary[1])+1-t )
+				).toString()
+		);
+		   System.arraycopy(this.line, t + this.offset, s.tiles, t + s.offset, Math.min(this.boundary[1], boundary[1])+1-t );
 		this.line = s.tiles;
 		this.offset = s.offset;
 	}	
