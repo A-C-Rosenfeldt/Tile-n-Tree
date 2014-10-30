@@ -101,6 +101,12 @@ public class Buffer {
 			this.offset = s.offset;
 		}
 		
+		this.expand(i);
+
+		this.line[i + this.offset] = value;
+	}
+
+	private boolean expand(int i) {
 		if (i < this.boundary[0]) {
 			if (i + this.offset < 0) {
 				this.realloc(new int[]{i, this.boundary[1]});
@@ -111,6 +117,8 @@ public class Buffer {
 			}
 			
 			this.boundary[0] = i;
+			
+			return true;
 		} else {
 			if (i > this.boundary[1]) {
 				if (i + this.offset >= this.line.length) {
@@ -122,19 +130,25 @@ public class Buffer {
 				}
 				
 				this.boundary[1] = i;
+				return true;				
 			}
 		}
-
-		this.line[i + this.offset] = value;
+		
+		return false;		
 	}
 	
 	public void uniteAt(int i, Tile value) throws Exception {
 		if (this.line == null) {
 			this.set(i, value);
 		} else {
+			if (this.expand(i)){
+				this.set(i, value);
+				return;
+			}
+
 			Tile old = this.line[i + this.offset];
 			if (old == null) {
-				this.set(i, value);
+				this.set(i, value); // ToDo: try to avoid null
 			} else {
 				old.uniteWith(value);
 			}
