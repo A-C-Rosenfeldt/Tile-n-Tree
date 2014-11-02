@@ -47,6 +47,7 @@ import tile.Tile;
 import tile.Tiles;
 import tree.Buffer;
 import tree.LayedOutPosition;
+import tree.LinkedElement;
 import tree.Node;
 import tree.NodeBase;
 import tree.Util;
@@ -110,7 +111,7 @@ public class Frame extends JFrame implements Mapping {
 		try {
 			Node tree = Util.createSampleTree(); // misuse try block to limit scope of local variable
 			this.link = new LinksWith2Bends(tree);
-			this.drawTree(2, 0, tree, false, new Buffer(Tile.space)/*0,0*/, 0, new Table(), null); // root == frame window // Dupe (2,3)
+			this.drawTree(2, 0, tree, false, new Buffer(Tile.space)/*0,0*/, 0, new Table(), null, new LinkedElement(tree)); // root == frame window // Dupe (2,3)
 
 			this.drawLinks(15, 0);
 		} catch (Exception e) {
@@ -239,7 +240,7 @@ public class Frame extends JFrame implements Mapping {
 	private Link link; // links are less local than table-headers
 
 	// Todo: less parameters!
-	private Tupel drawTree(int x_anchor, int y, NodeBase node, boolean linkPasses, /*int x_min, int x_min2*/Buffer links, int trans, Table table, LayedOutPosition layout) throws Exception {
+	private Tupel drawTree(int x_anchor, int y, NodeBase node, boolean linkPasses, /*int x_min, int x_min2*/Buffer links, int trans, Table table, LayedOutPosition layout, LinkedElement parent) throws Exception {
 		Tupel t = new Tupel(x_anchor, y);
 		if ((node.getSwapCoordinates() & 4) > 0) {
 			this.shade = 0;
@@ -252,13 +253,15 @@ public class Frame extends JFrame implements Mapping {
 				xi--;
 				drawVI(xi, y, 0, 6);
 				xi--;
+			}else{
+				System.out.println("Is chicane. ToDo: Pass DOM to TreeInner on the over next line");
 			}
 
 			xi = x_anchor - 3;
 
 			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
 
-			t = drawTreeInner(y + 2 - (node.isChicane() ? 3 : 0), x_anchor + 1, node, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ node.getSwapCoordinates(), node.isChicane(), table);
+			t = drawTreeInner(y + 2 - (node.isChicane() ? 3 : 0), x_anchor + 1, node, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ node.getSwapCoordinates(), node.isChicane(), table, parent);
 
 			this.transformation = trans;
 			int x3 = xi;
@@ -293,11 +296,11 @@ public class Frame extends JFrame implements Mapping {
 			return new Tupel(x_anchor, t.s[0]);
 		} else {
 			//System.out.println("Y is: "+y);
-			return drawTreeInner(x_anchor, y, node, linkPasses, links /*x_min, x_min2*/, trans, node.isChicane(), table);
+			return drawTreeInner(x_anchor, y, node, linkPasses, links /*x_min, x_min2*/, trans, node.isChicane(), table, parent);
 		}
 	}
 
-	private Tupel drawTreeInner(int x_anchor, int y, NodeBase node2, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table) throws Exception {
+	private Tupel drawTreeInner(int x_anchor, int y, NodeBase node2, boolean linkPasses, Buffer links, int trans, boolean chicane, Table table, LinkedElement parent) throws Exception {
 		// ToDo: One Call for layout and a second one for draw (text). Make two pass optional für debugging purpose
 		// ToDo: Here the coordinates are not equally handled. Stop using an Array s[2] ? 
 		//Node switchToOwn=parent.getChildren().get(0); // Value comes before children.
@@ -403,7 +406,22 @@ public class Frame extends JFrame implements Mapping {
 			//this.link.addBedrock(x_anchor);
 
 			// } concept code
-
+			if (node2.isChicane()){
+				System.out.println("*we should use the coordinates of the headers. We already know: "+ node2.getTitle() );
+				NodeBase t=parent.getNode();
+				if (t != null){
+					System.out.println(" Title: "+t.getTitle());
+					if (t instanceof Node){
+						List c=((Node)t).getChildren();
+						System.out.println(" Number of children"+((Node)t).getChildren().size());
+						for (Object object : c) {
+							System.out.println("  "+((NodeBase)object).getTitle());
+						}
+						System.out.println(" ---");
+					}
+				}
+			}
+			
 			Vector positionInGridcount;
 			if ((transformation & 4) == 0) {
 				///this.link.addBedrock(x_anchor,y); // < 2014-10-06
@@ -486,7 +504,7 @@ public class Frame extends JFrame implements Mapping {
 
 			// store gaps  due to "group names" for other header
 			table.add();
-			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, node.getLayout());
+			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, node.getLayout(), parent.child(node2));
 
 			if (y==25){
 				System.out.println("start debugger here!");
