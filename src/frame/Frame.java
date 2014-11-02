@@ -413,12 +413,34 @@ public class Frame extends JFrame implements Mapping {
 					System.out.println(" Title: "+t.getTitle());
 					if (t instanceof Node){
 						List c=((Node)t).getChildren();
-						System.out.println(" Number of children"+((Node)t).getChildren().size());
+						System.out.println(" Number of children: "+c.size());
 						for (Object object : c) {
 							System.out.println("  "+((NodeBase)object).getTitle());
 						}
 						System.out.println(" ---");
 					}
+					
+					LinkedElement  l=parent.getParent();
+					NodeBase me=t;
+					t=l.getNode();
+					if (t != null){
+						System.out.println(" Title: "+t.getTitle());
+						if (t instanceof Node){
+							List c=((Node)t).getChildren();
+							System.out.println("  Number of children: "+c.size());
+							for (Object object : c) {
+								System.out.println("  "+((NodeBase)object).getTitle());
+								if (object != me && (object instanceof Node)){
+									System.out.println("    Get the coordinates from these: ");
+									for (Object header : ((Node)object).getChildren()) {
+										System.out.println("    "+((NodeBase)header).getTitle()+", which are: "+((NodeBase)header).getLayout().position.s[0]);
+									}
+								}
+							}
+							System.out.println(" ---");
+						}
+					}					
+					
 				}
 			}
 			
