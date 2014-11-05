@@ -83,7 +83,7 @@ public class Util {
 //		s.add(unitOfTime);
 
 		
-		Node inline=new Node("Inline inside. No logic, just structure of the test");
+		Node inline=new Node("Instancing test"); // Inline inside. No logic, just structure of the test
 		node.getChildren().add(inline);
 
 		Node proto=new Node("struct definition of a complex number");
@@ -115,8 +115,8 @@ public class Util {
 		
 		b.setInlineReferenced(true);
 
-		Node selectedRe=new Node("3 would need to be checked");
-		Node selectedIm=new Node("3i would need to be checked");
+		Node selectedRe=new Node("3"); // ToDo check in setValue
+		Node selectedIm=new Node("3i"); // ToDo check in setValue
 		b.getChildren().add(selectedRe); // ToDo: separate method  getchildren.edit  from   getchildren.view
 		b.getChildren().add(selectedIm); // ToDo: separate method  getchildren.edit  from   getchildren.view
 		b.setValue(proto);  // Somehow this is more complicated than a table. Put behind? MergeIterator instead of Selector?

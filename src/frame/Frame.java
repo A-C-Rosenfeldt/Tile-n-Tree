@@ -247,22 +247,25 @@ public class Frame extends JFrame implements Mapping {
 			this.shade = 0;
 			this.transformation = trans;
 			int xi = x_anchor;
+			final int spacer=2;
+
 			if (!node.isChicane()) {
-				drawVI(xi, y, 3, 2);
-				xi--;
-				drawVI(xi, y, 3, 2);
-				xi--;
+				xi += spacer; // horizontal bar shifting out header to the left, to make space for column header. ToDo: Add Pass to respect column header
+				for (int i = spacer+1; i >= 0; --i) {
+					drawVI(xi, y, 3, 2);
+					xi--;
+				}
+
 				drawVI(xi, y, 0, 6);
 				xi--;
 			} else {
 				System.out.println("Is chicane. ToDo: Pass DOM to TreeInner on the over next line");
+				xi = x_anchor - 3;				
 			}
-
-			xi = x_anchor - 3;
 
 			// ToDo: Somewhere here: Create new table. Problem: above swap which is above swap+chicane
 
-			t = drawTreeInner(y + 2 - (node.isChicane() ? 3 : 0), x_anchor + 1, node, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ node.getSwapCoordinates(), node.isChicane(), table, parent);
+			t = drawTreeInner(y + 2 - (node.isChicane() ? 3 : 0)  , x_anchor + 1 + spacer, node, linkPasses, /*y+0,y+0*/new Buffer(y), trans ^ node.getSwapCoordinates(), node.isChicane(), table, parent);
 
 			this.transformation = trans;
 			int x3 = xi;
@@ -340,11 +343,119 @@ public class Frame extends JFrame implements Mapping {
 			// taken live rendering
 			linkPasses = drawLink(x_anchor, y, linkPasses, node, 10, 0);
 
+			if (node.getTitle().equals("foo")) {
+				System.out.println("Why no background at anchor?");
+			}
+			
+			
+			
+
+			//this.link.addBedrock(x_anchor);
+			LayedOutPosition header_co = null;
+			// } concept code
+			if (node2.isChicane()) {
+				System.out.println("*we should use the coordinates of the headers. We already know: " + node2.getTitle());
+
+				// ToDo: walk the tree like in  MergeIterator because each line is an instance
+				NodeBase t = parent.getNode();
+				if (t != null) {
+					System.out.println(" Title: " + t.getTitle());
+					if (t instanceof Node) {
+						List c = ((Node) t).getChildren();
+						System.out.println(" Number of children: " + c.size());
+						for (Object object : c) {
+							System.out.println("  " + ((NodeBase) object).getTitle());
+						}
+						System.out.println(" ---");
+					}
+
+					LinkedElement l = parent.getParent();
+					NodeBase me = t;
+					t = l.getNode();
+					if (t != null) {
+						System.out.println(" Title: " + t.getTitle());
+						if (t instanceof Node) {
+							List c = ((Node) t).getChildren();
+							System.out.println("  Number of children: " + c.size());
+							for (Object object : c) {
+								System.out.println("  " + ((NodeBase) object).getTitle());
+								if (object != me && (object instanceof Node)) {
+									System.out.println("    Get the coordinates from these: ");
+									for (Object header : ((Node) object).getChildren()) {
+										System.out.println("    " + ((NodeBase) header).getTitle() + ", which are: " + ((NodeBase) header).getLayout().position.s[0]);
+									}
+
+									header_co = ((Node) object).getChildren().get(mergeIteratorSync++).getLayout();
+								}
+							}
+							System.out.println(" ---");
+						}
+					}
+
+				}
+			}
+
+			Vector positionInGridcount;
+			if ((transformation & 4) == 0) {
+				///this.link.addBedrock(x_anchor,y); // < 2014-10-06
+				// >= 2014-10-07
+				// ToDo: Add a new list. Prototype and owner are connected by value, but none has a list for multiple children. I vote for a new list for the owner ... owner.layoutNode!
+				if (header_co != null) {
+					y = header_co.position.s[1];
+					System.out.println("taking y from header");
+				}
+
+				positionInGridcount = new Vector(x_anchor, y); // y+1 ??
+
+			} else {
+				///this.link.addBedrock(y,x_anchor); // < 2014-10-06
+				// >= 2014-10-07
+				if (header_co != null) {
+					y = header_co.position.s[0];
+					System.out.println("taking y from header");
+				}
+
+				positionInGridcount = new Vector(y, x_anchor); // x_anchor + 1 ??
+			}
+
+			//			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
+			//			LayedOutPosition layoutChild = null;
+			//			if (node.getReferenceHistory() == 2) { // ToDo layout reference as parameter
+			//				node.setLayout(new LayedOutPosition(positionInGridcount));
+			//			}else{				
+			//				// some ancestor already got inlined
+			//				if (layout != null) {
+			//					layoutChild = ;
+			{
+				System.out.println("Position " + positionInGridcount.s[0] + ", " + positionInGridcount.s[1] + " title: " + node.getTitle());
+
+
+
+				Vector p = positionInGridcount;
+				assert p != null;
+				LayedOutPosition t = new LayedOutPosition(p);
+				assert t != null;
+				node.setLayout(t);
+			}
+			//				} else {
+			//					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
+			//						node.setLayout(new LayedOutPosition(positionInGridcount));
+			//					} else {
+			//						parent.getLayout().value_children.add(new LayedOutPosition(positionInGridcount));
+			//					}
+			//				}
+			//			}
+
+			
+			
 			// table
 			if (node.isChicane()) {
 				// ToDo: Use loop and use max(x) of this header (info flowing backwards) as the start value
-				drawVI(x_anchor + 1, y, 3, 2);
-			}
+				drawVI(x_anchor+1, y, 3, 2); // Line? +1 is for title
+			}						
+			
+			
+			
 
 			xi = x_anchor;
 			drawVI(xi, y, 2, 0);
@@ -406,101 +517,10 @@ public class Frame extends JFrame implements Mapping {
 			//				// ClosedInterval(y,0));
 			//			}
 
-			//this.link.addBedrock(x_anchor);
-			LayedOutPosition header_co = null;
-			// } concept code
-			if (node2.isChicane()) {
-				System.out.println("*we should use the coordinates of the headers. We already know: " + node2.getTitle());
-				// ToDo: walk the tree like in  MergeIterator because each line is an instance
-				NodeBase t = parent.getNode();
-				if (t != null) {
-					System.out.println(" Title: " + t.getTitle());
-					if (t instanceof Node) {
-						List c = ((Node) t).getChildren();
-						System.out.println(" Number of children: " + c.size());
-						for (Object object : c) {
-							System.out.println("  " + ((NodeBase) object).getTitle());
-						}
-						System.out.println(" ---");
-					}
-
-					LinkedElement l = parent.getParent();
-					NodeBase me = t;
-					t = l.getNode();
-					if (t != null) {
-						System.out.println(" Title: " + t.getTitle());
-						if (t instanceof Node) {
-							List c = ((Node) t).getChildren();
-							System.out.println("  Number of children: " + c.size());
-							for (Object object : c) {
-								System.out.println("  " + ((NodeBase) object).getTitle());
-								if (object != me && (object instanceof Node)) {
-									System.out.println("    Get the coordinates from these: ");
-									for (Object header : ((Node) object).getChildren()) {
-										System.out.println("    " + ((NodeBase) header).getTitle() + ", which are: " + ((NodeBase) header).getLayout().position.s[0]);
-									}
-
-									header_co = ((Node) object).getChildren().get(mergeIteratorSync++).getLayout();									
-								}
-							}
-							System.out.println(" ---");
-						}
-					}
-
-				}
-			}
-
-			Vector positionInGridcount;
-			if ((transformation & 4) == 0) {
-				///this.link.addBedrock(x_anchor,y); // < 2014-10-06
-				// >= 2014-10-07
-				// ToDo: Add a new list. Prototype and owner are connected by value, but none has a list for multiple children. I vote for a new list for the owner ... owner.layoutNode!
-				if (header_co!=null) {
-					y=header_co.position.s[1];
-					System.out.println("taking y from header");
-				}
-				
-				positionInGridcount = new Vector(x_anchor, y); // y+1 ??
-
-			} else {
-				///this.link.addBedrock(y,x_anchor); // < 2014-10-06
-				// >= 2014-10-07
-				if (header_co!=null) {
-					y=header_co.position.s[0];
-					System.out.println("taking y from header");
-				}
-				
-				positionInGridcount = new Vector(y, x_anchor); // x_anchor + 1 ??
-			}
-
-			//			// ToDo add this to iterator, to run the same code in Frame(pass1) and here (pass2)
-			//			LayedOutPosition layoutChild = null;
-			//			if (node.getReferenceHistory() == 2) { // ToDo layout reference as parameter
-			//				node.setLayout(new LayedOutPosition(positionInGridcount));
-			//			}else{				
-			//				// some ancestor already got inlined
-			//				if (layout != null) {
-			//					layoutChild = ;
-			{
-				System.out.println("Position " + positionInGridcount.s[0] + ", " + positionInGridcount.s[1] + " title: " + node.getTitle());
-				Vector p = positionInGridcount;
-				assert p != null;
-				LayedOutPosition t = new LayedOutPosition(p);
-				assert t != null;
-				node.setLayout(t);
-			}
-			//				} else {
-			//					if (iterator.lastWasFeedthrough()) { // ToDo layout reference as parameter
-			//						node.setLayout(new LayedOutPosition(positionInGridcount));
-			//					} else {
-			//						parent.getLayout().value_children.add(new LayedOutPosition(positionInGridcount));
-			//					}
-			//				}
-			//			}
-
+			
 			Vector positionInPixel = new Vector(this.treepos, this.tileSize, positionInGridcount);
 
-			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString()), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3 + 20); // May flicker without doubleBuffering
+			this.gForRec.drawString(node.getTitle() /*+ " " + (node.getClass().toString())*/ , positionInPixel.s[0] + 1, positionInPixel.s[1] - 3 + 20); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
 				if (!iterator.hasNext()) { //i + 1 == nodes.size()) {
