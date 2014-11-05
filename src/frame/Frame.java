@@ -102,7 +102,8 @@ public class Frame extends JFrame implements Mapping {
 		Point pos = this.getContentPane().getLocationOnScreen();
 		Rectangle bounds = this.getContentPane().getBounds();
 		bounds.setLocation(pos);
-		g.setColor(new Color(0, 0, 0));;
+		g.setColor(new Color(0, 0, 0));
+		;
 
 		this.gForRec = g;
 		this.treepos = new Vector(pos.x, pos.y);
@@ -253,7 +254,7 @@ public class Frame extends JFrame implements Mapping {
 				xi--;
 				drawVI(xi, y, 0, 6);
 				xi--;
-			}else{
+			} else {
 				System.out.println("Is chicane. ToDo: Pass DOM to TreeInner on the over next line");
 			}
 
@@ -308,10 +309,12 @@ public class Frame extends JFrame implements Mapping {
 		///Iterator<Node> nodes=parent.iterator(); //.getChildrenWithInline();
 		int x_max = x_anchor;
 
-		if (y==25){
+		if (y == 25) {
 			System.out.println("Next iteration will create NodeInstance{");
 		}
-		
+
+		int mergeIteratorSync = 0;
+
 		// ToDo: Remove cast
 		for (Iterator<NodeBase> iterator = node2.iterator(); iterator.hasNext();) {
 			NodeBase node = iterator.next(); // Bug: Can be null although hasNext == true
@@ -404,56 +407,69 @@ public class Frame extends JFrame implements Mapping {
 			//			}
 
 			//this.link.addBedrock(x_anchor);
-
+			LayedOutPosition header_co = null;
 			// } concept code
-			if (node2.isChicane()){
-				System.out.println("*we should use the coordinates of the headers. We already know: "+ node2.getTitle() );
-				NodeBase t=parent.getNode();
-				if (t != null){
-					System.out.println(" Title: "+t.getTitle());
-					if (t instanceof Node){
-						List c=((Node)t).getChildren();
-						System.out.println(" Number of children: "+c.size());
+			if (node2.isChicane()) {
+				System.out.println("*we should use the coordinates of the headers. We already know: " + node2.getTitle());
+				// ToDo: walk the tree like in  MergeIterator because each line is an instance
+				NodeBase t = parent.getNode();
+				if (t != null) {
+					System.out.println(" Title: " + t.getTitle());
+					if (t instanceof Node) {
+						List c = ((Node) t).getChildren();
+						System.out.println(" Number of children: " + c.size());
 						for (Object object : c) {
-							System.out.println("  "+((NodeBase)object).getTitle());
+							System.out.println("  " + ((NodeBase) object).getTitle());
 						}
 						System.out.println(" ---");
 					}
-					
-					LinkedElement  l=parent.getParent();
-					NodeBase me=t;
-					t=l.getNode();
-					if (t != null){
-						System.out.println(" Title: "+t.getTitle());
-						if (t instanceof Node){
-							List c=((Node)t).getChildren();
-							System.out.println("  Number of children: "+c.size());
+
+					LinkedElement l = parent.getParent();
+					NodeBase me = t;
+					t = l.getNode();
+					if (t != null) {
+						System.out.println(" Title: " + t.getTitle());
+						if (t instanceof Node) {
+							List c = ((Node) t).getChildren();
+							System.out.println("  Number of children: " + c.size());
 							for (Object object : c) {
-								System.out.println("  "+((NodeBase)object).getTitle());
-								if (object != me && (object instanceof Node)){
+								System.out.println("  " + ((NodeBase) object).getTitle());
+								if (object != me && (object instanceof Node)) {
 									System.out.println("    Get the coordinates from these: ");
-									for (Object header : ((Node)object).getChildren()) {
-										System.out.println("    "+((NodeBase)header).getTitle()+", which are: "+((NodeBase)header).getLayout().position.s[0]);
+									for (Object header : ((Node) object).getChildren()) {
+										System.out.println("    " + ((NodeBase) header).getTitle() + ", which are: " + ((NodeBase) header).getLayout().position.s[0]);
 									}
+
+									header_co = ((Node) object).getChildren().get(mergeIteratorSync++).getLayout();									
 								}
 							}
 							System.out.println(" ---");
 						}
-					}					
-					
+					}
+
 				}
 			}
-			
+
 			Vector positionInGridcount;
 			if ((transformation & 4) == 0) {
 				///this.link.addBedrock(x_anchor,y); // < 2014-10-06
 				// >= 2014-10-07
 				// ToDo: Add a new list. Prototype and owner are connected by value, but none has a list for multiple children. I vote for a new list for the owner ... owner.layoutNode!
+				if (header_co!=null) {
+					y=header_co.position.s[1];
+					System.out.println("taking y from header");
+				}
+				
 				positionInGridcount = new Vector(x_anchor, y); // y+1 ??
 
 			} else {
 				///this.link.addBedrock(y,x_anchor); // < 2014-10-06
 				// >= 2014-10-07
+				if (header_co!=null) {
+					y=header_co.position.s[0];
+					System.out.println("taking y from header");
+				}
+				
 				positionInGridcount = new Vector(y, x_anchor); // x_anchor + 1 ??
 			}
 
@@ -466,9 +482,9 @@ public class Frame extends JFrame implements Mapping {
 			//				if (layout != null) {
 			//					layoutChild = ;
 			{
-				System.out.println("Position "+positionInGridcount.s[0]+", "+positionInGridcount.s[1] + " title: "+node.getTitle());
-				Vector p=positionInGridcount;
-				assert p!=null;
+				System.out.println("Position " + positionInGridcount.s[0] + ", " + positionInGridcount.s[1] + " title: " + node.getTitle());
+				Vector p = positionInGridcount;
+				assert p != null;
 				LayedOutPosition t = new LayedOutPosition(p);
 				assert t != null;
 				node.setLayout(t);
@@ -483,8 +499,8 @@ public class Frame extends JFrame implements Mapping {
 			//			}
 
 			Vector positionInPixel = new Vector(this.treepos, this.tileSize, positionInGridcount);
-			
-			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString()), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3+20); // May flicker without doubleBuffering
+
+			this.gForRec.drawString(node.getTitle() + " " + (node.getClass().toString()), positionInPixel.s[0] + 1, positionInPixel.s[1] - 3 + 20); // May flicker without doubleBuffering
 			xi--;
 			if (!chicane) {
 				if (!iterator.hasNext()) { //i + 1 == nodes.size()) {
@@ -517,26 +533,25 @@ public class Frame extends JFrame implements Mapping {
 
 			// ToDo: Jump over gaps due to "group names" in other header. Reuse chicane marker and rename to "has children inside table body"!??
 			y++;
-			
-			if (y==25){
+
+			if (y == 25) {
 				System.out.println("start debugger here!");
-			}			
-			
+			}
+
 			Tupel t;
 
 			// store gaps  due to "group names" for other header
 			table.add();
 			t = this.drawTree(x_anchor + 1, y, node, linkPasses, links /*x_min, x_min2*/, trans, table, node.getLayout(), parent.child(node2));
 
-			if (y==25){
+			if (y == 25) {
 				System.out.println("start debugger here!");
-			}	
-			
+			}
+
 			y = t.s[1];///System.out.println("Y is. "+y); // Bug: y is too large sometimes
 			x_max = Math.max(x_max, t.s[0]);
-			
 
-			if (y==25){
+			if (y == 25) {
 				System.out.println("Next iteration will create NodeInstance } Press F6 11 times");
 			}
 
