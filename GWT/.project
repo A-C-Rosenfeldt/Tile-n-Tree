@@ -3,6 +3,7 @@
 	<name>GWT</name>
 	<comment></comment>
 	<projects>
+		<project>Tile&apos;n&apos;Tree</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

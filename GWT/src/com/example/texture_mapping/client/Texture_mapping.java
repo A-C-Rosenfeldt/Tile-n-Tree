@@ -1,3 +1,21 @@
+/**  
+ * 
+ *  init texture based on:
+ * Copyright 2009-2010 Sönke Sothmann, Steffen Schäfer and others
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.texture_mapping.client;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -9,7 +27,11 @@ import com.googlecode.gwtgl.binding.WebGLBuffer;
 import com.googlecode.gwtgl.binding.WebGLProgram;
 import com.googlecode.gwtgl.binding.WebGLRenderingContext;
 import com.googlecode.gwtgl.binding.WebGLShader;
+import com.googlecode.gwtgl.binding.WebGLTexture;
 import com.googlecode.gwtgl.binding.WebGLUniformLocation;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
 
 public class Texture_mapping implements EntryPoint {
         
@@ -20,12 +42,17 @@ public class Texture_mapping implements EntryPoint {
 
        public void onModuleLoad() {
                final Canvas webGLCanvas = Canvas.createIfSupported();
-               webGLCanvas.setCoordinateSpaceHeight(500);
+               webGLCanvas.setCoordinateSpaceHeight(500); // ToDo: AutoSize
                webGLCanvas.setCoordinateSpaceWidth(500);
                glContext = (WebGLRenderingContext) webGLCanvas.getContext("experimental-webgl");
                if(glContext == null) {
+            	   glContext = (WebGLRenderingContext)    webGLCanvas.getContext("experimental-webgl");
+               }
+               
+               if(glContext == null) {
                        Window.alert("Sorry, Your Browser doesn't support WebGL!");
                }
+               
                glContext.viewport(0, 0, 500, 500);
                
                RootPanel.get("gwtGL").add(webGLCanvas);
@@ -39,11 +66,57 @@ public class Texture_mapping implements EntryPoint {
            glContext.enable(WebGLRenderingContext.DEPTH_TEST);
            glContext.depthFunc(WebGLRenderingContext.LEQUAL);
            initBuffers();
+           
+           initTexture();
 
            drawScene();
    }       
        
-       public void initShaders() {
+       private void initTexture() {
+		// TODO Auto-generated method stub
+		WebGLTexture texture = glContext.createTexture();
+		glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
+        glContext.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, ((PlaceholderImages)PlaceholderImages.INSTANCE).myImage.getElement() ));
+        glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.LINEAR);
+        glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR);
+        glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+        checkErrors();
+	}
+
+       /**
+        * Handles image loading.
+        * @param imageResource
+        * @return {@link Image} to be used as a texture
+        */
+       public Image getImage(final ImageResource imageResource) {
+               final Image img = new Image();
+               img.addLoadHandler(new LoadHandler() {
+                       @Override
+                       public void onLoad(LoadEvent event) {
+                               RootPanel.get().remove(img);
+                       }
+               });
+               img.setVisible(false);
+               RootPanel.get().add(img);
+
+               img.setUrl(imageResource.getURL());
+               
+               return img;
+       }       
+       
+       /**
+        * Checks the WebGL Errors and throws an exception if there is an error.
+        */
+       private void checkErrors() {
+               int error = glContext.getError();
+               if (error != WebGLRenderingContext.NO_ERROR) {
+                       String message = "WebGL Error: " + error;
+                       ///GWT.log(message, null);
+                       throw new RuntimeException(message);
+               }
+       }       
+       
+	public void initShaders() {
            WebGLShader fragmentShader = getShader(WebGLRenderingContext.FRAGMENT_SHADER, Shaders.INSTANCE.fragmentShader().getText());
            WebGLShader vertexShader = getShader(WebGLRenderingContext.VERTEX_SHADER, Shaders.INSTANCE.vertexShader().getText());
 
