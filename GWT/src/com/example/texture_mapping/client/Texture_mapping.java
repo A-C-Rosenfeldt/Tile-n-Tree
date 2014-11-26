@@ -18,8 +18,15 @@
 
 package com.example.texture_mapping.client;
 
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.dev.resource.Resource;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.googlecode.gwtgl.array.Float32Array;
@@ -39,6 +46,12 @@ public class Texture_mapping implements EntryPoint {
        private WebGLProgram shaderProgram;
        private int vertexPositionAttribute;
        private WebGLBuffer vertexBuffer;
+       
+       // Texture
+       private WebGLBuffer vertexTextureCoordBuffer;
+       private WebGLUniformLocation textureUniform;
+       private int textureCoordAttribute;
+       private WebGLTexture texture;       
 
        public void onModuleLoad() {
                final Canvas webGLCanvas = Canvas.createIfSupported();
@@ -63,10 +76,15 @@ public class Texture_mapping implements EntryPoint {
            initShaders();
            glContext.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
            glContext.clearDepth(1.0f);
+           checkErrors();
            glContext.enable(WebGLRenderingContext.DEPTH_TEST);
+           checkErrors();
            glContext.depthFunc(WebGLRenderingContext.LEQUAL);
+           checkErrors();
            initBuffers();
-           
+           checkErrors();
+           //not supported everywhere// glContext.enable(WebGLRenderingContext.TEXTURE_2D);
+           //checkErrors();
            initTexture();
 
            drawScene();
@@ -74,13 +92,25 @@ public class Texture_mapping implements EntryPoint {
        
        private void initTexture() {
 		// TODO Auto-generated method stub
+    	   checkErrors();
 		WebGLTexture texture = glContext.createTexture();
+		checkErrors();
 		glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
-        glContext.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, ((PlaceholderImages)PlaceholderImages.INSTANCE).myImage.getElement() ));
+		checkErrors();
+		//GWT.create(Resource.class);
+		PlaceholderImages placeholderImages= PlaceholderImages.INSTANCE;
+		Image image = new Image(placeholderImages.myImage());
+		checkErrors();
+        glContext.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE
+        		///, getImage((PlaceholderImages.INSTANCE).myImage()).getElement());
+        		, image.getElement());
+        checkErrors(); //ERror
         glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.LINEAR);
+        checkErrors(); //ERror
         glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR);
+        checkErrors(); //ERror
         glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
-        checkErrors();
+        checkErrors(); //ERror
 	}
 
        /**
@@ -112,7 +142,7 @@ public class Texture_mapping implements EntryPoint {
                if (error != WebGLRenderingContext.NO_ERROR) {
                        String message = "WebGL Error: " + error;
                        ///GWT.log(message, null);
-                       throw new RuntimeException(message);
+                      throw new RuntimeException(message);
                }
        }       
        
@@ -133,18 +163,25 @@ public class Texture_mapping implements EntryPoint {
 
            vertexPositionAttribute = glContext.getAttribLocation(shaderProgram, "vertexPosition");
            glContext.enableVertexAttribArray(vertexPositionAttribute);
+           
+           checkErrors();
+           this.textureCoordAttribute = glContext.getAttribLocation(shaderProgram, "aTextureCoord"); //"texPosition"); // ToDo check Identifier
+           checkErrors(); // no error
+           glContext.enableVertexAttribArray(this.textureCoordAttribute);
+           checkErrors();      // Error
    }
        
        private WebGLShader getShader(int type, String source) {
            WebGLShader shader = glContext.createShader(type);
 
+ 
            glContext.shaderSource(shader, source);
            glContext.compileShader(shader);
 
            if (!glContext.getShaderParameterb(shader, WebGLRenderingContext.COMPILE_STATUS)) {
                    throw new RuntimeException(glContext.getShaderInfoLog(shader));
            }
-
+           checkErrors();
            return shader;
    }       
        
@@ -157,6 +194,16 @@ public class Texture_mapping implements EntryPoint {
                             1.0f, -1.0f,  -5.0f  // third vertex
            };
            glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, Float32Array.create(vertices), WebGLRenderingContext.STATIC_DRAW);
+           checkErrors();
+           float[] verticesTexture = new float[]{
+                   0.0f,  1.0f,   // first vertex
+                  1.0f, 1.0f,   // second vertex
+                   1.0f, 0.0f  // third vertex
+  };        
+           vertexTextureCoordBuffer = glContext.createBuffer();
+           glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, vertexTextureCoordBuffer);
+           glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, Float32Array.create(verticesTexture ), WebGLRenderingContext.STATIC_DRAW);
+           checkErrors();
    }
        
        private void drawScene() {
@@ -165,6 +212,14 @@ public class Texture_mapping implements EntryPoint {
            WebGLUniformLocation uniformLocation = glContext.getUniformLocation(shaderProgram, "perspectiveMatrix");
            glContext.uniformMatrix4fv(uniformLocation, false, perspectiveMatrix);
            glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
+           
+           // Bind the texture to texture unit 0
+           glContext.activeTexture(WebGLRenderingContext.TEXTURE0);
+           glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
+
+           // Point the uniform sampler to texture unit 0
+           glContext.uniform1i(textureUniform, 0);           
+           
            glContext.drawArrays(WebGLRenderingContext.TRIANGLES, 0, 3);
    }
       

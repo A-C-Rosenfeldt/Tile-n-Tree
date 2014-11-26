@@ -19,6 +19,7 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.googlecode.gwtgl.binding'/>
+  <inherits name="com.google.gwt.resources.Resources" />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='com.example.texture_mapping.client.Texture_mapping'/>
