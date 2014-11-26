@@ -16,6 +16,16 @@
  * limitations under the License.
  */
 
+/*
+ * Error Codes
+1280 GL_INVALID_ENUM      
+1281 GL_INVALID_VALUE     
+1282 GL_INVALID_OPERATION 
+1283 GL_STACK_OVERFLOW    
+1284 GL_STACK_UNDERFLOW   
+1285 GL_OUT_OF_MEMORY
+ */
+
 package com.example.texture_mapping.client;
 
 import com.google.gwt.resources.client.ClientBundle;
@@ -74,7 +84,7 @@ public class Texture_mapping implements EntryPoint {
        
        private void start() {
            initShaders();
-           glContext.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
+           glContext.clearColor(0.5f, 0.5f, 0.5f, 1.0f);
            glContext.clearDepth(1.0f);
            checkErrors();
            glContext.enable(WebGLRenderingContext.DEPTH_TEST);
@@ -85,11 +95,13 @@ public class Texture_mapping implements EntryPoint {
            checkErrors();
            //not supported everywhere// glContext.enable(WebGLRenderingContext.TEXTURE_2D);
            //checkErrors();
-           initTexture();
+           ///initTexture();
 
            drawScene();
    }       
        
+private Boolean texturesInited=false;
+
        private void initTexture() {
 		// TODO Auto-generated method stub
     	   checkErrors();
@@ -109,8 +121,10 @@ public class Texture_mapping implements EntryPoint {
         checkErrors(); //ERror
         glContext.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.LINEAR);
         checkErrors(); //ERror
-        glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+        //??glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
         checkErrors(); //ERror
+
+this.texturesInited=true;
 	}
 
        /**
@@ -165,10 +179,13 @@ public class Texture_mapping implements EntryPoint {
            glContext.enableVertexAttribArray(vertexPositionAttribute);
            
            checkErrors();
+
+if (this.texturesInited){
            this.textureCoordAttribute = glContext.getAttribLocation(shaderProgram, "aTextureCoord"); //"texPosition"); // ToDo check Identifier
            checkErrors(); // no error
            glContext.enableVertexAttribArray(this.textureCoordAttribute);
            checkErrors();      // Error
+}
    }
        
        private WebGLShader getShader(int type, String source) {
@@ -200,27 +217,39 @@ public class Texture_mapping implements EntryPoint {
                   1.0f, 1.0f,   // second vertex
                    1.0f, 0.0f  // third vertex
   };        
+
+if (texturesInited){
            vertexTextureCoordBuffer = glContext.createBuffer();
            glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, vertexTextureCoordBuffer);
            glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, Float32Array.create(verticesTexture ), WebGLRenderingContext.STATIC_DRAW);
            checkErrors();
+}
    }
        
        private void drawScene() {
            glContext.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
+           checkErrors();
            float[] perspectiveMatrix = createPerspectiveMatrix(45, 1, 0.1f, 1000);
+           checkErrors();
            WebGLUniformLocation uniformLocation = glContext.getUniformLocation(shaderProgram, "perspectiveMatrix");
+           checkErrors();
            glContext.uniformMatrix4fv(uniformLocation, false, perspectiveMatrix);
+           checkErrors();
            glContext.vertexAttribPointer(vertexPositionAttribute, 3, WebGLRenderingContext.FLOAT, false, 0, 0);
+           checkErrors();
            
+if (texturesInited){
            // Bind the texture to texture unit 0
            glContext.activeTexture(WebGLRenderingContext.TEXTURE0);
+           checkErrors();
            glContext.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture);
-
+           checkErrors();
            // Point the uniform sampler to texture unit 0
            glContext.uniform1i(textureUniform, 0);           
-           
+           checkErrors(); // No Error
+}
            glContext.drawArrays(WebGLRenderingContext.TRIANGLES, 0, 3);
+           checkErrors(); // Error
    }
       
        private float[] createPerspectiveMatrix(int fieldOfViewVertical, float aspectRatio, float minimumClearance, float maximumClearance) {
