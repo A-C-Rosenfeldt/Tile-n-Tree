@@ -38,6 +38,7 @@ import com.google.gwt.dev.resource.Resource;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.googlecode.gwtgl.array.Float32Array;
 import com.googlecode.gwtgl.binding.WebGLBuffer;
@@ -64,6 +65,23 @@ public class Texture_mapping implements EntryPoint {
        private WebGLTexture texture;       
 
        public void onModuleLoad() {
+    	   // HTML üben
+    	   Grid grid = new Grid(3, 3);
+           grid.setBorderWidth(1);
+    
+           int numRows = grid.getRowCount();
+           int numColumns = grid.getColumnCount();
+           for (int row = 0; row < numRows; row++)
+           {
+             for (int col = 0; col < numColumns; col++)
+             {
+                 grid.setWidget(row, col, new Image(PlaceholderImages.INSTANCE.myImage()));
+             }
+           }
+    
+           RootPanel.get().add(grid);
+    	   
+    	   // WebGL
                final Canvas webGLCanvas = Canvas.createIfSupported();
                webGLCanvas.setCoordinateSpaceHeight(500); // ToDo: AutoSize
                webGLCanvas.setCoordinateSpaceWidth(500);
@@ -95,7 +113,7 @@ public class Texture_mapping implements EntryPoint {
            checkErrors();
            //not supported everywhere// glContext.enable(WebGLRenderingContext.TEXTURE_2D);
            //checkErrors();
-           ///initTexture();
+           initTexture();
 
            drawScene();
    }       
@@ -175,7 +193,7 @@ this.texturesInited=true;
 
            glContext.useProgram(shaderProgram);
 
-           vertexPositionAttribute = glContext.getAttribLocation(shaderProgram, "vertexPosition");
+           this.vertexPositionAttribute = glContext.getAttribLocation(shaderProgram, "vertexPosition");
            glContext.enableVertexAttribArray(vertexPositionAttribute);
            
            checkErrors();
@@ -205,22 +223,26 @@ if (this.texturesInited){
        private void initBuffers() {
            vertexBuffer = glContext.createBuffer();
            glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, vertexBuffer);
+           //  , number of components, normalized    /* nur einzelne elemente adressieren (in Kombination verwenden!): */ ,stride , offet
+           glContext.vertexAttribPointer(this.vertexPositionAttribute, 4, glContext.FLOAT, false, 0, 0);
            float[] vertices = new float[]{
-                            0.0f,  1.0f,  -5.0f, // first vertex
-                           -1.0f, -1.0f,  -5.0f, // second vertex
-                            1.0f, -1.0f,  -5.0f  // third vertex
+                            0.0f,  1.0f,  -5.0f, 0.1f, // first vertex
+                           -1.0f, -1.0f,  -5.0f, 0.9f,// second vertex
+                            1.0f, -1.0f,  -5.0f,  0.5f,// third vertex
            };
            glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, Float32Array.create(vertices), WebGLRenderingContext.STATIC_DRAW);
            checkErrors();
            float[] verticesTexture = new float[]{
-                   0.0f,  1.0f,   // first vertex
+                   0.1f,  1.0f,   // first vertex
                   1.0f, 1.0f,   // second vertex
-                   1.0f, 0.0f  // third vertex
+                   1.0f, 0.1f  // third vertex
   };        
 
 if (texturesInited){
            vertexTextureCoordBuffer = glContext.createBuffer();
            glContext.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, vertexTextureCoordBuffer);
+           
+           glContext.vertexAttribPointer(this.textureCoordAttribute, 2, glContext.FLOAT, false, 0, 0);
            glContext.bufferData(WebGLRenderingContext.ARRAY_BUFFER, Float32Array.create(verticesTexture ), WebGLRenderingContext.STATIC_DRAW);
            checkErrors();
 }
