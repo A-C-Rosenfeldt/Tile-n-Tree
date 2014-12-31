@@ -168,6 +168,14 @@ function CallPapa() {
 <input type="file" id="filesCSV" name="files[]" multiple />
 <output id="listCSV"></output>
 
+// input & output
+<table id="append here">
+<tbody>
+<tr><td>mini<td> malis
+<tr><td>stic <td> table
+</tbody>
+</table>
+
 <script>
 function Only_process_CSV_files(type){
 	var allowed_type = ['application/vnd.ms-excel','text/plain','text/csv','text/tsv'];
@@ -178,6 +186,8 @@ function Only_process_CSV_files(type){
 	}
 	return false;
 }
+
+
 
   function handleFileSelectCSV(evt) {
     var files = evt.target.files; // FileList object
@@ -201,10 +211,43 @@ function Only_process_CSV_files(type){
           span.innerHTML = ['<pre>', e.target.result,
                             '<pre/>'].join('');
           document.getElementById('listCSV').insertBefore(span, null);
+          
+          	// csv -> table. ToDo: Make function with callbacks
+          	var inp_0=e.target.result;
+          	var out_t=document.getElementById('append here');
+          	var out_0=out_t.getElementsByTagName('TBODY')[0];
+          
+          	// body
+          	
+	      	var inp_lines=inp_0.split('\n');
+	      	
+	      	for (var i0 = 0; i0 < inp_lines.length; i0++) {
+	      	    var line=inp_lines[i0];
+	      	    
+	      	    var out_1=document.createElement("tr");
+	      	    out_0.appendChild(out_1);
+	      	    
+	      	    var fields=line.split(',');
+		      	for (var i1 = 0; i1 < fields.length; i1++) {
+		      	    var field=fields[i1];
+
+		      	    var out_2=document.createElement("td");
+		      	  	var textnode = document.createTextNode(field);
+		      		out_2.appendChild(textnode);
+		      	    out_1.appendChild(out_2);		      	    
+		      	    
+		      	}	      	    
+	      	}
+      	
+      	
+          
+	      	
+	      	
+	      	
+	      	
         };
       })(f);
 
-      // Read in the image file as a data URL.
       reader.readAsText(f);
     }
   }
