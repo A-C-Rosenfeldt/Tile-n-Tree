@@ -18,7 +18,7 @@
 
 
 
-	
+
 
 	<h2>First CSV test</h2>
 
@@ -85,7 +85,7 @@
 	// inserted into DOM
 	<table id="append_here">
 		<tbody>
-		<!-- 	<tr>
+			<!-- 	<tr>
 				<td>mini
 				<td>malis
 			<tr>
@@ -149,54 +149,64 @@
 
 								var out_2 = document.createElement("td");
 								var t = field.substring(0, 1)
-								if (i0==0) {
+								if (i0 == 0) {
 									out_2.className = 'C';
 									out_2.onclick = function() {
 										var we = this.parentNode.parentNode.rows;
-										for (we_i = 0; we_i < we.length; we_i++) {
-											var cs = we[we_i].cells;
-											if (cs.length <= this.cellIndex) {
-												continue;
-											}
-											var we_e = cs[this.cellIndex];
+										var balance = 0;
+										var t0 = 'N';
+										for ( var t1 = 0; balance >= t1; t1++) {
+											for ( var we_i = 0; we_i < we.length; we_i++) {
+												var cs = we[we_i].cells;
+												if (cs.length <= this.cellIndex) {
+													continue;
+												}
+												var we_e = cs[this.cellIndex];
 
-											var t0;
-											switch (we_e.className) {
-											case 'N':
-												t0 = 'J';
-												break;
-											case 'J':
-												t0 = 'N';
-												break;
-											default:
-												continue;
-											}
-											we_e.className = t0;
-											we_e.innerHTML = t0;
-
-										}
-									};
-								} else {
-									if (i1<=1) {
-										out_2.className = 'R';
-										out_2.onclick = function() {
-											var we = this.parentNode.cells;
-											for (we_i = 0; we_i < we.length; we_i++) {
-												var we_e = we[we_i];
-
-												var t0;
 												switch (we_e.className) {
 												case 'N':
-													t0 = 'J';
+													balance++;
 													break;
 												case 'J':
-													t0 = 'N';
+													balance--;
 													break;
 												default:
 													continue;
 												}
 												we_e.className = t0;
 												we_e.innerHTML = t0;
+
+											}
+
+											t0 = 'J';
+										}
+									};
+								} else {
+									if (i1 <= 1) {
+										out_2.className = 'R';
+										
+										out_2.onclick = function() {
+											var we = this.parentNode.cells;
+											var balance = 0;
+											var t0 = 'N';
+											for ( var t1 = 0; balance >= t1; t1++) {
+												for ( var we_i = 0; we_i < we.length; we_i++) {
+													var we_e = we[we_i];
+													switch (we_e.className) {
+													case 'N':
+														balance++;
+														break;
+													case 'J':
+														balance--;
+														break;
+													default:
+														continue;
+													}
+													we_e.className = t0;
+													we_e.innerHTML = t0;
+												}
+
+												t0 = 'J';
 											}
 										};
 									} else {
@@ -232,29 +242,36 @@
 							}
 						} // for
 
+						
 						out_0.rows[0].cells[1].onclick = function() {
 							var we = this.parentNode.parentNode.rows;
-							for (we_i = 0; we_i < we.length; we_i++) {
-								var cs = we[we_i].cells;
-								for (we_0 = 2; we_0 < cs.length; we_0++) {
-									var we_e = cs[we_0];
+							var balance = 0;
+							var t0 = 'N';
+							for ( var t1 = 0; balance >= t1; t1++) {
+								for ( var we_i = 0; we_i < we.length; we_i++) {
+									var cs = we[we_i].cells;
+									for ( var we_0 = 2; we_0 < cs.length; we_0++) {
+										var we_e = cs[we_0];
 
-									var t0;
-									switch (we_e.className) {
-									case 'N':
-										t0 = 'J';
-										break;
-									case 'J':
-										t0 = 'N';
-										break;
-									default:
-										continue;
+										switch (we_e.className) {
+										case 'N':
+											balance++;
+											break;
+										case 'J':
+											balance--;
+											break;
+										default:
+											continue;
+										}
+										we_e.className = t0;
+										we_e.innerHTML = t0;
 									}
-									we_e.className = t0;
-									we_e.innerHTML = t0;
 								}
+
+								t0 = 'J';
 							}
 						};
+						
 
 					};
 				})(f);
@@ -400,7 +417,7 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 	<pre id="raw"></pre>
 	</p>
 
-<h2>CheckBox</h2>
+	<h2>CheckBox</h2>
 
 	<style type="text/css">
 input.switch {
