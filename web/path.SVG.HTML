@@ -323,7 +323,29 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 				<td>malis
 			<tr>
 				<td>stic
-				<td>table
+				<td onclick="				
+					var we=this.parentNode.parentNode.rows;
+				for (we_i=0;we_i<we.length;we_i++){
+					var cs=we[we_i].cells;
+					for (we_0=2;we_0<cs.length;we_0++){
+					var we_e=cs[we_0];
+					
+						var t0;
+						switch (we_e.className) {
+						case 'N':
+							t0 = 'J';
+							break;
+						case 'J':
+							t0 = 'N';
+							break;
+						default:
+							continue;
+						}
+						we_e.className = t0;
+						we_e.innerHTML = t0;			
+					}
+				}				
+				">All table
 		</tbody>
 	</table>
 
