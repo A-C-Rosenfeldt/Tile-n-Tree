@@ -21,6 +21,11 @@ document.getElementById("me").innerHTML=myURL;
 
 <style type="text/css">
 
+input.switch
+{
+display: none;
+}
+
 input.switch:empty ~ label
 {
 	position: relative;
@@ -52,6 +57,28 @@ input.switch:checked ~ label:before
 	background-color: #393;
 }
 
+
+table#append_here tbody tr td.H
+{
+	background-color: #393;
+}
+/*
+table#append_here
+{
+	background-color: #394;
+}
+
+geht
+tr td.H
+{
+	background-color: #395;
+}
+
+tbody tr td.H
+{
+	background-color: #396;
+}
+*/
 </style>
 
 <form action="#" method="get">
@@ -277,7 +304,7 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 <output id="listCSV"></output>
 
 // input & output
-<table id="append here">
+<table id="append_here">
 <tbody>
 <tr><td>mini<td> malis
 <tr><td>stic <td> table
@@ -322,7 +349,7 @@ function Only_process_CSV_files(type){
           
           	// csv -> table. ToDo: Make function with callbacks
           	var inp_0=e.target.result;
-          	var out_t=document.getElementById('append here');
+          	var out_t=document.getElementById('append_here');
           	var out_0=out_t.getElementsByTagName('TBODY')[0];
           
           	// body
@@ -340,8 +367,10 @@ function Only_process_CSV_files(type){
 		      	    var field=fields[i1];
 
 		      	    var out_2=document.createElement("td");
+		      	  out_2.className = field.substring(0,1);
 		      	  	var textnode = document.createTextNode(field);
 		      		out_2.appendChild(textnode);
+		      		
 		      	    out_1.appendChild(out_2);		      	    
 		      	    
 		      	}	      	    
