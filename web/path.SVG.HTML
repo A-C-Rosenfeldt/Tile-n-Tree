@@ -9,7 +9,7 @@
 
 	<h2>My first SVG</h2>
 
-	<table id="fat">
+	<table id="source">
 		<tr>
 			<th>Month</th>
 			<th>Savings</th>
@@ -26,9 +26,46 @@
 	<script>
 function Table_To_CSV() {
     document.getElementById("fat");
+
     
-     uri = "Arne ,Heinrich \nIlse ,Gesa ";
-     res = encodeURI(uri);
+  	// csv <- table. ToDo: Make function with callbacks
+  	
+  	var out_0="";
+  	var inp_t=document.getElementById('source');
+  	var inp_0=inp_t.getElementsByTagName('TBODY')[0];
+  
+  	// body
+  	
+  	//var inp_lines=inp_0.split('\n');
+  	inp_1=inp_0.childNodes;
+  	for (var i0 = 0; i0 < inp_1.length; i0++) {
+  		var line=inp_1[i0];
+
+  	   	if (line.nodeType!=1){
+  	   		continue;
+  	   	}
+  		
+  		
+  	    var out_1="";
+  	    
+  	    var fields=line.childNodes;
+      	for (var i1 = 0; i1 < fields.length; i1++) {
+      	    var field=fields[i1];
+
+      	   	if (field.nodeType!=1){
+      	   		continue;
+      	   	}
+      	   	
+  	    	out_1+=","+field.innerHTML;
+      	}
+      	
+      	out_0+='\n'+out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
+  	}
+    
+     //old uri = "Arne ,Heinrich \nIlse ,Gesa ";
+     
+     
+     res = encodeURI(out_0.substring(1));
     document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'+res;
     var a = document.getElementById("csv_a");
     a.href ='data:text/csv;charset=utf-8,'+res;
