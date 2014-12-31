@@ -6,28 +6,25 @@
 </head>
 <body>
 
-<h2> WhoAmI</h2>
+	<h2>WhoAmI</h2>
 
-<p id="me"></p>
+	<p id="me"></p>
 
-<script type="text/javascript">
-var myURL = document.scripts[0].src;
-document.getElementById("me").innerHTML=myURL;
-</script>
+	<script type="text/javascript">
+		var myURL = document.scripts[0].src;
+		document.getElementById("me").innerHTML = myURL;
+	</script>
 
 
 
-<h2> CheckBox </h2>
+	<h2>CheckBox</h2>
 
-<style type="text/css">
-
-input.switch
-{
-display: none;
+	<style type="text/css">
+input.switch {
+	display: none;
 }
 
-input.switch:empty ~ label
-{
+input.switch:empty ~ label {
 	position: relative;
 	float: left;
 	line-height: 1.6em;
@@ -37,10 +34,7 @@ input.switch:empty ~ label
 	user-select: none;
 }
 
-
-
-input.switch:empty ~ label:before
-{
+input.switch:empty ~ label:before {
 	position: absolute;
 	display: block;
 	top: 0;
@@ -52,16 +46,30 @@ input.switch:empty ~ label:before
 	border-radius: 0.3em;
 }
 
-input.switch:checked ~ label:before
-{
+input.switch:checked ~ label:before {
 	background-color: #393;
 }
 
-
-table#append_here tbody tr td.H
-{
-	background-color: #393;
+table#append_here tbody tr td {
+	background-color: #CC0;
 }
+
+table#append_here tbody tr td.0 {
+	background-color: #999;
+}
+
+table#append_here tbody tr td.N {
+	background-color: #F00;
+}
+
+table#append_here tbody tr td.J {
+	background-color: #0F0;
+}
+
+table#append_here tbody tr td.X {
+	background-color: #999;
+}
+
 /*
 table#append_here
 {
@@ -81,24 +89,24 @@ tbody tr td.H
 */
 </style>
 
-<form action="#" method="get">
+	<form action="#" method="get">
 
-<div>
-	<input type="checkbox" id="switch1" name="switch1" class="switch" />
-	<label for="switch1">first switch</label>
-</div>
+		<div>
+			<input type="checkbox" id="switch1" name="switch1" class="switch" />
+			<label for="switch1">first switch</label>
+		</div>
 
-<div>
-<input type="checkbox" id="switch2" name="switch2" class="switch" checked="checked" />
-<label for="switch2">second switch</label>
-</div>
+		<div>
+			<input type="checkbox" id="switch2" name="switch2" class="switch"
+				checked="checked" /> <label for="switch2">second switch</label>
+		</div>
 
-<div>	
-<input type="checkbox" id="switch3" name="switch3" class="switch" />
-<label for="switch3">third switch</label>
-</div>
+		<div>
+			<input type="checkbox" id="switch3" name="switch3" class="switch" />
+			<label for="switch3">third switch</label>
+		</div>
 
-</form>
+	</form>
 
 	<h2>table as test data</h2>
 
@@ -114,88 +122,85 @@ tbody tr td.H
 	</table>
 
 
-<h2> First CSV test </h2>
+	<h2>First CSV test</h2>
 
 	<script>
-function Table_To_CSV() {
-    document.getElementById("fat");
+		function Table_To_CSV() {
+			document.getElementById("fat");
 
-    
-  	// csv <- table. ToDo: Make function with callbacks
-  	
-  	var out_0="";
-  	var inp_t=document.getElementById('source');
-  	var inp_0=inp_t.getElementsByTagName('TBODY')[0];
-  
-  	// body
-  	
-  	//var inp_lines=inp_0.split('\n');
-  	inp_1=inp_0.childNodes;
-  	for (var i0 = 0; i0 < inp_1.length; i0++) {
-  		var line=inp_1[i0];
+			// csv <- table. ToDo: Make function with callbacks
 
-  	   	if (line.nodeType!=1){
-  	   		continue;
-  	   	}
-  		
-  		
-  	    var out_1="";
-  	    
-  	    var fields=line.childNodes;
-      	for (var i1 = 0; i1 < fields.length; i1++) {
-      	    var field=fields[i1];
+			var out_0 = "";
+			var inp_t = document.getElementById('source');
+			var inp_0 = inp_t.getElementsByTagName('TBODY')[0];
 
-      	   	if (field.nodeType!=1){
-      	   		continue;
-      	   	}
-      	   	
-  	    	out_1+=","+field.innerHTML;
-      	}
-      	
-      	out_0+='\n'+out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
-  	}
-    
-     //old uri = "Arne ,Heinrich \nIlse ,Gesa ";
-     
-     
-     res = encodeURI(out_0.substring(1));
-    document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'+res;
-    var a = document.getElementById("csv_a");
-    a.href ='data:text/csv;charset=utf-8,'+res;
-}
-</script>
-	
+			// body
+
+			//var inp_lines=inp_0.split('\n');
+			inp_1 = inp_0.childNodes;
+			for ( var i0 = 0; i0 < inp_1.length; i0++) {
+				var line = inp_1[i0];
+
+				if (line.nodeType != 1) {
+					continue;
+				}
+
+				var out_1 = "";
+
+				var fields = line.childNodes;
+				for ( var i1 = 0; i1 < fields.length; i1++) {
+					var field = fields[i1];
+
+					if (field.nodeType != 1) {
+						continue;
+					}
+
+					out_1 += "," + field.innerHTML;
+				}
+
+				out_0 += '\n' + out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
+			}
+
+			//old uri = "Arne ,Heinrich \nIlse ,Gesa ";
+
+			res = encodeURI(out_0.substring(1));
+			document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'
+					+ res;
+			var a = document.getElementById("csv_a");
+			a.href = 'data:text/csv;charset=utf-8,' + res;
+		}
+	</script>
+
 	<button onclick="Table_To_CSV()">TableToCSV</button>
 
-<p id="csv"></p>
-<a id="csv_a" download="somedata_dynamic.csv"
-href="placeholer"
-> click me to save last generated csv</a>
+	<p id="csv"></p>
+	<a id="csv_a" download="somedata_dynamic.csv" href="placeholer">
+		click me to save last generated csv</a>
 
-<p>hard coded anchor
-	<a download="somedata.csv"
-		href="data:application/csv;charset=utf-8,Arne,Heinrich%0AIlse,Gesa">Example</a>
+	<p>
+		hard coded anchor <a download="somedata.csv"
+			href="data:application/csv;charset=utf-8,Arne,Heinrich%0AIlse,Gesa">Example</a>
 	<pre id="raw"></pre>
 	</p>
-	
-	
-<h2> SVG </h2>
+
+
+	<h2>SVG</h2>
 
 	<p id="demo"></p>
 
 	<script>
-function myFunction() {
-    var uri = "my test.asp?name=ståle&car=saab";
-    var res = encodeURI(uri);
-    document.getElementById("demo").innerHTML = res;
-    
-     uri = "Arne ,Heinrich \nIlse ,Gesa ";
-     res = encodeURI(uri);
-    document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'+res;
-    
-    
-}
-</script>
+		function myFunction() {
+			var uri = "my test.asp?name=ståle&car=saab";
+			var res = encodeURI(uri);
+			document.getElementById("demo").innerHTML = res;
+
+			uri = "Arne ,Heinrich \nIlse ,Gesa ";
+			res = encodeURI(uri);
+			document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'
+					+ res;
+
+		}
+	</script>
 
 
 
@@ -215,7 +220,7 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 
 
-<h2> FileList </h2>
+	<h2>FileList</h2>
 
 	<input type="file" id="files" name="files[]" multiple />
 	<output id="list"></output>
@@ -223,174 +228,199 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 
 	<script>
-  function handleFileSelect(evt) {
-    var files = evt.target.files; // FileList object
+		function handleFileSelect(evt) {
+			var files = evt.target.files; // FileList object
 
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    var f;
-    for (var i = 0; f = files[i]; i++) {
-      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-                  f.size, ' bytes, last modified: ',
-                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                  '</li>');
-    }
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-    
-    var reader = new FileReader();
-    
- // Closure to capture the file information.
-    reader.onload = (function(theFile) {
-      return function(e) {
-   			 document.getElementById('raw').innerHTML = e.target.result;
-      	};
-      
-  })(f);
- 
-    reader.readAsText(f);
-  }
+			// files is a FileList of File objects. List some properties.
+			var output = [];
+			var f;
+			for ( var i = 0; f = files[i]; i++) {
+				output.push('<li><strong>', escape(f.name), '</strong> (',
+						f.type || 'n/a', ') - ', f.size,
+						' bytes, last modified: ',
+						f.lastModifiedDate ? f.lastModifiedDate
+								.toLocaleDateString() : 'n/a', '</li>');
+			}
+			document.getElementById('list').innerHTML = '<ul>'
+					+ output.join('') + '</ul>';
 
-  document.getElementById('files').addEventListener('change', handleFileSelect, false);
-</script>
+			var reader = new FileReader();
 
+			// Closure to capture the file information.
+			reader.onload = (function(theFile) {
+				return function(e) {
+					document.getElementById('raw').innerHTML = e.target.result;
+				};
 
+			})(f);
 
+			reader.readAsText(f);
+		}
 
-
-<h2> Image </h2>
-
-<input type="file" id="filesImage" name="files[]" multiple />
-<output id="listImage"></output>
-
-<script>
-  function handleFileSelectImage(evt) {
-    var files = evt.target.files; // FileList object
-
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
-
-      // Only process image files.
-      if (!f.type.match('image.*')) {
-        continue;
-      }
-
-      var reader = new FileReader();
-
-      // Closure to capture the file information.
-      reader.onload = (function(theFile) {
-        return function(e) {
-          // Render thumbnail.
-          var span = document.createElement('span');
-          span.innerHTML = ['<img class="thumb" src="', e.target.result,
-                            '" title="', escape(theFile.name), '"/>'].join('');
-          document.getElementById('listImage').insertBefore(span, null);
-        };
-      })(f);
-
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(f);
-    }
-  }
-
-  document.getElementById('filesImage').addEventListener('change', handleFileSelectImage, false);
-</script>
+		document.getElementById('files').addEventListener('change',
+				handleFileSelect, false);
+	</script>
 
 
 
 
-<h2> CSV </h2>
 
-<input type="file" id="filesCSV" name="files[]" multiple />
-<output id="listCSV"></output>
+	<h2>Image</h2>
 
-// input & output
-<table id="append_here">
-<tbody>
-<tr><td>mini<td> malis
-<tr><td>stic <td> table
-</tbody>
-</table>
+	<input type="file" id="filesImage" name="files[]" multiple />
+	<output id="listImage"></output>
 
-<script>
-function Only_process_CSV_files(type){
-	var allowed_type = ['application/vnd.ms-excel','text/plain','text/csv','text/tsv'];
-	
-	for (var i = 0; i < allowed_type.length; i++) {
-	    if (type == allowed_type[i])
-	        return true;
-	}
-	return false;
-}
+	<script>
+		function handleFileSelectImage(evt) {
+			var files = evt.target.files; // FileList object
+
+			// Loop through the FileList and render image files as thumbnails.
+			for ( var i = 0, f; f = files[i]; i++) {
+
+				// Only process image files.
+				if (!f.type.match('image.*')) {
+					continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+					return function(e) {
+						// Render thumbnail.
+						var span = document.createElement('span');
+						span.innerHTML = [ '<img class="thumb" src="',
+								e.target.result, '" title="',
+								escape(theFile.name), '"/>' ].join('');
+						document.getElementById('listImage').insertBefore(span,
+								null);
+					};
+				})(f);
+
+				// Read in the image file as a data URL.
+				reader.readAsDataURL(f);
+			}
+		}
+
+		document.getElementById('filesImage').addEventListener('change',
+				handleFileSelectImage, false);
+	</script>
 
 
 
-  function handleFileSelectCSV(evt) {
-    var files = evt.target.files; // FileList object
 
-    // Loop through the FileList and render image files as thumbnails.
-    for (var i = 0, f; f = files[i]; i++) {
+	<h2>CSV</h2>
 
-    
-    	
-    if (!Only_process_CSV_files(f.type)){
-        continue;
-      }
+	<input type="file" id="filesCSV" name="files[]" multiple />
+	<output id="listCSV"></output>
 
-      var reader = new FileReader();
+	// input & output
+	<table id="append_here">
+		<tbody>
+			<tr>
+				<td>mini
+				<td>malis
+			<tr>
+				<td>stic
+				<td>table
+		</tbody>
+	</table>
 
-      // Closure to capture the file information.
-      reader.onload = (function(theFile) {
-        return function(e) {
-          // Render thumbnail.
-          var span = document.createElement('span');
-          span.innerHTML = ['<pre>', e.target.result,
-                            '<pre/>'].join('');
-          document.getElementById('listCSV').insertBefore(span, null);
-          
-          	// csv -> table. ToDo: Make function with callbacks
-          	var inp_0=e.target.result;
-          	var out_t=document.getElementById('append_here');
-          	var out_0=out_t.getElementsByTagName('TBODY')[0];
-          
-          	// body
-          	
-	      	var inp_lines=inp_0.split('\n');
-	      	
-	      	for (var i0 = 0; i0 < inp_lines.length; i0++) {
-	      	    var line=inp_lines[i0];
-	      	    
-	      	    var out_1=document.createElement("tr");
-	      	    out_0.appendChild(out_1);
-	      	    
-	      	    var fields=line.split(',');
-		      	for (var i1 = 0; i1 < fields.length; i1++) {
-		      	    var field=fields[i1];
+	<script>
+		function Only_process_CSV_files(type) {
+			var allowed_type = [ 'application/vnd.ms-excel', 'text/plain',
+					'text/csv', 'text/tsv' ];
 
-		      	    var out_2=document.createElement("td");
-		      	  out_2.className = field.substring(0,1);
-		      	  	var textnode = document.createTextNode(field);
-		      		out_2.appendChild(textnode);
-		      		
-		      	    out_1.appendChild(out_2);		      	    
-		      	    
-		      	}	      	    
-	      	}
-      	
-      	
-          
-	      	
-	      	
-	      	
-	      	
-        };
-      })(f);
+			for ( var i = 0; i < allowed_type.length; i++) {
+				if (type == allowed_type[i])
+					return true;
+			}
+			return false;
+		}
 
-      reader.readAsText(f);
-    }
-  }
+		function handleFileSelectCSV(evt) {
+			var files = evt.target.files; // FileList object
 
-  document.getElementById('filesCSV').addEventListener('change', handleFileSelectCSV, false);
-</script>
+			// Loop through the FileList and render image files as thumbnails.
+			for ( var i = 0, f; f = files[i]; i++) {
+
+				if (!Only_process_CSV_files(f.type)) {
+					continue;
+				}
+
+				var reader = new FileReader();
+
+				// Closure to capture the file information.
+				reader.onload = (function(theFile) {
+					return function(e) {
+						// Render thumbnail.
+						var span = document.createElement('span');
+						span.innerHTML = [ '<pre>', e.target.result, '<pre/>' ]
+								.join('');
+						document.getElementById('listCSV').insertBefore(span,
+								null);
+
+						// csv -> table. ToDo: Make function with callbacks
+						var inp_0 = e.target.result;
+						var out_t = document.getElementById('append_here');
+						var out_0 = out_t.getElementsByTagName('TBODY')[0];
+
+						// body
+
+						var inp_lines = inp_0.split('\n');
+
+						for ( var i0 = 0; i0 < inp_lines.length; i0++) {
+							var line = inp_lines[i0];
+
+							var out_1 = document.createElement("tr");
+							out_0.appendChild(out_1);
+
+							var fields = line.split(',');
+							for ( var i1 = 0; i1 < fields.length; i1++) {
+								var field = fields[i1];
+
+								var out_2 = document.createElement("td");
+								var t = field.substring(0, 1)
+								if (t.match(/[A-Z]/i)) {
+									out_2.className = t;
+									out_2.onclick = function() {
+										var t0;
+										switch (this.className) {
+										case 'N':
+											t0 = 'J';
+											break;
+										case 'J':
+											t0 = 'X';
+											break;
+										case 'X':
+											t0 = 'N';
+											break;
+										default:
+											return;
+										}
+										this.className = t0;
+										this.innerHTML = t0;
+									};
+
+								}
+								var textnode = document.createTextNode(field);
+								out_2.appendChild(textnode);
+
+								out_1.appendChild(out_2);
+
+							}
+						}
+
+					};
+				})(f);
+
+				reader.readAsText(f);
+			}
+		}
+
+		document.getElementById('filesCSV').addEventListener('change',
+				handleFileSelectCSV, false);
+	</script>
 
 </body>
 </html>
