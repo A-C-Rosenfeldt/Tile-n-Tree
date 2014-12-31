@@ -30,13 +30,26 @@ function Table_To_CSV() {
      uri = "Arne ,Heinrich \nIlse ,Gesa ";
      res = encodeURI(uri);
     document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'+res;
-  
+    var a = document.getElementById("csv_a");
+    a.href ='data:text/csv;charset=utf-8,'+res;
 }
 </script>
-
-	<button onclick="PapaParse">TableToCSV</button>
+	
 	<button onclick="Table_To_CSV()">TableToCSV</button>
-	<button onclick="myFunction()">Try encodeURI</button>
+
+<p id="csv"></p>
+<a id="csv_a" download="somedata_dynamic.csv"
+href="placeholer"
+> click me to save last generated csv</a>
+
+<p>hard coded anchor
+	<a download="somedata.csv"
+		href="data:application/csv;charset=utf-8,Arne,Heinrich%0AIlse,Gesa">Example</a>
+	<pre id="raw"></pre>
+	</p>
+	
+	
+<h2> SVG </h2>
 
 	<p id="demo"></p>
 
@@ -55,9 +68,7 @@ function myFunction() {
 </script>
 
 
-	<a download="somedata.csv"
-		href="data:application/csv;charset=utf-8,Arne,Heinrich%0AIlse,Gesa">Example</a>
-	<pre id="raw"></pre>
+
 
 
 
@@ -72,13 +83,7 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 			fill="yellow" />
 </svg>
 
-	<script>
-function CallPapa() {
-    choose;
-    
-    
-}
-</script>
+
 
 <h2> FileList </h2>
 
