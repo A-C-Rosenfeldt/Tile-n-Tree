@@ -2,12 +2,78 @@
 <head>
 <title>Various Test Beds for simple data manipulation for
 	Dummies</title>
-<script src="papaparse.js" type="text/javascript"></script>
+
 </head>
 <body>
 
+<h2> WhoAmI</h2>
 
-	<h2>My first SVG</h2>
+<p id="me"></p>
+
+<script type="text/javascript">
+var myURL = document.scripts[0].src;
+document.getElementById("me").innerHTML=myURL;
+</script>
+
+
+
+<h2> CheckBox </h2>
+
+<style type="text/css">
+
+input.switch:empty ~ label
+{
+	position: relative;
+	float: left;
+	line-height: 1.6em;
+	text-indent: 4em;
+	margin: 0.2em 0;
+	cursor: pointer;
+	user-select: none;
+}
+
+
+
+input.switch:empty ~ label:before
+{
+	position: absolute;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	content: ' ';
+	width: 3.6em;
+	background-color: #c33;
+	border-radius: 0.3em;
+}
+
+input.switch:checked ~ label:before
+{
+	background-color: #393;
+}
+
+</style>
+
+<form action="#" method="get">
+
+<div>
+	<input type="checkbox" id="switch1" name="switch1" class="switch" />
+	<label for="switch1">first switch</label>
+</div>
+
+<div>
+<input type="checkbox" id="switch2" name="switch2" class="switch" checked="checked" />
+<label for="switch2">second switch</label>
+</div>
+
+<div>	
+<input type="checkbox" id="switch3" name="switch3" class="switch" />
+<label for="switch3">third switch</label>
+</div>
+
+</form>
+
+	<h2>table as test data</h2>
 
 	<table id="source">
 		<tr>
