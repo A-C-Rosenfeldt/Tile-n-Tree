@@ -8,7 +8,8 @@
 
 	<h2>WhoAmI</h2>
 
-	<p id="me"></p>
+	<p id="me">alt</p>
+
 
 	<script type="text/javascript">
 		var myURL = document.scripts[0].src;
@@ -311,7 +312,7 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 	<h2>CSV</h2>
 
-	<input type="file" id="filesCSV" name="files[]" multiple />
+	<input type="file" id="filesCSV" name="files[]" />
 	<output id="listCSV"></output>
 
 	// input & output
@@ -381,27 +382,80 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 								var out_2 = document.createElement("td");
 								var t = field.substring(0, 1)
-								if (t.match(/[A-Z]/i)) {
-									out_2.className = t;
+								if (t == 'S') {
+									out_2.className = 'C';
 									out_2.onclick = function() {
-										var t0;
-										switch (this.className) {
-										case 'N':
-											t0 = 'J';
-											break;
-										case 'J':
-											t0 = 'X';
-											break;
-										case 'X':
-											t0 = 'N';
-											break;
-										default:
-											return;
+										var we=this.parentNode.parentNode.rows;
+										for (we_i=0;we_i<we.length;we_i++){
+											var cs=we[we_i].cells;
+											if (cs.length<=this.cellIndex){
+												continue;
+											}
+											var we_e=cs[this.cellIndex];
+											
+												var t0;
+												switch (we_e.className) {
+												case 'N':
+													t0 = 'J';
+													break;
+												case 'J':
+													t0 = 'N';
+													break;
+												default:
+													continue;
+												}
+												we_e.className = t0;
+												we_e.innerHTML = t0;
+											
 										}
-										this.className = t0;
-										this.innerHTML = t0;
-									};
+									};									
+								} else {
+									if (t == '0') {
+										out_2.className = 'R';
+										out_2.onclick = function() {
+											var we=this.parentNode.cells;
+											for (we_i=0;we_i<we.length;we_i++){
+												var we_e=we[we_i];
+												
+													var t0;
+													switch (we_e.className) {
+													case 'N':
+														t0 = 'J';
+														break;
+													case 'J':
+														t0 = 'N';
+														break;
+													default:
+														continue;
+													}
+													we_e.className = t0;
+													we_e.innerHTML = t0;
+											}
+										};
+									} else {
 
+										if (t.match(/[A-Z]/i)) {
+											out_2.className = t;
+											out_2.onclick = function() {
+												var t0;
+												switch (this.className) {
+												case 'N':
+													t0 = 'J';
+													break;
+												case 'J':
+													t0 = 'X';
+													break;
+												case 'X':
+													t0 = 'N';
+													break;
+												default:
+													return;
+												}
+												this.className = t0;
+												this.innerHTML = t0;
+											};
+										}
+									}
 								}
 								var textnode = document.createTextNode(field);
 								out_2.appendChild(textnode);
