@@ -6,7 +6,6 @@
 
 
 <style type="text/css">
-
 table#append_here tbody tr td {
 	background-color: #CC0;
 }
@@ -26,7 +25,6 @@ table#append_here tbody tr td.J {
 table#append_here tbody tr td.X {
 	background-color: #999;
 }
-
 </style>
 </head>
 
@@ -43,68 +41,68 @@ table#append_here tbody tr td.X {
 	</table>
 
 	<script>
-	
-	// Production steps of ECMA-262, Edition 5, 15.4.4.18
-	// Reference: http://es5.github.io/#x15.4.4.18
-	if (!Array.prototype.forEach) {
+		// Production steps of ECMA-262, Edition 5, 15.4.4.18
+		// Reference: http://es5.github.io/#x15.4.4.18
+		if (!Array.prototype.forEach) {
 
-	  Array.prototype.forEach = function(callback, thisArg) {
+			Array.prototype.forEach = function(callback, thisArg) {
 
-	    var T, k;
+				var T, k;
 
-	    if (this == null) {
-	      throw new TypeError(' this is null or not defined');
-	    }
+				if (this == null) {
+					throw new TypeError(' this is null or not defined');
+				}
 
-	    // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
-	    var O = Object(this);
+				// 1. Let O be the result of calling ToObject passing the |this| value as the argument.
+				var O = Object(this);
 
-	    // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
-	    // 3. Let len be ToUint32(lenValue).
-	    var len = O.length >>> 0;
+				// 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
+				// 3. Let len be ToUint32(lenValue).
+				var len = O.length >>> 0;
 
-	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
-	    // See: http://es5.github.com/#x9.11
-	    if (typeof callback !== "function") {
-	      throw new TypeError(callback + ' is not a function');
-	    }
+				// 4. If IsCallable(callback) is false, throw a TypeError exception.
+				// See: http://es5.github.com/#x9.11
+				if (typeof callback !== "function") {
+					throw new TypeError(callback + ' is not a function');
+				}
 
-	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-	    if (arguments.length > 1) {
-	      T = thisArg;
-	    }
+				// 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+				if (arguments.length > 1) {
+					T = thisArg;
+				}
 
-	    // 6. Let k be 0
-	    k = 0;
+				// 6. Let k be 0
+				k = 0;
 
-	    // 7. Repeat, while k < len
-	    while (k < len) {
+				// 7. Repeat, while k < len
+				while (k < len) {
 
-	      var kValue;
+					var kValue;
 
-	      // a. Let Pk be ToString(k).
-	      //   This is implicit for LHS operands of the in operator
-	      // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
-	      //   This step can be combined with c
-	      // c. If kPresent is true, then
-	      if (k in O) {
+					// a. Let Pk be ToString(k).
+					//   This is implicit for LHS operands of the in operator
+					// b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
+					//   This step can be combined with c
+					// c. If kPresent is true, then
+					if (k in O) {
 
-	        // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
-	        kValue = O[k];
+						// i. Let kValue be the result of calling the Get internal method of O with argument Pk.
+						kValue = O[k];
 
-	        // ii. Call the Call internal method of callback with T as the this value and
-	        // argument list containing kValue, k, and O.
-	        callback.call(T, kValue, k, O);
-	      }
-	      // d. Increase k by 1.
-	      k++;
-	    }
-	    // 8. return undefined
-	  };
-	}
-	
-	///////////////
-	
+						// ii. Call the Call internal method of callback with T as the this value and
+						// argument list containing kValue, k, and O.
+						callback.call(T, kValue, k, O);
+					}
+					// d. Increase k by 1.
+					k++;
+				}
+				// 8. return undefined
+			};
+		}
+
+		///////////////
+
+		// http://stackoverflow.com/questions/6654351/check-file-uploaded-is-in-csv-format
 		function Only_process_CSV_files(type) {
 			var allowed_type = [ 'application/vnd.ms-excel', 'text/plain',
 					'text/csv', 'text/tsv' ];
@@ -116,6 +114,7 @@ table#append_here tbody tr td.X {
 			return false;
 		}
 
+		// http://www.html5rocks.com/de/tutorials/file/dndfiles/
 		function handleFileSelectCSV(evt) {
 			var file = evt.target.files[0]; // Multiple files would need a closure some lines down
 
@@ -130,10 +129,8 @@ table#append_here tbody tr td.X {
 		document.getElementById('filesCSV').addEventListener('change',
 				handleFileSelectCSV, false);
 
+		// Since we do not allow " to have a special meaning, we do not need http://papaparse.com/
 		function convert_csv_to_HTML(e) {
-
-			var span = document.createElement('span');
-			span.innerHTML = [ '<pre>', e.target.result, '<pre/>' ].join('');
 
 			var inp_0 = e.target.result;
 			var out_t = document.getElementById('append_here');
@@ -275,7 +272,6 @@ table#append_here tbody tr td.X {
 				}
 			};
 		}
-		
 	</script>
 
 
@@ -321,32 +317,28 @@ table#append_here tbody tr td.X {
 			//old uri = "Arne ,Heinrich \nIlse ,Gesa ";
 
 			res = encodeURI(out_0.substring(1));
-			document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'
-					+ res;
+			//document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'
+			//		+ res;
 			// proven, but two click
 			//var a = document.getElementById("csv_a");
 			//a.href =
 			//window.open( // one click
 			//'data:text/csv;charset=utf-8,' + res,"Modified.CSV");
 			// but file name is empty
-			
-			// http://stackoverflow.com/questions/7034754/how-to-set-a-file-name-using-window-open			
-			var downloadLink = document.createElement("a");
-			downloadLink.href = 'data:text/csv;charset=utf-8,' + res;
-			downloadLink.download = "data.csv";
 
-			document.body.appendChild(downloadLink); // ToDo: Static HTML
+			// http://stackoverflow.com/questions/7034754/how-to-set-a-file-name-using-window-open			
+			var downloadLink = document.getElementById("csv_a");//createElement("a");
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + res;
 			downloadLink.click();
-			document.body.removeChild(downloadLink); // fails. ToDo: Display:none
 
 		}
 	</script>
 
 	<button onclick="Table_To_CSV()">TableToCSV</button>
 
-	<p id="csv"></p>
-	<!--  a id="csv_a" download="somedata_dynamic.csv" href="placeholer" >
-		click me to save last generated csv</a -->
+
+	<a id="csv_a" download="somedata_dynamic.csv" href="placeholer"
+		style="display: none"> click me to save last generated csv </a>
 
 
 
