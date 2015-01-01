@@ -3,16 +3,40 @@
 <title>Various Test Beds for simple data manipulation for
 	Dummies</title>
 
+
+
+<style type="text/css">
+
+table#append_here tbody tr td {
+	background-color: #CC0;
+}
+
+table#append_here tbody tr td.0 {
+	background-color: #999;
+}
+
+table#append_here tbody tr td.N {
+	background-color: #F00;
+}
+
+table#append_here tbody tr td.J {
+	background-color: #0F0;
+}
+
+table#append_here tbody tr td.X {
+	background-color: #999;
+}
+
+</style>
 </head>
+
 <body>
 
 
 	<h2>read CSV</h2>
 
-	<input type="file" id="filesCSV" name="files[]" />
-
-
-	// inserted into DOM
+	<input type="file" id="filesCSV" name="files[]" /> // inserted into
+	DOM
 	<table id="append_here">
 		<tbody>
 		</tbody>
@@ -31,34 +55,27 @@
 		}
 
 		function handleFileSelectCSV(evt) {
-			var files = evt.target.files;
+			var file = evt.target.files[0]; // Multiple files would need a closure some lines down
 
-			for ( var i = 0, f; f = files[i]; i++) {
-
-				if (!Only_process_CSV_files(f.type)) {
-					continue;
-				}
-
+			if (Only_process_CSV_files(file.type)) {
 				var reader = new FileReader();
 				// http://www.htmlgoodies.com/beyond/javascript/read-text-files-using-the-javascript-filereader.html#fbid=Ex_PuXpdl4s
-				// read a singel CSV. Code for multiple files needs a Closure
 				reader.onload = convert_csv_to_HTML;
-				reader.readAsText(f);
+				reader.readAsText(file);
 			}
 		}
 
 		document.getElementById('filesCSV').addEventListener('change',
 				handleFileSelectCSV, false);
-		
-		function convert_csv_to_HTML(e) { 
-			
+
+		function convert_csv_to_HTML(e) {
+
 			var span = document.createElement('span');
-			span.innerHTML = [ '<pre>', e.target.result, '<pre/>' ]
-					.join('');
+			span.innerHTML = [ '<pre>', e.target.result, '<pre/>' ].join('');
 
 			var inp_0 = e.target.result;
 			var out_t = document.getElementById('append_here');
-			var out_0 = out_t.getElementsByTagName('TBODY')[0];					
+			var out_0 = out_t.getElementsByTagName('TBODY')[0];
 
 			var inp_lines = inp_0.split('\n');
 
@@ -109,7 +126,7 @@
 					} else {
 						if (i1 <= 1) {
 							out_2.className = 'R';
-							
+
 							out_2.onclick = function() {
 								var we = this.parentNode.cells;
 								var balance = 0;
@@ -167,7 +184,6 @@
 				}
 			} // for
 
-			
 			out_0.rows[0].cells[1].onclick = function() {
 				var we = this.parentNode.parentNode.rows;
 				var balance = 0;
@@ -196,15 +212,12 @@
 					t0 = 'J';
 				}
 			};
-			
-
 		}
 		
 	</script>
 
 
-
-	<h2>First CSV test</h2>
+	<h2>write CSV</h2>
 
 	<script>
 		function Table_To_CSV() {
@@ -251,9 +264,9 @@
 			// proven, but two click
 			//var a = document.getElementById("csv_a");
 			//a.href =
-				window.open(  // should be one click, but: Test 
-				'data:text/csv;charset=utf-8,' + res);
-			
+			window.open( // should be one click, but: Test 
+			'data:text/csv;charset=utf-8,' + res);
+
 		}
 	</script>
 
