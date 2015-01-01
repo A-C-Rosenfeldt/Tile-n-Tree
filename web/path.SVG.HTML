@@ -41,6 +41,8 @@ table#append_here tbody tr td.X {
 	</table>
 
 	<script>
+		//https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+
 		// Production steps of ECMA-262, Edition 5, 15.4.4.18
 		// Reference: http://es5.github.io/#x15.4.4.18
 		if (!Array.prototype.forEach) {
@@ -103,6 +105,7 @@ table#append_here tbody tr td.X {
 		///////////////
 
 		// http://stackoverflow.com/questions/6654351/check-file-uploaded-is-in-csv-format
+		// http://stackoverflow.com/questions/1181575/javascript-determine-whether-an-array-contains-a-value
 		function Only_process_CSV_files(type) {
 			var allowed_type = [ 'application/vnd.ms-excel', 'text/plain',
 					'text/csv', 'text/tsv' ];
@@ -134,122 +137,133 @@ table#append_here tbody tr td.X {
 
 			var inp_0 = e.target.result;
 			var out_t = document.getElementById('append_here');
-			var out_0 = out_t.getElementsByTagName('TBODY')[0];
+			var out_0 = out_t.getElementsByTagName('TBODY')[0]; // Table Body
 
 			var inp_lines = inp_0.split('\n');
 
-			for ( var i0 = 0; i0 < inp_lines.length; i0++) {
-				var line = inp_lines[i0];
+			inp_lines
+					.forEach(function(line, i0)
+					//for ( var i0 = 0; i0 < inp_lines.length; i0++) 
+					{
+						//var line = inp_lines[i0];
 
-				var out_1 = document.createElement("tr");
-				out_0.appendChild(out_1);
+						var out_1 = document.createElement("tr"); // Table Row
+						out_0.appendChild(out_1);
 
-				var fields = line.split(',');
-				for ( var i1 = 0; i1 < fields.length; i1++) {
-					var field = fields[i1];
+						var fields = line.split(',');
+						fields
+								.forEach(function(field, i1)
+								//		for ( var i1 = 0; i1 < fields.length; i1++) 
+								{
+									//var field = fields[i1];
 
-					var out_2 = document.createElement("td");
-					var t = field.substring(0, 1)
-					if (i0 == 0) {
-						out_2.className = 'C';
-						out_2.onclick = function() {
-							var we = this.parentNode.parentNode.rows;
-							var balance = 0;
-							var t0 = 'N';
-							for ( var t1 = 0; balance >= t1; t1++) {
-								for ( var we_i = 0; we_i < we.length; we_i++) {
-									var cs = we[we_i].cells;
-									if (cs.length <= this.cellIndex) {
-										continue;
-									}
-									var we_e = cs[this.cellIndex];
+									var out_2 = document.createElement("td"); // Table Cell
+									var t = field.substring(0, 1)
+									if (i0 == 0) {
+										out_2.className = 'C';
+										out_2.onclick = function() {
+											var we = this.parentNode.parentNode.rows;
+											var balance = 0;
+											var t0 = 'N';
+											for ( var t1 = 0; balance >= t1; t1++) {
+												//we.forEach(function(row)
+												for ( var we_i = 0; we_i < we.length; we_i++) {
+													var cs = we[we_i].cells;
+													//var cs = row.cells;
+													if (cs.length <= this.cellIndex) {
+														continue;
+													}
+													var we_e = cs[this.cellIndex];
 
-									switch (we_e.className) {
-									case 'N':
-										balance++;
-										break;
-									case 'J':
-										balance--;
-										break;
-									default:
-										continue;
-									}
-									we_e.className = t0;
-									we_e.innerHTML = t0;
+													switch (we_e.className) {
+													case 'N':
+														balance++;
+														break;
+													case 'J':
+														balance--;
+														break;
+													default:
+														continue;
+													}
+													we_e.className = t0;
+													we_e.innerHTML = t0;
+												}
 
-								}
+												t0 = 'J';
+											}
+										};
+									} else {
+										if (i1 <= 1) {
+											out_2.className = 'R';
 
-								t0 = 'J';
-							}
-						};
-					} else {
-						if (i1 <= 1) {
-							out_2.className = 'R';
+											out_2.onclick = function() {
+												var we = this.parentNode.cells;
+												var balance = 0;
+												var t0 = 'N';
+												for ( var t1 = 0; balance >= t1; t1++) {
+													//we.foreach(function(we_e)
+													for ( var we_i = 0; we_i < we.length; we_i++) {
+														var we_e = we[we_i];
+														switch (we_e.className) {
+														case 'N':
+															balance++;
+															break;
+														case 'J':
+															balance--;
+															break;
+														default:
+															continue;
+														}
+														we_e.className = t0;
+														we_e.innerHTML = t0;
+													}
 
-							out_2.onclick = function() {
-								var we = this.parentNode.cells;
-								var balance = 0;
-								var t0 = 'N';
-								for ( var t1 = 0; balance >= t1; t1++) {
-									for ( var we_i = 0; we_i < we.length; we_i++) {
-										var we_e = we[we_i];
-										switch (we_e.className) {
-										case 'N':
-											balance++;
-											break;
-										case 'J':
-											balance--;
-											break;
-										default:
-											continue;
+													t0 = 'J';
+												}
+											};
+										} else {
+
+											if (t.match(/[A-Z]/i)) {
+												out_2.className = t;
+												out_2.onclick = function() {
+													var t0;
+													switch (this.className) {
+													case 'N':
+														t0 = 'J';
+														break;
+													case 'J':
+														t0 = 'X';
+														break;
+													case 'X':
+														t0 = 'N';
+														break;
+													default:
+														return;
+													}
+													this.className = t0;
+													this.innerHTML = t0;
+												};
+											}
 										}
-										we_e.className = t0;
-										we_e.innerHTML = t0;
 									}
+									var textnode = document
+											.createTextNode(field);
+									out_2.appendChild(textnode);
 
-									t0 = 'J';
-								}
-							};
-						} else {
+									out_1.appendChild(out_2);
 
-							if (t.match(/[A-Z]/i)) {
-								out_2.className = t;
-								out_2.onclick = function() {
-									var t0;
-									switch (this.className) {
-									case 'N':
-										t0 = 'J';
-										break;
-									case 'J':
-										t0 = 'X';
-										break;
-									case 'X':
-										t0 = 'N';
-										break;
-									default:
-										return;
-									}
-									this.className = t0;
-									this.innerHTML = t0;
-								};
-							}
-						}
-					}
-					var textnode = document.createTextNode(field);
-					out_2.appendChild(textnode);
-
-					out_1.appendChild(out_2);
-
-				}
-			} // for
+								}); // for each 
+					}); // for each
 
 			out_0.rows[0].cells[1].onclick = function() {
 				var we = this.parentNode.parentNode.rows;
 				var balance = 0;
 				var t0 = 'N';
 				for ( var t1 = 0; balance >= t1; t1++) {
+					//we.forEach(function(row)//
 					for ( var we_i = 0; we_i < we.length; we_i++) {
-						var cs = we[we_i].cells;
+						var cs = we[we_i].cells; // 
+						//cs.forEach(function(we_e)//
 						for ( var we_0 = 2; we_0 < cs.length; we_0++) {
 							var we_e = cs[we_0];
 
@@ -281,18 +295,14 @@ table#append_here tbody tr td.X {
 		function Table_To_CSV() {
 			document.getElementById("fat");
 
-			// csv <- table. ToDo: Make function with callbacks
-
 			var out_0 = "";
 			var inp_t = document.getElementById('append_here');
-			var inp_0 = inp_t.getElementsByTagName('TBODY')[0];
+			var inp_0 = inp_t.getElementsByTagName('TBODY')[0]; // Table Body
 
-			// body
-
-			//var inp_lines=inp_0.split('\n');
 			inp_1 = inp_0.childNodes;
-			for ( var i0 = 0; i0 < inp_1.length; i0++) {
-				var line = inp_1[i0];
+			inp_1.foreach(function(line) //for ( var i0 = 0; i0 < inp_1.length; i0++) 
+			{
+				//	var line = inp_1[i0];
 
 				if (line.nodeType != 1) {
 					continue;
@@ -301,30 +311,22 @@ table#append_here tbody tr td.X {
 				var out_1 = "";
 
 				var fields = line.childNodes;
-				for ( var i1 = 0; i1 < fields.length; i1++) {
-					var field = fields[i1];
+				fields.foreach(function(field) //for ( var i1 = 0; i1 < fields.length; i1++) 
+				{
+					//var field = fields[i1];
 
 					if (field.nodeType != 1) {
-						continue;
+						return; //continue;
 					}
 
 					out_1 += "," + field.innerHTML;
-				}
+				});
 
 				out_0 += '\n' + out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
-			}
+			});
 
-			//old uri = "Arne ,Heinrich \nIlse ,Gesa ";
-
+			// http://www.w3schools.com/jsref/jsref_encodeuri.asp
 			res = encodeURI(out_0.substring(1));
-			//document.getElementById("csv").innerHTML = 'data:text/csv;charset=utf-8,'
-			//		+ res;
-			// proven, but two click
-			//var a = document.getElementById("csv_a");
-			//a.href =
-			//window.open( // one click
-			//'data:text/csv;charset=utf-8,' + res,"Modified.CSV");
-			// but file name is empty
 
 			// http://stackoverflow.com/questions/7034754/how-to-set-a-file-name-using-window-open			
 			var downloadLink = document.getElementById("csv_a");//createElement("a");
@@ -336,10 +338,8 @@ table#append_here tbody tr td.X {
 
 	<button onclick="Table_To_CSV()">TableToCSV</button>
 
-
 	<a id="csv_a" download="somedata_dynamic.csv" href="placeholer"
 		style="display: none"> click me to save last generated csv </a>
-
 
 
 </body>
