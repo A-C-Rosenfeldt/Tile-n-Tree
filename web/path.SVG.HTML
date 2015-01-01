@@ -264,8 +264,18 @@ table#append_here tbody tr td.X {
 			// proven, but two click
 			//var a = document.getElementById("csv_a");
 			//a.href =
-			window.open( // should be one click, but: Test 
-			'data:text/csv;charset=utf-8,' + res);
+			//window.open( // one click
+			//'data:text/csv;charset=utf-8,' + res,"Modified.CSV");
+			// but file name is empty
+			
+			// http://stackoverflow.com/questions/7034754/how-to-set-a-file-name-using-window-open			
+			var downloadLink = document.createElement("a");
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + res;
+			downloadLink.download = "data.csv";
+
+			document.body.appendChild(downloadLink); // ToDo: Static HTML
+			downloadLink.click();
+			document.body.removeChild(downloadLink); // fails. ToDo: Display:none
 
 		}
 	</script>
