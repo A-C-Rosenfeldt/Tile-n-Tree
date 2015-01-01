@@ -132,6 +132,29 @@ table#append_here tbody tr td.X {
 		document.getElementById('filesCSV').addEventListener('change',
 				handleFileSelectCSV, false);
 
+		const
+		state = [ 'N', 'J', 'X' ];
+
+
+		function doRow(balance, we, t0) {
+			for ( var we_i = 0; we_i < we.length; we_i++) {
+				var we_e = we[we_i];
+				switch (we_e.className) {
+				case state[0]:
+					balance++;
+					break;
+				case state[1]:
+					balance--;
+					break;
+				default:
+					continue;
+				}
+				we_e.innerHTML = we_e.className = t0;
+			}
+
+			return balance;
+		}
+
 		// Since we do not allow " to have a special meaning, we do not need http://papaparse.com/
 		function convert_csv_to_HTML(e) {
 
@@ -141,148 +164,118 @@ table#append_here tbody tr td.X {
 
 			var inp_lines = inp_0.split('\n');
 
-			inp_lines
-					.forEach(function(line, i0)
-					//for ( var i0 = 0; i0 < inp_lines.length; i0++) 
-					{
-						//var line = inp_lines[i0];
+			inp_lines.forEach(function(line, i0)
+			//for ( var i0 = 0; i0 < inp_lines.length; i0++) 
+			{
+				//var line = inp_lines[i0];
 
-						var out_1 = document.createElement("tr"); // Table Row
-						out_0.appendChild(out_1);
+				var out_1 = document.createElement("tr"); // Table Row
+				out_0.appendChild(out_1);
 
-						var fields = line.split(',');
-						fields
-								.forEach(function(field, i1)
-								//		for ( var i1 = 0; i1 < fields.length; i1++) 
-								{
-									//var field = fields[i1];
+				var fields = line.split(',');
+				fields.forEach(function(field, i1)
+				//		for ( var i1 = 0; i1 < fields.length; i1++) 
+				{
+					//var field = fields[i1];
 
-									var out_2 = document.createElement("td"); // Table Cell
-									var t = field.substring(0, 1)
-									if (i0 == 0) {
-										out_2.className = 'C';
-										out_2.onclick = function() {
-											var we = this.parentNode.parentNode.rows;
-											var balance = 0;
-											var t0 = 'N';
-											for ( var t1 = 0; balance >= t1; t1++) {
-												//we.forEach(function(row)
-												for ( var we_i = 0; we_i < we.length; we_i++) {
-													var cs = we[we_i].cells;
-													//var cs = row.cells;
-													if (cs.length <= this.cellIndex) {
-														continue;
-													}
-													var we_e = cs[this.cellIndex];
-
-													switch (we_e.className) {
-													case 'N':
-														balance++;
-														break;
-													case 'J':
-														balance--;
-														break;
-													default:
-														continue;
-													}
-													we_e.className = t0;
-													we_e.innerHTML = t0;
-												}
-
-												t0 = 'J';
-											}
-										};
-									} else {
-										if (i1 <= 1) {
-											out_2.className = 'R';
-
-											out_2.onclick = function() {
-												var we = this.parentNode.cells;
-												var balance = 0;
-												var t0 = 'N';
-												for ( var t1 = 0; balance >= t1; t1++) {
-													//we.foreach(function(we_e)
-													for ( var we_i = 0; we_i < we.length; we_i++) {
-														var we_e = we[we_i];
-														switch (we_e.className) {
-														case 'N':
-															balance++;
-															break;
-														case 'J':
-															balance--;
-															break;
-														default:
-															continue;
-														}
-														we_e.className = t0;
-														we_e.innerHTML = t0;
-													}
-
-													t0 = 'J';
-												}
-											};
-										} else {
-
-											if (t.match(/[A-Z]/i)) {
-												out_2.className = t;
-												out_2.onclick = function() {
-													var t0;
-													switch (this.className) {
-													case 'N':
-														t0 = 'J';
-														break;
-													case 'J':
-														t0 = 'X';
-														break;
-													case 'X':
-														t0 = 'N';
-														break;
-													default:
-														return;
-													}
-													this.className = t0;
-													this.innerHTML = t0;
-												};
-											}
-										}
+					var out_2 = document.createElement("td"); // Table Cell
+					var t = field.substring(0, 1)
+					if (i0 == 0) {
+						out_2.className = 'C';
+						out_2.onclick = function() {
+							var we = this.parentNode.parentNode.rows;
+							var balance = 0;
+							var t0 = state[0];
+							for ( var t1 = 0; balance >= t1; t1++) {
+								//we.forEach(function(row)
+								for ( var we_i = 0; we_i < we.length; we_i++) {
+									var cs = we[we_i].cells;
+									//var cs = row.cells;
+									if (cs.length <= this.cellIndex) {
+										continue;
 									}
-									var textnode = document
-											.createTextNode(field);
-									out_2.appendChild(textnode);
+									var we_e = cs[this.cellIndex];
 
-									out_1.appendChild(out_2);
+									switch (we_e.className) {
+									case state[0]:
+										balance++;
+										break;
+									case state[1]:
+										balance--;
+										break;
+									default:
+										continue;
+									}
 
-								}); // for each 
-					}); // for each
+									we_e.innerHTML = we_e.className = t0;
+								}
+
+								t0 = state[1];
+							}
+						};
+					} else {
+						if (i1 <= 1) {
+							out_2.className = 'R';
+
+							out_2.onclick = function() {
+								var we = this.parentNode.cells;
+								var balance = 0;
+								var t0 = state[0];
+								for ( var t1 = 0; balance >= t1; t1++) {
+									//we.foreach(function(we_e)
+
+									balance = doRow(balance, we, t0);
+
+									t0 = state[1];
+								}
+							};
+						} else {
+
+							if (t.match(/[A-Z]/i)) {
+								out_2.className = t;
+								out_2.onclick = function() {
+									var t0;
+									switch (this.className) {
+									case state[0]:
+										t0 = state[1];
+										break;
+									case state[1]:
+										t0 = state[2];
+										break;
+									case state[2]:
+										t0 = state[0];
+										break;
+									default:
+										return;
+									}
+									this.innerHTML = this.className = t0;
+								};
+							}
+						}
+					}
+					var textnode = document.createTextNode(field);
+					out_2.appendChild(textnode);
+
+					out_1.appendChild(out_2);
+
+				}); // for each 
+			}); // for each
 
 			out_0.rows[0].cells[1].onclick = function() {
 				var we = this.parentNode.parentNode.rows;
 				var balance = 0;
-				var t0 = 'N';
+				var t0 = state[0];
 				for ( var t1 = 0; balance >= t1; t1++) {
 					//we.forEach(function(row)//
 					for ( var we_i = 0; we_i < we.length; we_i++) {
 						var cs = we[we_i].cells; // 
 						//cs.forEach(function(we_e)//
-						for ( var we_0 = 2; we_0 < cs.length; we_0++) {
-							var we_e = cs[we_0];
 
-							switch (we_e.className) {
-							case 'N':
-								balance++;
-								break;
-							case 'J':
-								balance--;
-								break;
-							default:
-								continue;
-							}
-							we_e.className = t0;
-							we_e.innerHTML = t0;
-						}
+						balance = doRow(balance, cs, t0);
+
 					}
 
-					t0 = 'J';
+					t0 = state[1];
 				}
 			};
 		}
@@ -300,9 +293,10 @@ table#append_here tbody tr td.X {
 			var inp_0 = inp_t.getElementsByTagName('TBODY')[0]; // Table Body
 
 			inp_1 = inp_0.childNodes;
-			inp_1.foreach(function(line) //for ( var i0 = 0; i0 < inp_1.length; i0++) 
+			//inp_1.foreach(function(line) 
+			for ( var i0 = 0; i0 < inp_1.length; i0++) 
 			{
-				//	var line = inp_1[i0];
+				var line = inp_1[i0];
 
 				if (line.nodeType != 1) {
 					continue;
@@ -311,19 +305,20 @@ table#append_here tbody tr td.X {
 				var out_1 = "";
 
 				var fields = line.childNodes;
-				fields.foreach(function(field) //for ( var i1 = 0; i1 < fields.length; i1++) 
+				//fields.foreach(function(field)
+				for ( var i1 = 0; i1 < fields.length; i1++) 
 				{
-					//var field = fields[i1];
+					var field = fields[i1];
 
 					if (field.nodeType != 1) {
-						return; //continue;
+						continue;
 					}
 
 					out_1 += "," + field.innerHTML;
-				});
+				}
 
 				out_0 += '\n' + out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
-			});
+			}
 
 			// http://www.w3schools.com/jsref/jsref_encodeuri.asp
 			res = encodeURI(out_0.substring(1));
