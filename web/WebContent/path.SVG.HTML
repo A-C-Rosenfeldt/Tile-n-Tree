@@ -626,7 +626,7 @@ Test:
 		///////////////
 
 		
-		forEach_static = function(collection, thisArg, callback) {
+		forEach_static = function(collection, callback, thisArg) {
 			for ( var i = 0; i < collection.length; i++) {
 				var t=collection[i];
 				callback.call(thisArg, t);
@@ -683,7 +683,7 @@ Test:
 			var balance = 0;
 			var t0 = state[0];
 			for ( var t1 = 0; balance >= t1; t1++) {
-				forEach_static(we,this,function(row)
+				forEach_static(we,function(row)
 				//for ( var we_i = 0; we_i < we.length; we_i++) 
 				{
 					//var cs = we[we_i].cells;
@@ -709,15 +709,17 @@ Test:
 					}
 
 					we_e.innerHTML = we_e.className = t0;
-				});
+				},this);
 
 				t0 = state[1];
 			}
 		}
 
 		function toggle_row_inner(balance, we, t0) {
-			for ( var we_i = 0; we_i < we.length; we_i++) {
-				var we_e = we[we_i];
+			//for ( var we_i = 0; we_i < we.length; we_i++) 
+				forEach_static(we, function(we_e)
+			{
+				//var we_e = we[we_i];
 				switch (we_e.className) {
 				case state[0]:
 					balance++;
@@ -726,10 +728,12 @@ Test:
 					balance--;
 					break;
 				default:
-					continue;
+					return
+					//continue
+					;
 				}
 				we_e.innerHTML = we_e.className = t0;
-			}
+			});
 
 			return balance;
 		}
@@ -739,6 +743,7 @@ Test:
 			var balance = 0;
 			var t0 = state[0];
 			for ( var t1 = 0; balance >= t1; t1++) {
+				
 				//we.foreach(function(we_e)
 
 				balance = toggle_row_inner(balance, we, t0);
@@ -832,29 +837,37 @@ Test:
 
 			inp_1 = inp_0.childNodes;
 			//inp_1.foreach(function(line)
-			for ( var i0 = 0; i0 < inp_1.length; i0++) {
-				var line = inp_1[i0];
+			forEach_static(inp_1, function(line)
+			//for ( var i0 = 0; i0 < inp_1.length; i0++) 
+			{
+			//	var line = inp_1[i0];
 
 				if (line.nodeType != 1) {
-					continue;
+					//continue
+					return
+					;
 				}
 
 				var out_1 = "";
 
-				var fields = line.childNodes;
+				//var fields = line.childNodes;
 				//fields.foreach(function(field)
-				for ( var i1 = 0; i1 < fields.length; i1++) {
-					var field = fields[i1];
+				forEach_static(line.childNodes,function(field)
+				//for ( var i1 = 0; i1 < fields.length; i1++)
+				{
+					//var field = fields[i1];
 
 					if (field.nodeType != 1) {
-						continue;
+						//continue
+						return
+						;
 					}
 
 					out_1 += "," + field.innerHTML;
-				}
+				});
 
 				out_0 += '\n' + out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
-			}
+			});
 
 			// http://www.w3schools.com/jsref/jsref_encodeuri.asp
 			res = encodeURI(out_0.substring(1));
