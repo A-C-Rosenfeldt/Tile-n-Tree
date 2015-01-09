@@ -625,6 +625,13 @@ Test:
 
 		///////////////
 
+		
+		forEach_static = function(collection, thisArg, callback) {
+			for ( var i = 0; i < collection.length; i++) {
+				var t=collection[i];
+				callback.call(thisArg, t);
+			}
+		}
 		// http://stackoverflow.com/questions/6654351/check-file-uploaded-is-in-csv-format
 		// http://stackoverflow.com/questions/1181575/javascript-determine-whether-an-array-contains-a-value
 		function Only_process_CSV_files(type) {
@@ -676,12 +683,15 @@ Test:
 			var balance = 0;
 			var t0 = state[0];
 			for ( var t1 = 0; balance >= t1; t1++) {
-				//we.forEach(function(row)
-				for ( var we_i = 0; we_i < we.length; we_i++) {
-					var cs = we[we_i].cells;
-					//var cs = row.cells;
+				forEach_static(we,this,function(row)
+				//for ( var we_i = 0; we_i < we.length; we_i++) 
+				{
+					//var cs = we[we_i].cells;
+					var cs = row.cells;
 					if (cs.length <= this.cellIndex) {
-						continue;
+						return
+						//continue
+						;
 					}
 					var we_e = cs[this.cellIndex];
 
@@ -693,11 +703,13 @@ Test:
 						balance--;
 						break;
 					default:
-						continue;
+						//continue
+						return
+						;
 					}
 
 					we_e.innerHTML = we_e.className = t0;
-				}
+				});
 
 				t0 = state[1];
 			}
