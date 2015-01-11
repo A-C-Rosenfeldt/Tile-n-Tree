@@ -1,0 +1,890 @@
+<html>
+<head>
+<title>FV_KD-02</title>
+
+<!-- Styles für dynamische Tabellenelemente -->
+
+<!-- Styles für die Buttons in der FV_WT - Matrix, sortiert nach Vorkommen lo nach ru
+.K       k       Kopf-Elemente mit Info/Action
+.P       p       Bildfeld mit Image / 30 x 30 Pixel
+.A       a       Alle-Button in gelb / 30 x 30 Pixel / Rundecke rechts-unten / Hover / Activ
+.S       s       Schicht-Buttons in gelb / 30 x 30 Pixel / Rundecken unten / Hover / Activ
+.dat     dat     Datums-Felder in grau / 30 x 30 Pixel
+.R       r       Tages-Buttons in gelb / 30 x 30 Pixel / Rundecken rechts / Hover / Activ
+.J       j       Ja-Buttons in grün / 30x30 Pixel / Rundecken / Hover / Activ
+.N       n       Nein-Buttons in rot / 30x30 Pixel / Rundecken / Hover / Activ
+.X       x       N/A - Buttons in grau / 30x30 Pixel / Rundecken
+-->
+<style type="text/css">
+.J,.N,.X,.S,.R,.dat {
+	font-family: Sans-Serif;
+	text-align: center;
+	border: 1px solid #000000;
+	height: 30px;
+}
+
+.K {
+	border: 1px solid #000000;
+	height: 20px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	background-color: #00ffff;
+}
+
+.K:hover {
+	background-color: #eac380;
+}
+
+.K:active {
+	position: relative;
+}
+
+.J,.N,.X {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.J {
+	background-color: #00ff00;
+}
+
+.J:hover {
+	background-color: #eac380;
+}
+
+.J:active {
+	position: relative;
+}
+
+.N {
+	background-color: #ff0000;
+}
+
+.N:hover {
+	background-color: #eac380;
+}
+
+.N:active {
+	position: relative;
+	height: 32px;
+}
+
+.X {
+	background-color: #bbbbbb;
+}
+
+.S {
+	background-color: #ffff00;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.S:hover {
+	background-color: #eac380;
+}
+
+.S:active {
+	position: relative;
+	top: 2px;
+}
+
+.dat {
+	border: 1px solid #000000;
+	height: 30px;
+	background-color: #bbb;
+}
+
+.P {
+	background: url(abb_64_rot.png) no-repeat top;
+	background-size: 100%;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+	border: 2px solid #000000;
+	height: 30px;
+}
+
+.A {
+	background-color: #ffff00;
+	border-bottom-right-radius: 5px;
+	border: 1px solid #000000;
+	height: 30px;
+}
+
+.A:hover {
+	background-color: #eac380;
+}
+
+.A:active {
+	position: relative;
+	top: 2px;
+	left: 2px;
+}
+
+.R {
+	background-color: #ffff00;
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.R:hover {
+	background-color: #eac380;
+}
+
+.R:active {
+	position: relative;
+	left: 2px;
+}
+</style>
+</head>
+
+<body>
+	<h3>FV_KD #02 f&uuml;r Browser</h3>
+	<!--
+<button onclick="myFunction()">Dateipfad auf Knopfdruck:</button>
+
+<p id="demo">Hier wird nach Knopfdruck Pfad & Datei der aktuellen Datei angezeigt</p>
+
+<script>
+function myFunction() {
+    var x = location.pathname;
+    document.getElementById("demo").innerHTML = x;
+}
+
+</script>
+
+
+-->
+	FV_KD-MonatsMusterTabelle mit vertikalem Scrolling
+
+	<table width="100%" border="0" cellpadding="1" cellspacing="1">
+		<colgroup>
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+		</colgroup>
+		<tr>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld1">
+			</td>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld2">
+			</td>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld3">
+			</td>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld4">
+			</td>
+		</tr>
+	</table>
+	<table width="100%" border="0" cellpadding="1" cellspacing="1">
+		<colgroup>
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+
+		</colgroup>
+		<tr>
+			<td><input type="submit" class="dat" name="mysubmit" value="Nr.">
+			</td>
+			<td><input type="submit" class="a" name="mysubmit" value="Alle">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S1">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S2">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S3">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S4">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S5">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S6">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S7">
+			</td>
+			<td><input type="submit" class="s" name="mysubmit" value="S8">
+			</td>
+		</tr>
+	</table>
+	<div style="height: 200px; overflow-y: scroll;">
+		<table width="100%" border="0" cellpadding="1" cellspacing="1">
+			<colgroup>
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+				<col width="1*">
+
+			</colgroup>
+
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="01"></td>
+				<td><input type="submit" class="r" name="mysubmit" value="Mo">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="02">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Di">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="03">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Mi">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="04">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Do"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="05">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Fr"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="06">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Sa">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="07">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="So">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="01"></td>
+				<td><input type="submit" class="r" name="mysubmit" value="Mo">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="02">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Di">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="03">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Mi">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="04">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Do"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="05">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Fr"></td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="06">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="Sa">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J">
+				</td>
+				<td><input type="submit" class="n" name="mysubmit" value="N">
+				</td>
+				<td><input type="submit" class="j" name="mysubmit" value="J"></td>
+				<td><input type="submit" class="n" name="mysubmit" value="N"></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+
+			</tr>
+			<tr>
+				<td><input type="submit" class="dat" name="mysubmit" value="07">
+				</td>
+				<td><input type="submit" class="r" name="mysubmit" value="So">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value=""></td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+				<td><input type="submit" class="x" name="mysubmit" value="">
+				</td>
+
+			</tr>
+		</table>
+
+
+
+
+	</div>
+
+	<h3>CSV-Datei laden (noch im Dialog)</h3>
+
+	<table width="100%" border="0" cellpadding="1" cellspacing="1">
+		<colgroup>
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+			<col width="1*">
+		</colgroup>
+		<tr>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld1">
+			</td>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld2">
+			</td>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld3">
+			</td>
+			<td><input type="submit" class="k" name="mysubmit" value="Feld4">
+			</td>
+		</tr>
+	</table>
+
+
+	<input id="filesCSV" name="files[]" type="file" id="filesCSV" />
+	<!--a href="javascript:history.go(-1);"></a>
+ // inserted into DOM
+ -->
+	<table id="append_here" width="100%">
+		<colgroup>
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+			<col width="100px">
+
+		</colgroup>
+		<tbody>
+		</tbody>
+	</table>
+	<!--
+Test:
+
+<table border="1" width="100%">
+  <tr>
+    <td>Miljöh</td>
+    <td>Kiez</td>
+    <td>Bierdampf</td>
+  </tr>
+  <tr>
+    <td>Buletten</td>
+    <td>Frikadellen</td>
+    <td class="x">Fleischpflanzerl</td>
+  </tr>
+</table>
+ -->
+	<script>
+		//https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+		// Production steps of ECMA-262, Edition 5, 15.4.4.18
+		// Reference: http://es5.github.io/#x15.4.4.18
+
+		if (!Array.prototype.forEach) {
+
+			Array.prototype.forEach = function(callback, thisArg) {
+
+				var T, k;
+
+				if (this == null) {
+					throw new TypeError(' this is null or not defined');
+				}
+
+				// 1. Let O be the result of calling ToObject passing the |this| value as the argument.
+				var O = Object(this);
+
+				// 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
+				// 3. Let len be ToUint32(lenValue).
+				var len = O.length >>> 0;
+
+				// 4. If IsCallable(callback) is false, throw a TypeError exception.
+				// See: http://es5.github.com/#x9.11
+				if (typeof callback !== "function") {
+					throw new TypeError(callback + ' is not a function');
+				}
+
+				// 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+				if (arguments.length > 1) {
+					T = thisArg;
+				}
+
+				// 6. Let k be 0
+				k = 0;
+
+				// 7. Repeat, while k < len
+				while (k < len) {
+
+					var kValue;
+
+					// a. Let Pk be ToString(k).
+					//   This is implicit for LHS operands of the in operator
+					// b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
+					//   This step can be combined with c
+					// c. If kPresent is true, then
+					if (k in O) {
+
+						// i. Let kValue be the result of calling the Get internal method of O with argument Pk.
+						kValue = O[k];
+
+						// ii. Call the Call internal method of callback with T as the this value and
+						// argument list containing kValue, k, and O.
+						callback.call(T, kValue, k, O);
+					}
+					// d. Increase k by 1.
+					k++;
+				}
+				// 8. return undefined
+			};
+		}
+
+		///////////////
+
+		
+		forEach_static = function(collection, callback, thisArg) {
+			for ( var i = 0; i < collection.length; i++) {
+				var t=collection[i];
+				callback.call(thisArg, t);
+			}
+		}
+		// http://stackoverflow.com/questions/6654351/check-file-uploaded-is-in-csv-format
+		// http://stackoverflow.com/questions/1181575/javascript-determine-whether-an-array-contains-a-value
+		function Only_process_CSV_files(type) {
+			var allowed_type = [ 'application/vnd.ms-excel', 'text/plain',
+					'text/csv', 'text/tsv' ];
+
+			for ( var i = 0; i < allowed_type.length; i++) {
+				if (type == allowed_type[i])
+					return true;
+			}
+			return false;
+		}
+
+		// http://www.html5rocks.com/de/tutorials/file/dndfiles/
+		function handleFileSelectCSV(evt) {
+			var file = evt.target.files[0]; // Multiple files would need a closure some lines down
+
+			if (Only_process_CSV_files(file.type)) {
+				var reader = new FileReader();
+				// http://www.htmlgoodies.com/beyond/javascript/read-text-files-using-the-javascript-filereader.html#fbid=Ex_PuXpdl4s
+				reader.onload = convert_csv_to_HTML;
+				reader.readAsText(file);
+			}
+		}
+
+		document.getElementById('filesCSV').addEventListener('change',
+				handleFileSelectCSV, false);
+
+		const
+		state = [ 'N', 'J', 'X' ];
+
+		function toggle_cell() {
+			var t0;
+			switch (this.className) {
+			case state[0]:
+				t0 = state[1];
+				break;
+			case state[1]:
+				t0 = state[0];
+				break; 
+			default:
+				return;
+			}
+			this.innerHTML = this.className = t0;
+		}
+
+		function toggle_spalte() {
+			var we = this.parentNode.parentNode.rows;
+			var balance = 0;
+			var t0 = state[0];
+			for ( var t1 = 0; balance >= t1; t1++) {
+				forEach_static(we,function(row)
+				//for ( var we_i = 0; we_i < we.length; we_i++) 
+				{
+					//var cs = we[we_i].cells;
+					var cs = row.cells;
+					if (cs.length <= this.cellIndex) {
+						return
+						//continue
+						;
+					}
+					var we_e = cs[this.cellIndex];
+
+					switch (we_e.className) {
+					case state[0]:
+						balance++;
+						break;
+					case state[1]:
+						balance--;
+						break;
+					default:
+						//continue
+						return
+						;
+					}
+
+					we_e.innerHTML = we_e.className = t0;
+				},this);
+
+				t0 = state[1];
+			}
+		}
+
+		function toggle_row_inner(balance, we, t0) {
+			//for ( var we_i = 0; we_i < we.length; we_i++) 
+				forEach_static(we, function(we_e)
+			{
+				//var we_e = we[we_i];
+				switch (we_e.className) {
+				case state[0]:
+					balance++;
+					break;
+				case state[1]:
+					balance--;
+					break;
+				default:
+					return
+					//continue
+					;
+				}
+				we_e.innerHTML = we_e.className = t0;
+			});
+
+			return balance;
+		}
+
+		function toggle_row() {
+			var we = this.parentNode.cells;
+			var balance = 0;
+			var t0 = state[0];
+			for ( var t1 = 0; balance >= t1; t1++) {
+				
+				//we.foreach(function(we_e)
+
+				balance = toggle_row_inner(balance, we, t0);
+
+				t0 = state[1];
+			}
+		}
+
+		function toggle_all() {
+			var we = this.parentNode.parentNode.rows;
+			var balance = 0;
+			var t0 = state[0];
+			for ( var t1 = 0; balance >= t1; t1++) {
+				//we.forEach(function(row)//
+				for ( var we_i = 0; we_i < we.length; we_i++) {
+					var cs = we[we_i].cells; //
+					//cs.forEach(function(we_e)//
+
+					balance = toggle_row_inner(balance, cs, t0);
+
+				}
+
+				t0 = state[1];
+			}
+		}
+
+		// Since we do not allow " to have a special meaning, we do not need http://papaparse.com/
+		function convert_csv_to_HTML(e) {
+
+			var inp_0 = e.target.result;
+			var out_t = document.getElementById('append_here');
+			var out_0 = out_t.getElementsByTagName('TBODY')[0]; // Table Body
+
+			var inp_lines = inp_0.split('\n');
+
+			inp_lines.forEach(function(line, i0)
+			//for ( var i0 = 0; i0 < inp_lines.length; i0++)
+			{
+				//var line = inp_lines[i0];
+
+				var out_1 = document.createElement("tr"); // Table Row
+				out_0.appendChild(out_1);
+
+				var fields = line.split(',');
+				fields.forEach(function(field, i1)
+				//                for ( var i1 = 0; i1 < fields.length; i1++)
+				{
+					//var field = fields[i1];
+
+					var out_2 = document.createElement("td"); //td"); // Table Cell
+					out_2.value = field;
+					var t = (field + "P").substring(0, 1);
+					if (t.match(/[A-Z]/i)) {
+						out_2.className = t;
+					} else {
+						out_2.className = 'dat';
+					}
+					if (i0 == 0) {
+						out_2.className = 'S';
+						out_2.onclick = toggle_spalte;
+					} else {
+						if (i1 == 1) {
+							out_2.className = 'R';
+							out_2.onclick = toggle_row;
+						} else {
+							out_2.onclick = toggle_cell;
+						}
+					}
+
+					var textnode = document.createTextNode(field);
+					out_2.appendChild(textnode);
+					out_1.appendChild(out_2);
+
+				}); // for each
+			}); // for each
+
+			out_0.rows[0].cells[1].onclick = toggle_all;
+		}
+	</script>
+
+
+	<h3>Ergebnis in CSV-Datei speichern (noch in Arbeit)</h3>
+
+	<script>
+		function Table_To_CSV() {
+			document.getElementById("fat");
+
+			var out_0 = "";
+			var inp_t = document.getElementById('append_here');
+			var inp_0 = inp_t.getElementsByTagName('TBODY')[0]; // Table Body
+
+			inp_1 = inp_0.childNodes;
+			//inp_1.foreach(function(line)
+			forEach_static(inp_1, function(line)
+			//for ( var i0 = 0; i0 < inp_1.length; i0++) 
+			{
+			//	var line = inp_1[i0];
+
+				if (line.nodeType != 1) {
+					//continue
+					return
+					;
+				}
+
+				var out_1 = "";
+
+				//var fields = line.childNodes;
+				//fields.foreach(function(field)
+				forEach_static(line.childNodes,function(field)
+				//for ( var i1 = 0; i1 < fields.length; i1++)
+				{
+					//var field = fields[i1];
+
+					if (field.nodeType != 1) {
+						//continue
+						return
+						;
+					}
+
+					out_1 += "," + field.innerHTML;
+				});
+
+				out_0 += '\n' + out_1.substring(1); //not system.newline, but to my spec. Heinricht wants \r \n
+			});
+
+			// http://www.w3schools.com/jsref/jsref_encodeuri.asp
+			res = encodeURI(out_0.substring(1));
+
+			// http://stackoverflow.com/questions/7034754/how-to-set-a-file-name-using-window-open
+			var downloadLink = document.getElementById("csv_a");//createElement("a");
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + res;
+			downloadLink.click();
+
+		}
+	</script>
+
+	<button onclick="Table_To_CSV()">TableToCSV</button>
+
+	<a id="csv_a" download="somedata_dynamic.csv" href="placeholer"
+		style="display: none"> click me to save last generated csv </a>
+
+
+</body>
+</html>
