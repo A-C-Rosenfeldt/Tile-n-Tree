@@ -758,13 +758,15 @@ Test:
 			var t0 = state[0];
 			for ( var t1 = 0; balance >= t1; t1++) {
 				//we.forEach(function(row)//
-				for ( var we_i = 0; we_i < we.length; we_i++) {
-					var cs = we[we_i].cells; //
+				//for ( var we_i = 0; we_i < we.length; we_i++)
+				forEach_static(we, function(we_e)
+				{
+					//var cs = we[we_i].cells; //					
 					//cs.forEach(function(we_e)//
+					balance = toggle_row_inner(balance, we_e.cells, t0);
+					//balance = toggle_row_inner(balance, cs, t0);
 
-					balance = toggle_row_inner(balance, cs, t0);
-
-				}
+				});
 
 				t0 = state[1];
 			}
@@ -772,55 +774,49 @@ Test:
 
 		// Since we do not allow " to have a special meaning, we do not need http://papaparse.com/
 		function convert_csv_to_HTML(e) {
+			convert_csvString_to_HTML(e.target.result);
+		}
+		
+		function convert_csvString_to_HTML(inp_0){
+					var out_t = document.getElementById('append_here');
+					var out_0 = out_t.getElementsByTagName('TBODY')[0]; // Table Body
 
-			var inp_0 = e.target.result;
-			var out_t = document.getElementById('append_here');
-			var out_0 = out_t.getElementsByTagName('TBODY')[0]; // Table Body
+					inp_0.split('\n').forEach(function(inp_1, i0)
+					{
+						var out_1 = document.createElement("tr"); // Table Row
+						out_0.appendChild(out_1);
 
-			var inp_lines = inp_0.split('\n');
+						inp_1.split(',').forEach(function(inp_2, i1)
+						{
+							var out_2 = document.createElement("td"); // Table Cell
+							out_2.value = inp_2;
+							
+							var t = (inp_2 + "P").substring(0, 1);
+							if (t.match(/[A-Z]/i)) {
+								out_2.className = t;
+							} else {
+								out_2.className = 'dat';
+							}
+							if (i0 == 0) {
+								out_2.className = 'S';
+								out_2.onclick = toggle_spalte;
+							} else {
+								if (i1 == 1) {
+									out_2.className = 'R';
+									out_2.onclick = toggle_row;
+								} else {
+									out_2.onclick = toggle_cell;
+								}
+							}
 
-			inp_lines.forEach(function(line, i0)
-			//for ( var i0 = 0; i0 < inp_lines.length; i0++)
-			{
-				//var line = inp_lines[i0];
+							var textnode = document.createTextNode(inp_2);
+							out_2.appendChild(textnode);
+							out_1.appendChild(out_2);
 
-				var out_1 = document.createElement("tr"); // Table Row
-				out_0.appendChild(out_1);
+						}); // for each
+					}); // for each
 
-				var fields = line.split(',');
-				fields.forEach(function(field, i1)
-				//                for ( var i1 = 0; i1 < fields.length; i1++)
-				{
-					//var field = fields[i1];
-
-					var out_2 = document.createElement("td"); //td"); // Table Cell
-					out_2.value = field;
-					var t = (field + "P").substring(0, 1);
-					if (t.match(/[A-Z]/i)) {
-						out_2.className = t;
-					} else {
-						out_2.className = 'dat';
-					}
-					if (i0 == 0) {
-						out_2.className = 'S';
-						out_2.onclick = toggle_spalte;
-					} else {
-						if (i1 == 1) {
-							out_2.className = 'R';
-							out_2.onclick = toggle_row;
-						} else {
-							out_2.onclick = toggle_cell;
-						}
-					}
-
-					var textnode = document.createTextNode(field);
-					out_2.appendChild(textnode);
-					out_1.appendChild(out_2);
-
-				}); // for each
-			}); // for each
-
-			out_0.rows[0].cells[1].onclick = toggle_all;
+					out_0.rows[0].cells[1].onclick = toggle_all;
 		}
 	</script>
 
@@ -885,6 +881,9 @@ Test:
 	<a id="csv_a" download="somedata_dynamic.csv" href="placeholer"
 		style="display: none"> click me to save last generated csv </a>
 
+<br>
+
+<a href="Texture_mapping.html">GWT WebGl</a>
 
 </body>
 </html>
