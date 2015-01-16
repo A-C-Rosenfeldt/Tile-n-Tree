@@ -70,7 +70,7 @@
 			document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
 			}
 			 */
-			xmlhttp.open("GET", "USER.XML", false);
+			xmlhttp.open("GET", "UserServlet", false); // USER.XML
 
 			xmlhttp.send();
 			var xmlDoc = xmlhttp.responseXML;

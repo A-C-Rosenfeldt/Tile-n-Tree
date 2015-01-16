@@ -64,7 +64,7 @@ public class UserServlet extends HttpServlet {
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(out);
 			
-			transformer.transform(source, result);
+			
 
 			// Output to console for testing
 			// StreamResult result = new StreamResult(System.out);
