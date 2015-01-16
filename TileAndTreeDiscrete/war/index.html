@@ -54,26 +54,12 @@
 		};
 		document.getElementById("Post user data").onclick = postUserData
 
-		getUserData = function(event) {
-			event.preventDefault(); //alert('I just prevented default');
-			var xmlhttp = new XMLHttpRequest();
-
-			/*
-			method: the type of request: GET or POST
-			url: the location of the file on the server
-			async: true (asynchronous) or false (synchronous)
-			 */
-			//true xmlhttp.onreadystatechange=
-			/*
-			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			{
-			document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
-			}
-			 */
-			xmlhttp.open("GET", "UserServlet", false); // USER.XML
-
-			xmlhttp.send();
-			var xmlDoc = xmlhttp.responseXML;
+		
+		getUserData0 = function(xmlDoc){
+			
+		
+			
+			
 
 			var out_t = document.getElementById('Registered users');
 			var out_0 = out_t.getElementsByTagName(Table_Body)[0];
@@ -99,6 +85,31 @@
 
 				out_0.appendChild(out_1);
 			}
+		}
+		
+		getUserData = function(event) {
+			event.preventDefault(); //alert('I just prevented default');
+			var xmlhttp = new XMLHttpRequest();  // global!
+
+			/*
+			method: the type of request: GET or POST
+			url: the location of the file on the server
+			async: true (asynchronous) or false (synchronous)
+			 */
+			xmlhttp.onreadystatechange=function()
+			  {
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			    {
+				  getUserData0(xmlhttp.responseXML);
+			    }
+			  }
+			;
+			/*
+			 */
+			xmlhttp.open("GET", "UserServlet", true); // USER.XML
+
+			xmlhttp.send();
+
 
 		};
 		document.getElementById("Get user data").onclick = getUserData;
