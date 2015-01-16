@@ -39,7 +39,7 @@
 			<td colspan="2" style="font-weight: bold;">Available Servlets:</td>
 		</tr>
 		<tr>
-			<td><a href="UserServelet">UserServelet</a></td>
+			<td><a href="UserServlet">UserServlet</a></td>
 		</tr>
 	</table>
 
@@ -73,7 +73,7 @@
 			xmlhttp.open("GET", "USER.XML", false);
 
 			xmlhttp.send();
-			xmlDoc = xmlhttp.responseXML;
+			var xmlDoc = xmlhttp.responseXML;
 
 			var out_t = document.getElementById('Registered users');
 			var out_0 = out_t.getElementsByTagName(Table_Body)[0];
@@ -85,7 +85,7 @@
 				{
 					var out_2 = document.createElement(Table_Cell);
 					var textnode = document
-							.createTextNode(x[i].getElementsByTagName("NAME")[0].childNodes[0].nodeValue);
+							.createTextNode(x[i].getAttribute("NAME"));  //getElementsByTagName("NAME")[0].childNodes[0].nodeValue);
 					out_2.appendChild(textnode);
 					out_1.appendChild(out_2);
 				}
