@@ -7,48 +7,101 @@
 <!-- but may lead to some differences in layout.   -->
 
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Hello App Engine</title>
-  </head>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Hello App Engine</title>
+</head>
 
-  <body>
-    <h1>Hello App Engine!</h1>
+<body>
+	<h1>Hello App Engine!</h1>
 
-    <table id="Registered users">
-    	<body>
-    	</body>
-    </table>
-    
-    <button>
-    	Get registered users from server.	
-    </button>
-	
+	<table id="Registered users">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>ID</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<button id="Get user data">Get registered users from server.</button>
+
 	<form>
 		Name: <input type="text" name="fname"><br>
-		
-		<button id="Post user data">
-			Post user data to register.
-		</button>
+
+		<button id="Post user data">Post user data to register.</button>
 	</form>
-	
-    <table>
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Available Servlets:</td>        
-      </tr>
-      <tr>
-        <td><a href="tileandtreediscrete">TileAndTreeDiscrete</a></td>
-      </tr>
-    </table>
-    
+
+	<table>
+		<tr>
+			<td colspan="2" style="font-weight: bold;">Available Servlets:</td>
+		</tr>
+		<tr>
+			<td><a href="tileandtreediscrete">TileAndTreeDiscrete</a></td>
+		</tr>
+	</table>
+
 
 	<script>
-		;postUserData=function(event){
-			event.preventDefault();
-			alert('I just prevented default');
-		}
-		;document.getElementById("Post user data").onclick=postUserData
-		;
+		var Table_Body = "TBODY";
+		var Table_Row = "TR";
+		var Table_Cell = "TD";
+
+		postUserData = function(event) {
+			event.preventDefault(); //alert('I just prevented default');
+		};
+		document.getElementById("Post user data").onclick = postUserData
+
+		getUserData = function(event) {
+			event.preventDefault(); //alert('I just prevented default');
+			var xmlhttp = new XMLHttpRequest();
+
+			/*
+			method: the type of request: GET or POST
+			url: the location of the file on the server
+			async: true (asynchronous) or false (synchronous)
+			 */
+			//true xmlhttp.onreadystatechange=
+			/*
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+			document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+			}
+			 */
+			xmlhttp.open("GET", "USER.XML", false);
+
+			xmlhttp.send();
+			xmlDoc = xmlhttp.responseXML;
+
+			var out_t = document.getElementById('Registered users');
+			var out_0 = out_t.getElementsByTagName(Table_Body)[0];
+
+			var x = xmlDoc.getElementsByTagName("USER");
+			for (i = 0; i < x.length; i++) {
+				var out_1 = document.createElement(Table_Row);
+
+				{
+					var out_2 = document.createElement(Table_Cell);
+					var textnode = document
+							.createTextNode(x[i].getElementsByTagName("NAME")[0].childNodes[0].nodeValue);
+					out_2.appendChild(textnode);
+					out_1.appendChild(out_2);
+				}
+
+				{
+					var out_2 = document.createElement(Table_Cell);
+					var textnode = document.createTextNode("Some ID");
+					out_2.appendChild(textnode);
+					out_1.appendChild(out_2);
+				}
+
+				out_0.appendChild(out_1);
+			}
+
+		};
+		document.getElementById("Get user data").onclick = getUserData;
 	</script>
-  </body>
+</body>
 </html>
