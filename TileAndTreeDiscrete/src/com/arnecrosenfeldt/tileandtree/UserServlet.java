@@ -101,15 +101,15 @@ public class UserServlet extends HttpServlet {
 	//    out.println("Name: "+request.getReader().readLine());
 	    // does not work with post  and there is no alternative for post : out.println("QueryString: "+request.getQueryString());
 	    
-		out.println("1.Name: "+request.getParameter("first_name"));
+		//out.println("1.Name: "+request.getParameter("first_name"));
 		
 		// not used right now: request.getInputStream(); // Here is the data
 		// Servlet 3.0 request.getParts();
 		
-		out.println("Name: "+request.getParameter("NAME0"));
-//		out.println("ID_: "+request.getParameter("ID_"));
-//		out.println("HASH: "+request.getParameter("HASH"));
-//		out.println("FUNCTION: "+request.getParameter("FUNCTION"));
+		out.println("Name: "+request.getParameter("NAME"));
+		out.println("ID_: "+request.getParameter("ID_"));
+		out.println("PASSWORD: "+request.getParameter("PASSWORD"));
+		out.println("FUNCTION: "+request.getParameter("FUNCTION"));
 
 		out.close();
 	}

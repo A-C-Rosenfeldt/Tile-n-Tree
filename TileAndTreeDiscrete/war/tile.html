@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Driver available on these days in the week.</title>
+<link rel="stylesheet" type="text/css" href="lean.css">
+</head>
+<body>
+
+</body>
+
+<script>
+// http://stackoverflow.com/questions/15056686/sending-a-blob-to-a-servlet-through-ajax
+function upload(blob) {
+	  var xhr = new XMLHttpRequest();
+	  xhr.open('POST', '/Test/Odbieracz', true);
+	  xhr.onload = function(e) { console.log("loaded"); };
+	  xhr.onreadystatechange = function(){
+	      console.log("state: " + xhr.readyState);
+	  };
+	  // Listen to the upload progress.
+	  xhr.upload.onprogress = function(e) { console.log("uploading..."); };
+	  xhr.setRequestHeader("Content-Type", "video/webm");
+	  xhr.send(blob);
+	}
+</script>
+</html>
