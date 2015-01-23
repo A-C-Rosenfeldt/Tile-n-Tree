@@ -10,16 +10,42 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Hello App Engine</title>
+
+<link rel="stylesheet" type="text/css" href="lean.css">
 </head>
 
 <body>
+
+<h1> form submit post</h1>
+
+<form action="UserServlet" method="POST">
+First Name: <input type="text" name="first_name">
+<br />
+Last Name: <input type="text" name="last_name" />
+<input type="submit" value="Submit" />
+</form>
+
+	<form  method="POST" name="new_login" action="UserServlet" accept-charset="utf-8">
+I want enctype="multipart/form-data". Okay I read it up. Is only an issue of performance with a lot of data.
+As I really need multipart here, I stick with the default enctype. May choose differently for table data ...
+as there is 
+<a href="http://www.html5rocks.com/de/tutorials/file/xhr2/"> blob available! </a>
+
+		<input type="text" name="NAME0">
+		<input type="submit" value="Post user data to register serially.">
+		<button id="Post user data">Post user data to register using Ajax.</button>
+	</form>
+
+
 	<h1>Hello App Engine!</h1>
 
-	<table id="Registered users">
+	<table id="Registered_users">
 		<thead>
 			<tr>
 				<th>Name</th>
 				<th>ID</th>
+				<th>Hash-function</th>
+				<th>Hash</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -28,11 +54,25 @@
 
 	<button id="Get user data">Get registered users from server.</button>
 
-	<form>
-		Name: <input type="text" name="fname"><br>
 
-		<button id="Post user data">Post user data to register.</button>
-	</form>
+		<table>
+
+		<tbody>
+		<tr> <td style="text-align: right">Name: </td> <td> gap </td> </tr>
+		<tr> <td style="text-align: right">Password: </td> <td><input type="text" name="PASSWORD"></td> </tr>
+		<tr> <td style="text-align: right">Hash-function: </td> <td>
+		
+		<!-- input type="text" name="password" -->
+		
+		<select name="FUNCTION" >
+		<option value="md5"> md5 </option>
+		<option value="5*bcrypt"> 5*bcrypt </option>
+		</select>
+		
+		</td> </tr>
+		<tr> <td style="text-align: right">small ID : </td> <td><input type="text" name="ID_"></td> </tr>
+		</tbody>
+		</table>
 
 	<table>
 		<tr>
@@ -43,69 +83,113 @@
 		</tr>
 	</table>
 
+<p id="flat">
+</p>
 
 	<script>
 		var Table_Body = "TBODY";
 		var Table_Row = "TR";
 		var Table_Cell = "TD";
 
+		function check_if_post_is_successful(success){
+			document.getElementById("flat").innerHTML = success;
+		}
+		
 		postUserData = function(event) {
 			event.preventDefault(); //alert('I just prevented default');
+			
+	
+			
+			// I do not like to reverse time. Callbacks :-(
+			 xmlhttp.onreadystatechange=function()
+			  {
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			    {
+				  check_if_post_is_successful(xmlhttp.response);
+			    }
+			  }
+			;	
+			
+			xmlhttp.open("POST", "UserServlet", true);
+			
+			xmlhttp.send(new FormData(document.forms.namedItem("new_login")));	// Error 500. The current user is not logged in. Is this GAE specific. Why not ask?	
+					
+					//close?
 		};
-		document.getElementById("Post user data").onclick = postUserData
+		
+		document.getElementById("Post user data").onclick = postUserData;
 
+		
+		
 		
 		getUserData0 = function(xmlDoc){
-			
-		
-			
-			
-
-			var out_t = document.getElementById('Registered users');
+			var out_t = document.getElementById('Registered_users');
 			var out_0 = out_t.getElementsByTagName(Table_Body)[0];
 
 			var x = xmlDoc.getElementsByTagName("USER");
 			for (i = 0; i < x.length; i++) {
 				var out_1 = document.createElement(Table_Row);
+				var in1=x[i];
 
 				{
 					var out_2 = document.createElement(Table_Cell);
 					var textnode = document
-							.createTextNode(x[i].getAttribute("NAME"));  //getElementsByTagName("NAME")[0].childNodes[0].nodeValue);
+							.createTextNode(in1.getAttribute("NAME"));  //getElementsByTagName("NAME")[0].childNodes[0].nodeValue);
 					out_2.appendChild(textnode);
 					out_1.appendChild(out_2);
 				}
 
 				{
 					var out_2 = document.createElement(Table_Cell);
-					var textnode = document.createTextNode("Some ID");
+					var textnode = document.createTextNode(in1.getAttribute("ID_"));
 					out_2.appendChild(textnode);
 					out_1.appendChild(out_2);
 				}
 
+				{
+					var out_2 = document.createElement(Table_Cell);
+					var textnode = document.createTextNode(in1.getAttribute("FUNCTION"));
+					out_2.appendChild(textnode);
+					out_1.appendChild(out_2);
+				}					
+				
+				{
+					var out_2 = document.createElement(Table_Cell);
+					var textnode = document.createTextNode(in1.getAttribute("HASH"));
+					out_2.appendChild(textnode);
+					out_1.appendChild(out_2);
+				}		
+				
 				out_0.appendChild(out_1);
 			}
 		}
 		
+		// JQuery hides the fact that there is global object (global to page) needed for httpRequest 
+		// Also: How do I multiplex multiple http requests? I plan to batch then anyway 
+		var xmlhttp = new XMLHttpRequest();
+
+		/*
+		method: the type of request: GET or POST
+		url: the location of the file on the server
+		async: true (asynchronous) or false (synchronous)
+		 */
+		
+		
 		getUserData = function(event) {
 			event.preventDefault(); //alert('I just prevented default');
-			var xmlhttp = new XMLHttpRequest();  // global!
-
 			/*
-			method: the type of request: GET or POST
-			url: the location of the file on the server
-			async: true (asynchronous) or false (synchronous)
 			 */
-			xmlhttp.onreadystatechange=function()
+			 
+			 // ToDo: demultiplex!
+			 xmlhttp.onreadystatechange=function()
 			  {
 			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
 			    {
 				  getUserData0(xmlhttp.responseXML);
 			    }
 			  }
-			;
-			/*
-			 */
+			;			 
+			 
 			xmlhttp.open("GET", "UserServlet", true); // USER.XML
 
 			xmlhttp.send();
@@ -113,6 +197,18 @@
 
 		};
 		document.getElementById("Get user data").onclick = getUserData;
+		
+		
+		
+		function sendArrayBuffer() {
+			  var xhr = new XMLHttpRequest();
+			  xhr.open('POST', 'UserServlet', true);
+			 // xhr.onload = function(e) { ... };
+
+			  var uInt8Array = new Uint8Array([1, 2, 3]);
+
+			  xhr.send(uInt8Array.buffer);
+			}
 	</script>
 </body>
 </html>
