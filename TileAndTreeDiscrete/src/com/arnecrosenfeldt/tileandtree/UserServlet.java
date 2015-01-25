@@ -1,3 +1,7 @@
+/*
+ * ToDo: Change to xhr+array once that works with table of booleans
+ * Okay that will not work: http://stackoverflow.com/questions/6965107/converting-between-strings-and-arraybuffers
+ */
 package com.arnecrosenfeldt.tileandtree;
 
 import java.io.IOException;
@@ -26,11 +30,17 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-
-
+/*
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+*/
 
 @SuppressWarnings("serial")
 public class UserServlet extends HttpServlet {
+	
+	static int persistentData; // ToDo: use dataStore
+	
 	public void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
 		response.setContentType("text/xml;charset=UTF-8"); // resp.setContentType("text/plain");
 		response.setHeader("Cache-Control", "no-cache");
@@ -105,7 +115,9 @@ public class UserServlet extends HttpServlet {
 		
 		// not used right now: request.getInputStream(); // Here is the data
 		// Servlet 3.0 request.getParts();
-		
+
+	    
+	    
 		out.println("Name: "+request.getParameter("NAME"));
 		out.println("ID_: "+request.getParameter("ID_"));
 		out.println("PASSWORD: "+request.getParameter("PASSWORD"));

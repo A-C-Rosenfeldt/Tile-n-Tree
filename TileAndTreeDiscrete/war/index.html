@@ -41,8 +41,9 @@ as there is
 		<!-- input type="text" name="password" -->
 		
 		<select name="FUNCTION" >
-		<option value="md5"> md5 </option>
-		<option value="5*bcrypt"> 5*bcrypt </option>
+		<option value="0"> identity </option>
+		<option value="5"> md5 </option>
+		<option value="50"> 5*bcrypt </option>
 		</select>
 		
 		</td> </tr>
@@ -51,7 +52,9 @@ as there is
 		</table>
 		
 		<input type="submit" value="Post user data to register serially in foreground thread.">
-		<!-- button id="Post user data">Post user data to register using Ajax.</button  -->
+		
+		
+		<button id="Post user data binary">Post user data to register using Ajax.</button>
 	</form>
 
 
@@ -72,7 +75,7 @@ as there is
 
 	<button id="Get user data">Get registered users from server.</button>
 
-
+<button id="Get user data B">Get registered users from server in binary form.</button>
 
 
 	<table>
@@ -121,8 +124,6 @@ as there is
 		};
 		
 		//document.getElementById("Post user data").onclick = postUserData;
-
-		
 		
 		
 		getUserData0 = function(xmlDoc){
@@ -169,7 +170,7 @@ as there is
 		
 		// JQuery hides the fact that there is global object (global to page) needed for httpRequest 
 		// Also: How do I multiplex multiple http requests? I plan to batch then anyway 
-		var xmlhttp = new XMLHttpRequest();
+		
 
 		/*
 		method: the type of request: GET or POST
@@ -183,26 +184,119 @@ as there is
 			/*
 			 */
 			 
+			// xhr.responseType = 'arraybuffer';
+
+			var xhr = new XMLHttpRequest();
+			
+			
 			 // ToDo: demultiplex!
-			 xmlhttp.onreadystatechange=function()
+			 xhr.onreadystatechange=function()
 			  {
-			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			  if (xhr.readyState==4 && xhr.status==200)
 			    {
-				  getUserData0(xmlhttp.responseXML);
+				  getUserData0(xhr.responseXML);
 			    }
 			  }
 			;			 
+			
 			 
-			xmlhttp.open("GET", "UserServlet", true); // USER.XML
+			xhr.open("GET", "UserServlet", true); // USER.XML // true seems to be optional
+			//xhr.responseType = 'arraybuffer';
 
-			xmlhttp.send();
+			xhr.send();
 
 
 		};
 		document.getElementById("Get user data").onclick = getUserData;
 		
 		
+		function check_if_post_is_successful_binary(success){
+			document.getElementById("flat").innerHTML = success;
+		}
 		
+		postUserDataB = function(event) {
+			event.preventDefault(); //alert('I just prevented default');
+			
+			var xhr = new XMLHttpRequest();
+			
+			// I do not like to reverse time. Callbacks :-(
+			 xhr.onreadystatechange=function()
+			  {
+			  if (xhr.readyState==4 && xhr.status==200)
+			    {
+				  check_if_post_is_successful_binary(xhr.response);
+			    }
+			  }
+			;	
+			
+			// C like struct as per MDN
+	        var encoder = new TextEncoder('utf-8');
+	        
+	        var f=document.forms.namedItem("new_login");
+	        var NAME=encoder.encode(f.NAME.value); // see shim in tile.html
+	     
+	        var PASSWORD=encoder.encode(f.PASSWORD.value);
+	        var FUNCTION=f.FUNCTION.value;
+	        var ID=f.ID_.value;
+
+			var myArray = new ArrayBuffer(4+NAME.length+PASSWORD.length);
+			var integer = new  Uint8Array(myArray); // I have bytes anyway . You know endian utf and all that, 0, 4);
+			var d=0;
+			integer[d++]=NAME.length;
+			integer[d++]=ID;
+			integer[d++]=PASSWORD.length;
+			integer[d++]=FUNCTION;
+
+			// ToDo: Use shim, but try to remove the byte array? But arrayBuf is like vector = fixed. Array is like list=variable
+			// global: Arraybuf[1024]  (for 8bit length and 2 words in utf-8 in every character)
+			// send(typedarray.subarray([begin [,end]]))
+			for (var i=0; i< NAME.length; i++) {
+				integer[d++] = NAME[i];
+				}
+			
+			for (var i=0; i< NAME.length; i++) {
+				integer[d++] = NAME[i];
+				}
+			
+			
+			xhr.open("POST", "TileServlet", true);
+			xhr.send(myArray);	// Error 500. The current user is not logged in. Is this GAE specific. Why not ask?	
+		};
+		
+		document.getElementById("Post user data binary").onclick = postUserDataB;
+
+		// http://updates.html5rocks.com/2014/08/Easier-ArrayBuffer---String-conversion-with-the-Encoding-API
+		getUserData0b = function(dataView){
+	        var decoder = new TextDecoder('utf-8');
+	        document.getElementById("flat").innerHTML = decoder.decode(dataView);		
+		}		
+		
+		getUserDataB = function(event) {
+			event.preventDefault(); //alert('I just prevented default');
+			/*
+			 */
+			 var xhr = new XMLHttpRequest();
+			 xhr.responseType = 'arraybuffer';
+
+			 // ToDo: demultiplex!
+			 xhr.onreadystatechange=function()
+			  {
+			  if (xhr.readyState==4 && xhr.status==200)
+			    {
+				  getUserData0b(new DataView(this.response));
+			    }
+			  }
+			;					
+						 
+			xhr.open("GET", "TileServlet", true); // USER.XML // true seems to be optional
+			xhr.send();
+		};	
+		
+		document.getElementById("Get user data B").onclick = getUserDataB;
+		
+		// Okay that will not work: http://stackoverflow.com/questions/6965107/converting-between-strings-and-arraybuffers
+		// Will have to use FormData
+		// https://cloud.google.com/appengine/kb/java?csw=1#fileforms
 		function sendArrayBuffer() {
 			  var xhr = new XMLHttpRequest();
 			  xhr.open('POST', 'UserServlet', true);
