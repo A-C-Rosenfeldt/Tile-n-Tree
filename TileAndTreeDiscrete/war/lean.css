@@ -1,5 +1,5 @@
 @CHARSET "ISO-8859-1";
 
-table#Registered_users td, th{ border-style:solid; }
+table.list_view td, th{ border-style:solid; }
 
 table{border-collapse:collapse;}
