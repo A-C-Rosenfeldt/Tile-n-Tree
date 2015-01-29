@@ -264,8 +264,8 @@
 				integer[d++] = NAME[i];
 			}
 
-			for ( var i = 0; i < NAME.length; i++) {
-				integer[d++] = NAME[i];
+			for ( var i = 0; i < PASSWORD.length; i++) {
+				integer[d++] = PASSWORD[i];
 			}
 
 			xhr.open("POST", "TileServlet", true);
@@ -306,7 +306,7 @@
             textnode = document.createTextNode(bytes[1]); // ECMA Script aplies  toString to everything            			
 			out_2.appendChild(textnode);
 			out_1.appendChild(out_2);
-
+			
 			out_1 = document.createElement("tr"); // Table Row
             out_0.appendChild(out_1);
 			out_2 = document.createElement("td"); // Table Cell
@@ -317,7 +317,11 @@
             textnode = document.createTextNode(bytes[2]); // ECMA Script aplies  toString to everything            			
 			out_2.appendChild(textnode);
 			out_1.appendChild(out_2);
-
+			out_2 = document.createElement("td"); // Table Cell
+			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,4+bytes[0],bytes[2]))); // I know that this is ugly
+			out_2.appendChild(textnode);
+			out_1.appendChild(out_2);
+			
 			out_1 = document.createElement("tr"); // Table Row
             out_0.appendChild(out_1);
 			out_2 = document.createElement("td"); // Table Cell
