@@ -73,7 +73,7 @@
 
 	<h1>Hello App Engine!</h1>
 
-	<table id="Registered_users"  class="list_view">
+	<table id="Registered_users" class="list_view">
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -276,8 +276,14 @@
 
 		// http://updates.html5rocks.com/2014/08/Easier-ArrayBuffer---String-conversion-with-the-Encoding-API
 		getUserData0b = function(buffer) {
+			
+			// Do not send large lists of users! All should fit nicely into some TCP packages!
+			for(var cursor=0;cursor<buffer.byteLength && cursor<1000;){ // safty limit
+			
+			
 			// var fourShorts = new Int16Array(buf, 20, 4);  // 4 16-bit integers  starting at byte 20 in the buffer
-			var bytes=new Int8Array(buffer,0,4);
+			var bytes=new Int8Array(buffer,cursor,4);
+			cursor+=4;
 			var decoder = new TextDecoder('utf-8');
 			var out_0 =document.getElementById("Registered_users_B").getElementsByTagName('TBODY')[0];
 			
@@ -292,7 +298,8 @@
 			out_2.appendChild(textnode);
 			out_1.appendChild(out_2);			
 			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,4,bytes[0])));
+			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,cursor,bytes[0])));
+			cursor+=bytes[0];
 			out_2.appendChild(textnode);
 			out_1.appendChild(out_2);
 			
@@ -318,7 +325,8 @@
 			out_2.appendChild(textnode);
 			out_1.appendChild(out_2);
 			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,4+bytes[0],bytes[2]))); // I know that this is ugly
+			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,cursor,bytes[2]))); // I know that this is ugly
+			cursor+=bytes[2];
 			out_2.appendChild(textnode);
 			out_1.appendChild(out_2);
 			
@@ -334,7 +342,7 @@
 			out_1.appendChild(out_2);
 			
 			
-			
+			}
 		}
 
 		getUserDataB = function(event) {
