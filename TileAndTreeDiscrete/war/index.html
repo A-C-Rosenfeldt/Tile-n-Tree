@@ -50,7 +50,7 @@
 						<!-- input type="text" name="password" --> <select name="FUNCTION">
 							<option value="0">identity</option>
 							<option value="5">md5</option>
-							<option value="50">5*bcrypt</option>
+							<option value="384">SHA-384</option>
 					</select>
 
 					</td>
@@ -276,72 +276,80 @@
 
 		// http://updates.html5rocks.com/2014/08/Easier-ArrayBuffer---String-conversion-with-the-Encoding-API
 		getUserData0b = function(buffer) {
-			
-			// Do not send large lists of users! All should fit nicely into some TCP packages!
-			for(var cursor=0;cursor<buffer.byteLength && cursor<1000;){ // safty limit
-			
-			
-			// var fourShorts = new Int16Array(buf, 20, 4);  // 4 16-bit integers  starting at byte 20 in the buffer
-			var bytes=new Int8Array(buffer,cursor,4);
-			cursor+=4;
+
+			//Delta in ECMAScript shouldn't be too hard, but I will do it in Java anyway
 			var decoder = new TextDecoder('utf-8');
-			var out_0 =document.getElementById("Registered_users_B").getElementsByTagName('TBODY')[0];
-			
-			var out_1 = document.createElement("tr"); // Table Row
-            out_0.appendChild(out_1);
-			var out_2 = document.createElement("td"); // Table Cell
-			var textnode = document.createTextNode("NAME");
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);
-            out_2 = document.createElement("td"); // Table Cell			
-            textnode = document.createTextNode(bytes[0]); // ECMA Script aplies  toString to everything            			
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);			
-			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,cursor,bytes[0])));
-			cursor+=bytes[0];
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);
-			
-			out_1 = document.createElement("tr"); // Table Row
-            out_0.appendChild(out_1);
-			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode("ID");
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);			
-            out_2 = document.createElement("td"); // Table Cell			
-            textnode = document.createTextNode(bytes[1]); // ECMA Script aplies  toString to everything            			
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);
-			
-			out_1 = document.createElement("tr"); // Table Row
-            out_0.appendChild(out_1);
-			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode("PASSWORD");
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);				
-            out_2 = document.createElement("td"); // Table Cell			
-            textnode = document.createTextNode(bytes[2]); // ECMA Script aplies  toString to everything            			
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);
-			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode(decoder.decode(new Int8Array(buffer,cursor,bytes[2]))); // I know that this is ugly
-			cursor+=bytes[2];
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);
-			
-			out_1 = document.createElement("tr"); // Table Row
-            out_0.appendChild(out_1);
-			out_2 = document.createElement("td"); // Table Cell
-			textnode = document.createTextNode("FUNCTION");
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);				
-            out_2 = document.createElement("td"); // Table Cell			
-            textnode = document.createTextNode(bytes[3]); // ECMA Script aplies  toString to everything            			
-			out_2.appendChild(textnode);
-			out_1.appendChild(out_2);
-			
-			
+			var out_0 = document.getElementById("Registered_users_B")
+					.getElementsByTagName('TBODY')[0];
+
+			// jQuery would even take care of event handlers. I do not care, I reuse handlers anyway
+			while (out_0.firstChild) {
+				out_0.removeChild(out_0.firstChild);
+			}
+
+			// Do not send large lists of users! All should fit nicely into some TCP packages!
+			for ( var cursor = 0; cursor < buffer.byteLength && cursor < 1000;) { // safty limit
+
+				// var fourShorts = new Int16Array(buf, 20, 4);  // 4 16-bit integers  starting at byte 20 in the buffer
+				var bytes = new Int8Array(buffer, cursor, 4);
+				cursor += 4;
+
+				var out_1 = document.createElement("tr"); // Table Row
+				out_0.appendChild(out_1);
+				var out_2 = document.createElement("td"); // Table Cell
+				var textnode = document.createTextNode("NAME");
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+				out_2 = document.createElement("td"); // Table Cell			
+				textnode = document.createTextNode(bytes[0]); // ECMA Script aplies  toString to everything            			
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+				out_2 = document.createElement("td"); // Table Cell
+				textnode = document.createTextNode(decoder
+						.decode(new Int8Array(buffer, cursor, bytes[0])));
+				cursor += bytes[0];
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+
+				out_1 = document.createElement("tr"); // Table Row
+				out_0.appendChild(out_1);
+				out_2 = document.createElement("td"); // Table Cell
+				textnode = document.createTextNode("ID");
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+				out_2 = document.createElement("td"); // Table Cell			
+				textnode = document.createTextNode(bytes[1]); // ECMA Script aplies  toString to everything            			
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+
+				out_1 = document.createElement("tr"); // Table Row
+				out_0.appendChild(out_1);
+				out_2 = document.createElement("td"); // Table Cell
+				textnode = document.createTextNode("PASSWORD");
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+				out_2 = document.createElement("td"); // Table Cell			
+				textnode = document.createTextNode(bytes[2]); // ECMA Script aplies  toString to everything            			
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+				out_2 = document.createElement("td"); // Table Cell
+				textnode = document.createTextNode(decoder
+						.decode(new Int8Array(buffer, cursor, bytes[2]))); // I know that this is ugly
+				cursor += bytes[2];
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+
+				out_1 = document.createElement("tr"); // Table Row
+				out_0.appendChild(out_1);
+				out_2 = document.createElement("td"); // Table Cell
+				textnode = document.createTextNode("FUNCTION");
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+				out_2 = document.createElement("td"); // Table Cell			
+				textnode = document.createTextNode(bytes[3]); // ECMA Script aplies  toString to everything            			
+				out_2.appendChild(textnode);
+				out_1.appendChild(out_2);
+
 			}
 		}
 
@@ -354,12 +362,19 @@
 
 			// ToDo: demultiplex!
 			xhr.onreadystatechange = function() {
-				if (xhr.readyState == 4 && xhr.status == 200) {
-					getUserData0b((this.response));
+
+				if (xhr.readyState == 4) {
+					if ( xhr.status == 401) {
+						window.alert("401!!");
+					}
+					if (xhr.status == 200) {
+
+						getUserData0b((this.response));
+					}
 				}
 			};
 
-			xhr.open("GET", "TileServlet", true); // USER.XML // true seems to be optional
+			xhr.open("GET", "TileServlet", true,"name","parole"); // USER.XML // true seems to be optional
 			xhr.send();
 		};
 
@@ -375,7 +390,7 @@
 
 			var uInt8Array = new Uint8Array([ 1, 2, 3 ]);
 
-			xhr.send(uInt8Array.buffer);
+			xhr.send(uInt8Array); //  depreciated: .buffer);
 		}
 	</script>
 </body>

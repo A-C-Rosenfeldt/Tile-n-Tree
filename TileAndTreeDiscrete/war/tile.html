@@ -75,6 +75,10 @@
 function TextEncoder() {
   this.encoding = "utf-8";
 }
+		
+//if (!Array.prototype.forEach) 
+		
+if (!TextEncoder.prototype) {
  
 TextEncoder.prototype = {
   encode: function (s) {
@@ -116,6 +120,12 @@ TextEncoder.prototype = {
     }
     return bytes;
   }
+}
 };
+
+
+function utf8_to_b64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
 </script>
 </html>

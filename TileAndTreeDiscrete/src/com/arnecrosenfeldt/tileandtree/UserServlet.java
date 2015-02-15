@@ -41,11 +41,33 @@ public class UserServlet extends HttpServlet {
 	
 	static int persistentData; // ToDo: use dataStore
 	
-	public void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
+	public static String FIELD_USER = "username";
+	public static String FIELD_PASSWORD = "password";
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("text/xml;charset=UTF-8"); // resp.setContentType("text/plain");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Pragma", "no-cache");
 
+		// This seems hard to be found using GIS
+		java.lang.String AuthType= request.getAuthType();
+		
+		 java.util.Enumeration<java.lang.String> hn=request.getHeaderNames(); 
+		
+		String username = request.getParameter(FIELD_USER);
+		String password = request.getParameter(FIELD_PASSWORD);
+		
+			if (username==null || password==null) {
+			response.addHeader("WWW-Authenticate","Basic realm=\"bus driver\"");
+			response.sendError(response.SC_UNAUTHORIZED); //, "Unauthorized, please supply login using your browser.");
+			
+			
+			//header('WWW-Authenticate: Basic realm="My Realm"');
+			return;
+		}		
+		
+		//
+		
 		PrintWriter out = response.getWriter();
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
