@@ -3,6 +3,7 @@ package com.arnecrosenfeldt.tileandtree;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
@@ -24,6 +25,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -53,105 +56,103 @@ public class TileServlet extends HttpServlet {
 
 	// http://stackoverflow.com/questions/15056686/sending-a-blob-to-a-servlet-through-ajax
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+
 		/*
 		 * 
 		 * 
 		 * http://stackoverflow.com/questions/15611653/implementing-http-basic-authentication-in-a-servlet
 		 
 		 public Credentials credentialsWithBasicAuthentication(HttpServletRequest req) {
-    String authHeader = req.getHeader("Authorization");
-    if (authHeader != null) {
-        StringTokenizer st = new StringTokenizer(authHeader);
-        if (st.hasMoreTokens()) {
-            String basic = st.nextToken();
+		String authHeader = req.getHeader("Authorization");
+		if (authHeader != null) {
+		StringTokenizer st = new StringTokenizer(authHeader);
+		if (st.hasMoreTokens()) {
+		    String basic = st.nextToken();
 
-            if (basic.equalsIgnoreCase("Basic")) {
-                try {
-                    String credentials = new String(Base64.decodeBase64(st.nextToken()), "UTF-8");
-                    LOG.debug("Credentials: " + credentials);
-                    int p = credentials.indexOf(":");
-                    if (p != -1) {
-                        String login = credentials.substring(0, p).trim();
-                        String password = credentials.substring(p + 1).trim();
+		    if (basic.equalsIgnoreCase("Basic")) {
+		        try {
+		            String credentials = new String(Base64.decodeBase64(st.nextToken()), "UTF-8");
+		            LOG.debug("Credentials: " + credentials);
+		            int p = credentials.indexOf(":");
+		            if (p != -1) {
+		                String login = credentials.substring(0, p).trim();
+		                String password = credentials.substring(p + 1).trim();
 
-                        return new Credentials(login, password);
-                    } else {
-                        LOG.error("Invalid authentication token");
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    LOG.warn("Couldn't retrieve authentication", e);
-                }
-            }
-        }
-    }
+		                return new Credentials(login, password);
+		            } else {
+		                LOG.error("Invalid authentication token");
+		            }
+		        } catch (UnsupportedEncodingException e) {
+		            LOG.warn("Couldn't retrieve authentication", e);
+		        }
+		    }
+		}
+		}
 
-    return null;
-}
+		return null;
+		}
 		 
 		 * 
 		 */
-		
-		
-		
+
 		/*
 		 http://www.coderanch.com/t/352345/Servlets/java/HTTP-basic-authentication-Web-Applications
 		 
 		 import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-public class BasicAuthentication extends HttpServlet { 
-    Hashtable validUsers = new Hashtable();
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        // ie this user has no password
-        validUsers.put("james:","authorized");
-          
-        validUsers.put("jswan:mypassword","authorized");
-    }
-    public void doGet(HttpServletRequest req, HttpServletResponse res)
-                    throws ServletException, IOException {
-         
-        res.setContentType("text/html");
-        PrintWriter out = res.getWriter();
-        // Get Authorization header
-        String auth = req.getHeader("Authorization");
-        // Do we allow that user?
-        if (!allowUser(auth)) {
-            // Not allowed, so report he's unauthorized
-            res.setHeader("WWW-Authenticate", "BASIC realm=\"jswan test\"");
-            res.sendError(res.SC_UNAUTHORIZED);
-            // Could offer to add him to the allowed user list
-        } else {
-            // Allowed, so show him the secret stuff
-            out.println("Top-secret stuff");
-        }
-    }
-    // This method checks the user information sent in the Authorization
-    // header against the database of users maintained in the users Hashtable.
-    protected boolean allowUser(String auth) throws IOException {
-         
-        if (auth == null) {
-            return false;  // no auth
-        }
-        if (!auth.toUpperCase().startsWith("BASIC ")) { 
-            return false;  // we only do BASIC
-        }
-        // Get encoded user and password, comes after "BASIC "
-        String userpassEncoded = auth.substring(6);
-        // Decode it, using any base 64 decoder
-        sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
-        String userpassDecoded = new String(dec.decodeBuffer(userpassEncoded));
-     
-        // Check our user list to see if that user and password are "allowed"
-        if ("authorized".equals(validUsers.get(userpassDecoded))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
+		import java.util.*;
+		import javax.servlet.*;
+		import javax.servlet.http.*;
+		public class BasicAuthentication extends HttpServlet { 
+		Hashtable validUsers = new Hashtable();
+		public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		// ie this user has no password
+		validUsers.put("james:","authorized");
+		  
+		validUsers.put("jswan:mypassword","authorized");
+		}
+		public void doGet(HttpServletRequest req, HttpServletResponse res)
+		            throws ServletException, IOException {
+		 
+		res.setContentType("text/html");
+		PrintWriter out = res.getWriter();
+		// Get Authorization header
+		String auth = req.getHeader("Authorization");
+		// Do we allow that user?
+		if (!allowUser(auth)) {
+		    // Not allowed, so report he's unauthorized
+		    res.setHeader("WWW-Authenticate", "BASIC realm=\"jswan test\"");
+		    res.sendError(res.SC_UNAUTHORIZED);
+		    // Could offer to add him to the allowed user list
+		} else {
+		    // Allowed, so show him the secret stuff
+		    out.println("Top-secret stuff");
+		}
+		}
+		// This method checks the user information sent in the Authorization
+		// header against the database of users maintained in the users Hashtable.
+		protected boolean allowUser(String auth) throws IOException {
+		 
+		if (auth == null) {
+		    return false;  // no auth
+		}
+		if (!auth.toUpperCase().startsWith("BASIC ")) { 
+		    return false;  // we only do BASIC
+		}
+		// Get encoded user and password, comes after "BASIC "
+		String userpassEncoded = auth.substring(6);
+		// Decode it, using any base 64 decoder
+		sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
+		String userpassDecoded = new String(dec.decodeBuffer(userpassEncoded));
+		
+		// Check our user list to see if that user and password are "allowed"
+		if ("authorized".equals(validUsers.get(userpassDecoded))) {
+		    return true;
+		} else {
+		    return false;
+		}
+		}
+		}
 		
 		
 		*/
@@ -163,30 +164,27 @@ public class BasicAuthentication extends HttpServlet {
 		String username = request.getParameter(FIELD_USER);
 		String password = request.getParameter(FIELD_PASSWORD);
 
-		
-		if (username==null || password==null) {
+		if (username == null || password == null) {
 			// http://leonjza.github.io/blog/2013/06/25/dtob-dot-py-digest-to-basic-authentication-a-simple-example-of-a-authentication-downgrade-attack/
 			// Don’t stress too much about the realm part. In short, this is usually used to give the user a short message like “Restricted Area” etc.
-			String messageToUser="Please enter ASCII user name and password";
-			response.addHeader("WWW-Authenticate","Basic realm=\""+messageToUser+"\"");
-			
+			String messageToUser = "Please enter ASCII user name and password";
+			response.addHeader("WWW-Authenticate", "Basic realm=\"" + messageToUser + "\"");
+
 			response.sendError(response.SC_UNAUTHORIZED); //, "Unauthorized, please supply login using your browser.");
-		
-			
-			
-	        PrintWriter out = response.getWriter();
-	        response.setContentType("text/html");
-	        out.println("");
-	        out.println("");
-	        out.println("");
-	        out.println("	This is a response to an HTTP " + request.getMethod() + " request.	");
-	        
-	        out.println("");
-	        out.println("");
+
+			PrintWriter out = response.getWriter();
+			response.setContentType("text/html");
+			out.println("");
+			out.println("");
+			out.println("");
+			out.println("	This is a response to an HTTP " + request.getMethod() + " request.	");
+
+			out.println("");
+			out.println("");
 			//header('WWW-Authenticate: Basic realm="My Realm"');
 			return;
 		}
-		
+
 		/*
 		byte[] buffer = new byte[16 * 1024];
 
@@ -285,36 +283,36 @@ public class BasicAuthentication extends HttpServlet {
 	// Format: count, int, int, int.  Java is big endian. JavaScript is Typed Arrays are little-endian !!??
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		
-	    //Authenticate user
+		//Authenticate user
 		//http://www.javaxt.com/Tutorials/Javascript/Form_Based_HTTP_Authentication
 		/*
-	      String username = null;
-	      java.util.HashMap<String, String> credentials = getCredentials(request);
-	      if (credentials==null){
-	          response.setStatus(401, "Access Denied");
-	          response.setHeader("WWW-Authenticate", "Basic realm=\"My Site\"");
-	          response.write("Unauthorized");
-	          return;
-	      }
-	      */
-		
-		// This seems hard to be found using GIS
-		String username = request.getParameter(FIELD_USER);
-		String password = request.getParameter(FIELD_PASSWORD);
-
+		  String username = null;
+		  java.util.HashMap<String, String> credentials = getCredentials(request);
+		  if (credentials==null){
+		      response.setStatus(401, "Access Denied");
+		      response.setHeader("WWW-Authenticate", "Basic realm=\"My Site\"");
+		      response.write("Unauthorized");
+		      return;
+		  }
+		  */
+		/*	
+			// This seems hard to be found using GIS
+			String username = request.getParameter(FIELD_USER);
+			String password = request.getParameter(FIELD_PASSWORD);
+		*/
+		/*
 		if (username==null || password==null) {
 			response.sendError(response.SC_UNAUTHORIZED); //, "Unauthorized, please supply login using your browser.");
 			response.addHeader("WWW-Authenticate","Basic realm=\"bus driver\"");
 			//header('WWW-Authenticate: Basic realm="My Realm"');
 			return;
 		}
-		
+		*/
 		//////////////////////////
 
 		InputStream input = request.getInputStream(); // ECMA script is not able to build XML. It can produce FormData where I have to provide magic markers (aaarg).
 
-		byte[] a = new byte[4]; // I need the number of bytes for each string.
+		byte[] a = new byte[3]; // I need the number of bytes for each string.
 		int count_read_elements = input.read(a);
 
 		PrintWriter out = response.getWriter();
@@ -322,29 +320,87 @@ public class BasicAuthentication extends HttpServlet {
 		out.println("count_read_elements: " + count_read_elements);
 
 		// All this ugly manual memory allocation  is here to avoid that even more ugly   magic string of formData
-		byte NAME_lenght = a[0];
-		out.println("NAme.length: " + NAME_lenght);
-		byte ID = a[1];
-		out.println("ID: " + ID);
-		byte PASSWORD_length = a[2];
-		out.println("PASSWORD_length: " + PASSWORD_length);
-		byte FUNCTION_value = a[3];
-		out.println("FUNCTION_value: " + FUNCTION_value);
+		// fixed sized data first. Long utf-8 later. So you can skip.
 
-		a = new byte[NAME_lenght]; // I need the number of bytes for each string.
-		count_read_elements = input.read(a);
+		int source = 0;
 
-		String NAME = new String(a, "UTF-8");
+		// authentication
+		byte NAME_authority_lenght = a[source++];
+		out.println("NAme.length: " + NAME_authority_lenght);
+		byte PASSWORD_authority_length = a[source++];
+		out.println("PASSWORD_length: " + PASSWORD_authority_length);
 
-		out.println("NAme: " + NAME);
+		// payload. If this gets any more complicated, XML is needed. Right now 2 types: Register User, bitmap
+		byte payload_length = a[source++];
+		
+		a=new byte[payload_length];
+		
+		String NAME=null;
+		
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		switch (payload_length) {
 
-		a = new byte[PASSWORD_length]; // I need the number of bytes for each string.
-		count_read_elements = input.read(a);
+		case 4:
+			byte NAME_lenght = a[source++];
+			out.println("NAme.length: " + NAME_lenght);
+			byte ID = a[source++];
+			out.println("ID: " + ID);
+			byte PASSWORD_length = a[source++];
+			out.println("PASSWORD_length: " + PASSWORD_length);
+			byte FUNCTION_value = a[source++];
+			out.println("FUNCTION_value: " + FUNCTION_value);
 
-		String PASSWORD = new String(a, "UTF-8");
+			echoAuthority(input, out, NAME_authority_lenght, PASSWORD_authority_length);
 
-		out.println("PASSWORD: " + PASSWORD);
+			out.println("subject");
 
+			a = new byte[NAME_lenght]; // I need the number of bytes for each string.
+			count_read_elements = input.read(a);
+
+			NAME = new String(a, "UTF-8");
+
+			out.println("NAme: " + NAME);
+
+			a = new byte[PASSWORD_length]; // I need the number of bytes for each string.
+			count_read_elements = input.read(a);
+
+			String PASSWORD = new String(a, "UTF-8");
+
+			out.println("PASSWORD: " + PASSWORD);
+			
+			Entity user = new Entity("USER", NAME);
+			user.setProperty("smallID", ID);
+			user.setProperty("FUNCTION", FUNCTION_value);
+			user.setProperty("PASSWORD", PASSWORD);
+
+			
+			datastore.put(user);			
+			break;
+		case 2:
+			byte size_0 = a[source++];
+			out.println("Width: " + size_0);
+			if (size_0 !=8){
+				throw new UnsupportedOperationException();
+				// no padding nor alignment please
+			}
+			
+			byte size_1 = a[source++];
+			out.println("height: " + size_1);
+			NAME=echoAuthority(input, out, NAME_authority_lenght, PASSWORD_authority_length);
+			
+			a = new byte[size_1];
+			Entity availablity = new Entity("Availablity", NAME);
+			// pure solar
+			int day=0; // 0 based
+			int year=2000;
+			availablity.setProperty("year", year);
+			availablity.setProperty("day", day);
+			availablity.setProperty("available", new Blob(a));
+			
+			
+			datastore.put(availablity);
+			break;
+		}
 		//while ((bytesRead = input.read(buffer)) != -1) {
 
 		out.close();
@@ -352,15 +408,28 @@ public class BasicAuthentication extends HttpServlet {
 
 		//logins.add(new com.arnecrosenfeldt.tileandtree.User(NAME, ID, PASSWORD, FUNCTION_value));
 
-		Entity user = new Entity("USER", NAME);
-		user.setProperty("smallID", ID);
-		user.setProperty("FUNCTION", FUNCTION_value);
-		user.setProperty("PASSWORD", PASSWORD);
 
-		user.setProperty("FV", new Blob(new byte[] { 0, 2, 3 })); // TODO move to other kind of entry
+	}
 
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		datastore.put(user);
+	private String echoAuthority(InputStream input, PrintWriter out, byte NAME_authority_lenght, byte PASSWORD_authority_length) throws IOException, UnsupportedEncodingException {
+		byte[] a;
+		int count_read_elements;
+		out.println("Authority");
+		a = new byte[NAME_authority_lenght]; // I need the number of bytes for each string.
+		count_read_elements = input.read(a);
+
+		String NAME_authority = new String(a, "UTF-8");
+
+		out.println("NAme: " + NAME_authority);
+
+		a = new byte[PASSWORD_authority_length]; // I need the number of bytes for each string.
+		count_read_elements = input.read(a);
+
+		String PASSWORD_authority = new String(a, "UTF-8");
+
+		out.println("PASSWORD: " + PASSWORD_authority);
+		
+		return NAME_authority;
 	}
 
 	private byte[] hash(int function, byte[] password) {

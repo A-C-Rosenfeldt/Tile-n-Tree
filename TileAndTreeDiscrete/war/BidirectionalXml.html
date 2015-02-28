@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+		<button id="Post user data">Post user data as XML using XHR.</button>
+	
+	<p id="flat"></p>
+	
+<script type="text/javascript">
+function check_if_post_is_successful(success) {
+	document.getElementById("flat").innerHTML = success;
+}
+
+
+
+postUserData = function(event) {
+	event.preventDefault(); //alert('I just prevented default');
+
+	var xmlhttp = new XMLHttpRequest();
+	
+	// I do not like to reverse time. Callbacks :-(
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			check_if_post_is_successful(xmlhttp.responseText); // For XML see get  in index.html
+		}
+	};
+
+	xmlhttp.open("POST", "BidirectionalXml", true);
+
+
+	var doc = document.implementation.createDocument(null,'XML',null);
+	var root= document.createElement('AUTHORIZATION');
+	doc.documentElement.appendChild(root);
+	var authority=document.createElement('AUTHORITY');
+	root.appendChild(authority);
+	var text=document.createTextNode('all your base belong to us');
+	authority.appendChild(text);
+	
+	xmlhttp.send(doc);	
+
+};
+document.getElementById("Post user data").onclick = postUserData;
+	
+</script>
+</body>
+</html>

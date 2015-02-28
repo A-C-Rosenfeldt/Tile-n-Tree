@@ -12,15 +12,30 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>TileServlet</servlet-name>
 		<servlet-class>com.arnecrosenfeldt.tileandtree.TileServlet</servlet-class>
 	</servlet>		
+	<servlet>
+		<servlet-name>IFrameResponse</servlet-name>
+		<servlet-class>com.arnecrosenfeldt.tileandtree.IFrameResponse</servlet-class>
+	</servlet>		
+	<servlet>
+		<servlet-name>BidirectionalXml</servlet-name>
+		<servlet-class>com.arnecrosenfeldt.tileandtree.BidirectionalXml</servlet-class>
+	</servlet>			
 	<servlet-mapping>
 		<servlet-name>UserServlet</servlet-name>
 		<url-pattern>/UserServlet</url-pattern>
 	</servlet-mapping>
-<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>TileServlet</servlet-name>
 		<url-pattern>/TileServlet</url-pattern>
 	</servlet-mapping>
-		
+	<servlet-mapping>
+		<servlet-name>IFrameResponse</servlet-name>
+		<url-pattern>/CheckCredentials</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>BidirectionalXml</servlet-name>
+		<url-pattern>/BidirectionalXml</url-pattern>
+	</servlet-mapping>		
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

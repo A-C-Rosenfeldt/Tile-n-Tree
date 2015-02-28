@@ -2,6 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<!--  meta name="robots" content="noindex" -->
+<!--  meta name="robots" content="nofollow" -->
 <title>Login</title>
 </head>
 <body>
@@ -16,7 +18,7 @@
 		<button type="submit">Login</button>
 	</form -->
 
-	<form id="form_login" name="login" action="Login_Success.html" target="success" method="post" autocomplete="on" accept-charset="UTF-8">
+	<form id="form_login" name="login" action="CheckCredentials" target="success" method="post" autocomplete="on" accept-charset="UTF-8">
 		<table>
 			<tbody>
 				<tr>
@@ -34,6 +36,7 @@
 		<button id="login-button" type="submit">Login</button>
 	</form>
 
+<!-- XHR is not supported by  password managers. We fall back to single threaded iframe -->
 	<iframe src="Login_Success.html" name="success" ></iframe>
 
 <div>

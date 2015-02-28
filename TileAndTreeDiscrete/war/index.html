@@ -252,6 +252,12 @@
 			var myArray = new ArrayBuffer(4 + NAME.length + PASSWORD.length);
 			var integer = new Uint8Array(myArray); // I have bytes anyway . You know endian utf and all that, 0, 4);
 			var d = 0;
+			
+			// copy the next 2 lines to login.html
+			// ToDo: Do I need autho .. yes I need in production .. "manual override"?
+			integer[d++] = NAME_authority.length;
+			integer[d++] = PASSWORD_authority.length;
+			integer[d++] = 4; // payload counter
 			integer[d++] = NAME.length;
 			integer[d++] = ID;
 			integer[d++] = PASSWORD.length;
