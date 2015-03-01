@@ -8,11 +8,48 @@
 
 		<button id="Post user data">Post user data as XML using XHR.</button>
 	
-	<p id="flat"></p>
+		<table id="Registered_users" class="list_view">
+		<thead>
+			<tr>
+				<th>Name</th>
+			
+				<th>Password</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
 	
 <script type="text/javascript">
-function check_if_post_is_successful(success) {
-	document.getElementById("flat").innerHTML = success;
+function check_if_post_is_successful(xmlDoc) {
+	var out_t = document.getElementById('Registered_users');
+	var out_0 = out_t.getElementsByTagName('tbody')[0];
+
+	var x = xmlDoc.getElementsByTagName("USER");
+	for (i = 0; i < x.length; i++) {
+		var out_1 = document.createElement('tr');
+		var in1 = x[i];
+
+		{
+			var out_2 = document.createElement('td');
+			var textnode = document.createTextNode(in1
+					.getAttribute("NAME")); //getElementsByTagName("NAME")[0].childNodes[0].nodeValue);
+			out_2.appendChild(textnode);
+			out_1.appendChild(out_2);
+		}
+
+
+		{
+			var out_2 = document.createElement('td');
+			var textnode = document.createTextNode(in1
+					.getAttribute("PASSWORD"));
+			out_2.appendChild(textnode);
+			out_1.appendChild(out_2);
+		}
+
+		out_0.appendChild(out_1);
+	}
+	
 }
 
 
@@ -25,19 +62,19 @@ postUserData = function(event) {
 	// I do not like to reverse time. Callbacks :-(
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			check_if_post_is_successful(xmlhttp.responseText); // For XML see get  in index.html
+			check_if_post_is_successful(xmlhttp.responseXML); // For XML see get  in index.html
 		}
 	};
 
-	xmlhttp.open("POST", "BidirectionalXml", true);
-
+	xmlhttp.open("POST", "BidirectionalXmlServlet", true);
+	xmlhttp.responseType = "document";
 
 	var doc = document.implementation.createDocument(null,'XML',null);
 	var root= document.createElement('AUTHORIZATION');
 	doc.documentElement.appendChild(root);
 	var authority=document.createElement('AUTHORITY');
 	root.appendChild(authority);
-	var text=document.createTextNode('all your base belong to us');
+	var text=document.createTextNode('all your base belong to us äöß Ö');
 	authority.appendChild(text);
 	
 	xmlhttp.send(doc);	

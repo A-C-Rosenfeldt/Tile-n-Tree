@@ -67,7 +67,7 @@ public class BidirectionalXml extends HttpServlet{
 	    Element answer=document.createElement("answere");
 	    document.appendChild(answer);
 	    Element el = document.createElement("USER");
-		el.setAttribute("NAME", "SomeStrange UnicodeGuy sv");
+		el.setAttribute("NAME", "SomeStrange UnicodeGuy sv in GET");
 		el.setAttribute("ID_", "legacy BAA id");
 		el.setAttribute("HASH", "JFUHFKRIWIFHJFKSJS");
 		el.setAttribute("FUNCTION", "md5");
@@ -110,6 +110,9 @@ public class BidirectionalXml extends HttpServlet{
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/xml;charset=UTF-8"); // resp.setContentType("text/plain");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Pragma", "no-cache");
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder documentBuilder;
 		try {
@@ -130,33 +133,46 @@ public class BidirectionalXml extends HttpServlet{
 			e.printStackTrace();
 			return;
 		} 
-	    
-	    Node a=document.getFirstChild().getFirstChild();	
+	    	    
+	    Node a=document.getFirstChild().getFirstChild();
+	 
+		String t=a.getTextContent();
 		PrintWriter out = response.getWriter();
-		//ToDo
-		//request.setAttribute("result",str);
-		//request.getRequestDispatcher("/index.jsp").forward(request,response);
-//		<% 
-//		out.print(request.getAttribute("servletName").toString());
-//		%>
-//		out.println("<!DOCTYPE html>");
-//		out.println("<html>");
-//		out.println("<head>");
-//		out.println("<meta charset=\"UTF-8\">");
-//		out.println("<title>Your login may have been successful</title>");
-//		out.println("</head>");
-//		out.println("<body>");
-		out.println("Hello World from Servlet <br>");
-		out.println("FIELD_USER : " + a.getTextContent() + "<br>");
-	//	out.println("FIELD_PASSWORD : " + a.getChildNodes().item(1).getNodeValue() + "<br>");
-		out.println("Nice to here from you again <br>");
-//		out.println("</body>");
-//		out.println("</html>");
-		out.close();
+
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder;
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+
+			// root elements
+			Document doc = docBuilder.newDocument();
+			Element rootElement = doc.createElement("PERSON");
+			doc.appendChild(rootElement);
+
+			Element el = doc.createElement("USER");
+			el.setAttribute("NAME", "SomeStrange UnicodeGuy sv in POST");
+			el.setAttribute("PASSWORD", "JFUHFKRIWIFHJFKSJS");			
+			rootElement.appendChild(el);
+
+			el = doc.createElement("USER");
+			el.setAttribute("NAME", a.getTextContent());
+			el.setAttribute("PASSWORD", "JFUHFKRIWIFHJFKSJS");			
+			
+			rootElement.appendChild(el);
+
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(out);
+			
+			transformer.transform(source, result);
+			} catch (ParserConfigurationException | TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
 	}
-	
-	
-		
-	
-	
 }
+		
+		
+

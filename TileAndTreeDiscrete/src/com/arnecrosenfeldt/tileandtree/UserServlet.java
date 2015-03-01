@@ -81,7 +81,7 @@ public class UserServlet extends HttpServlet {
 			doc.appendChild(rootElement);
 
 			Element el = doc.createElement("USER");
-			el.setAttribute("NAME", "SomeStrange UnicodeGuy sv");
+			el.setAttribute("NAME", "SomeStrange UnicodeGuy sv User Servlet");
 			el.setAttribute("ID_", "legacy BAA id");
 			el.setAttribute("HASH", "JFUHFKRIWIFHJFKSJS");
 			el.setAttribute("FUNCTION", "md5");
